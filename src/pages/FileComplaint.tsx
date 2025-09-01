@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, ArrowRight, Shield, AlertTriangle, FileText, Users, CheckCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Shield, AlertTriangle, FileText, Users, CheckCircle, Bell, Lock, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockEmployeeData, calculateEvidenceScore, getEvidenceLevel } from "@/lib/mockData";
@@ -70,148 +70,211 @@ const FileComplaint = () => {
       case 1:
         return (
           <div className="space-y-6">
-            <div className="text-center space-y-4">
-              <h2 className="text-2xl font-semibold text-text-primary">What type of incident would you like to report?</h2>
-              <p className="text-text-secondary max-w-2xl mx-auto">
-                We're here to support you through this process. Your report will be handled confidentially 
-                and in accordance with POSH Act requirements.
-              </p>
-              <div className="flex justify-center space-x-4 flex-wrap">
-                <div className="flex items-center space-x-2 bg-soft-sage text-white px-3 py-1 rounded-full text-sm">
-                  <Shield className="h-3 w-3" />
-                  <span>Confidential</span>
-                </div>
-                <div className="text-sm text-text-muted">Expected timeline: 90 days</div>
-                <div className="text-sm text-text-muted">24/7 Support Available</div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">What type of concern would you like to report?</h2>
+            
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <label className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="incidentType"
+                    value="harassment"
+                    checked={formData.incidentType === "harassment"}
+                    onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
+                    className="mt-1"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Harassment/Discrimination</div>
+                    <div className="text-sm text-gray-600">Unwelcome conduct based on protected characteristics</div>
+                  </div>
+                </label>
+
+                <label className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="incidentType"
+                    value="retaliation"
+                    checked={formData.incidentType === "retaliation"}
+                    onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
+                    className="mt-1"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Retaliation</div>
+                    <div className="text-sm text-gray-600">Adverse action after reporting concerns or participating in investigations</div>
+                  </div>
+                </label>
+
+                <label className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="incidentType"
+                    value="policy"
+                    checked={formData.incidentType === "policy"}
+                    onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
+                    className="mt-1"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Policy Violation</div>
+                    <div className="text-sm text-gray-600">Violation of company policies or code of conduct</div>
+                  </div>
+                </label>
+
+                <label className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                  <input
+                    type="radio"
+                    name="incidentType"
+                    value="unsure"
+                    checked={formData.incidentType === "unsure"}
+                    onChange={(e) => setFormData({ ...formData, incidentType: e.target.value })}
+                    className="mt-1"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">I'm not sure</div>
+                    <div className="text-sm text-gray-600">Help me determine what type of concern this is</div>
+                  </div>
+                </label>
               </div>
             </div>
-
-            <div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {incidentTypes.map((type) => {
-                  const Icon = type.icon;
-                  return (
-                    <div 
-                      key={type.id}
-                      className={`widget-card cursor-pointer ${
-                        formData.incidentType === type.id ? 'ring-2 ring-gentle-teal border-gentle-teal' : ''
-                      }`}
-                      onClick={() => setFormData({ ...formData, incidentType: type.id })}
-                    >
-                      <div className="text-center">
-                        <Icon className="h-8 w-8 mx-auto mb-3 text-gentle-teal" />
-                        <h3 className="font-medium text-text-primary">{type.label}</h3>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {formData.incidentType === 'unsure' && (
-              <div className="alert alert-info">
-                <div className="flex items-center mb-2">
-                  <Users className="mr-2 h-5 w-5 text-gentle-teal" />
-                  <span className="font-medium text-text-primary">Guided Assessment Available</span>
-                </div>
-                <p className="text-sm text-text-secondary">
-                  Our AI-powered assessment tool will help determine the most appropriate category 
-                  and investigation pathway based on your specific situation.
-                </p>
-              </div>
-            )}
           </div>
         );
 
       case 2:
         return (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold mb-2">Employee Information</h2>
-              <p className="text-muted-foreground">
-                We've pre-filled your information from our HR system. Please verify and update as needed.
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Your Information</h2>
+              <p className="text-sm text-gray-600">
+                Information has been automatically populated from your HR profile. Please verify accuracy.
               </p>
             </div>
 
-            <Card className="border-secondary/30">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="mr-2 h-5 w-5 text-secondary" />
-                  Auto-filled from HRIS
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="employeeName">Employee Name</Label>
-                    <Input
-                      id="employeeName"
-                      value={mockEmployeeData.name}
-                      className="border-secondary/30 bg-secondary/5"
-                      readOnly
-                    />
-                    <Badge variant="secondary" className="mt-1 text-xs">Auto-filled</Badge>
-                  </div>
-                  <div>
-                    <Label htmlFor="employeeId">Employee ID</Label>
-                    <Input
-                      id="employeeId"
-                      value={mockEmployeeData.id}
-                      className="border-secondary/30 bg-secondary/5"
-                      readOnly
-                    />
-                    <Badge variant="secondary" className="mt-1 text-xs">Auto-filled</Badge>
-                  </div>
-                  <div>
-                    <Label htmlFor="department">Department</Label>
-                    <Input
-                      id="department"
-                      value={mockEmployeeData.department}
-                      className="border-secondary/30 bg-secondary/5"
-                      readOnly
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="manager">Manager</Label>
-                    <Input
-                      id="manager"
-                      value={mockEmployeeData.manager}
-                      className="border-secondary/30 bg-secondary/5"
-                      readOnly
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                    Full Name <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Auto-filled</Badge>
+                  </Label>
+                  <Input
+                    id="fullName"
+                    value="John Doe"
+                    className="bg-blue-50 border-blue-200"
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1">
+                    Department <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Auto-filled</Badge>
+                  </Label>
+                  <Input
+                    id="department"
+                    value="Engineering"
+                    className="bg-blue-50 border-blue-200"
+                    readOnly
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="manager" className="block text-sm font-medium text-gray-700 mb-1">
+                    Manager <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Auto-filled</Badge>
+                  </Label>
+                  <Input
+                    id="manager"
+                    value="Jane Smith"
+                    className="bg-blue-50 border-blue-200"
+                    readOnly
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="contact" className="block text-sm font-medium text-gray-700 mb-1">
+                    Preferred Contact Method
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="bg-gray-100">
+                      <SelectValue placeholder="Work Email" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                      <SelectItem value="work-email">Work Email</SelectItem>
+                      <SelectItem value="personal-email">Personal Email</SelectItem>
+                      <SelectItem value="phone">Phone</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-6 border-t">
+              <h3 className="text-lg font-semibold text-gray-900">About the Incident</h3>
+              
               <div>
-                <Label htmlFor="respondent">Respondent Name *</Label>
-                <Select onValueChange={(value) => setFormData({ ...formData, respondentName: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select from organization directory" />
+                <Label htmlFor="whoInvolved" className="block text-sm font-medium text-gray-700 mb-1">
+                  Who was involved in this incident? <AlertTriangle className="inline h-4 w-4 ml-1" />
+                </Label>
+                <Input
+                  id="whoInvolved"
+                  placeholder="Start typing name or select from directory..."
+                  value={formData.respondentName}
+                  onChange={(e) => setFormData({ ...formData, respondentName: e.target.value })}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="whenOccurred" className="block text-sm font-medium text-gray-700 mb-1">
+                    When did this occur?
+                  </Label>
+                  <Input
+                    id="whenOccurred"
+                    type="date"
+                    placeholder="mm/dd/yyyy"
+                    value={formData.incidentDate}
+                    onChange={(e) => setFormData({ ...formData, incidentDate: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="timeKnown" className="block text-sm font-medium text-gray-700 mb-1">
+                    Time (if known)
+                  </Label>
+                  <Input
+                    id="timeKnown"
+                    placeholder="--:--"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="whereOccurred" className="block text-sm font-medium text-gray-700 mb-1">
+                  Where did this occur?
+                </Label>
+                <Select>
+                  <SelectTrigger className="bg-gray-100">
+                    <SelectValue placeholder="Select location..." />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="john-smith">John Smith - Sales Manager</SelectItem>
-                    <SelectItem value="mike-wilson">Mike Wilson - Marketing Director</SelectItem>
-                    <SelectItem value="robert-clark">Robert Clark - Engineering Lead</SelectItem>
+                  <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                    <SelectItem value="office">Office</SelectItem>
+                    <SelectItem value="conference-room">Conference Room</SelectItem>
+                    <SelectItem value="remote">Remote/Virtual</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <Card className="bg-warning/5 border-warning/30">
-                <CardContent className="p-4">
-                  <div className="flex items-start space-x-2">
-                    <AlertTriangle className="h-5 w-5 text-warning mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium">Conflict of Interest Detected</p>
-                      <p className="text-xs text-muted-foreground">
-                        ICC member conflict detected - alternative member automatically assigned for review.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <div>
+                <Label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                  Please describe what happened
+                </Label>
+                <Textarea
+                  id="description"
+                  placeholder="Describe the incident in as much detail as you feel comfortable sharing."
+                  className="min-h-[120px]"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
+                <div className="text-xs text-gray-500 mt-1">
+                  Character count: {formData.description.length}/2000
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -220,92 +283,70 @@ const FileComplaint = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h2 className="text-2xl font-bold mb-2">Evidence Collection</h2>
-              <p className="text-muted-foreground">
-                Provide details and evidence to support your complaint. Our AI will assess the strength of your case.
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Supporting Evidence</h2>
+              <p className="text-sm text-gray-600">
+                Please provide any evidence that supports your report. This helps ensure a thorough investigation.
               </p>
             </div>
 
-            <Card className="border-primary/30">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  Evidence Assessment
-                  <Badge variant="outline" className={`text-${evidenceLevel.color}`}>
-                    {evidenceLevel.level}
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Evidence Score</span>
-                    <span>{mockEvidenceScore}/100</span>
-                  </div>
-                  <Progress value={mockEvidenceScore} className="h-2" />
-                  <p className="text-xs text-muted-foreground mt-1">{evidenceLevel.description}</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-secondary">+30</div>
-                    <div className="text-xs text-muted-foreground">Points per witness</div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-secondary">+40</div>
-                    <div className="text-xs text-muted-foreground">Points per document</div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-secondary">+50</div>
-                    <div className="text-xs text-muted-foreground">Points per physical evidence</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <Label htmlFor="incidentDate">Date of Incident *</Label>
-                <Input
-                  id="incidentDate"
-                  type="date"
-                  value={formData.incidentDate}
-                  onChange={(e) => setFormData({ ...formData, incidentDate: e.target.value })}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="location">Location of Incident</Label>
-                <Input
-                  id="location"
-                  placeholder="e.g., Conference Room B, 5th Floor"
-                  value={formData.location}
-                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Detailed Description *</Label>
+                <Label htmlFor="witnesses" className="block text-sm font-medium text-gray-700 mb-2">
+                  Were there any witnesses?
+                </Label>
                 <Textarea
-                  id="description"
-                  placeholder="Please describe what happened in detail. Include dates, times, and circumstances."
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="min-h-[120px]"
+                  id="witnesses"
+                  placeholder="List any witnesses and what they may have seen or heard..."
+                  className="min-h-[100px]"
                 />
-                <div className="text-xs text-muted-foreground mt-1">
-                  {formData.description.length}/2000 characters
+              </div>
+
+              <div>
+                <Label className="block text-sm font-medium text-gray-700 mb-2">
+                  Supporting Documents
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50">
+                  <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-600 mb-2">Drag and drop files here or click to browse</p>
+                  <p className="text-xs text-gray-500">Supported: PDF, DOC, JPG, PNG, Email files</p>
                 </div>
               </div>
 
-              <Card className="bg-accent/50">
-                <CardContent className="p-4">
-                  <h4 className="font-medium mb-2">AI Suggestion</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Based on similar cases, consider documenting: specific dates/times, 
-                    witnesses present, any written communications, and impact on work environment.
+              <div>
+                <Label htmlFor="additionalContext" className="block text-sm font-medium text-gray-700 mb-2">
+                  Additional Context
+                </Label>
+                <Textarea
+                  id="additionalContext"
+                  placeholder="Any additional information that might be relevant..."
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="font-semibold text-gray-900">Evidence Strength Assessment</h3>
+                  <Badge className="bg-red-500 text-white">25/100 points</Badge>
+                </div>
+                <div className="bg-red-100 border border-red-300 rounded p-3">
+                  <div className="flex items-center mb-2">
+                    <AlertTriangle className="h-4 w-4 text-red-600 mr-2" />
+                    <span className="font-medium text-red-800">Human Review Required</span>
+                  </div>
+                  <p className="text-sm text-red-700 mb-3">
+                    Based on the information provided, your case will receive additional review by a trained committee member within 2 hours. This ensures your concern receives appropriate attention and consideration for alternative resolution options.
                   </p>
-                </CardContent>
-              </Card>
+                  <div className="text-sm text-red-700">
+                    <p className="font-medium mb-1">What this means:</p>
+                    <ul className="list-disc list-inside space-y-1 text-xs">
+                      <li>A qualified person will review your case personally</li>
+                      <li>You may be contacted for additional information</li>
+                      <li>Alternative resolution options (like mediation) may be offered</li>
+                      <li>You maintain the right to a formal investigation at any time</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -409,51 +450,83 @@ const FileComplaint = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation Bar */}
+      <nav className="bg-white border-b border-gray-200 px-6 py-3">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-8">
+            <div className="text-lg font-semibold text-gray-900">Company Portal</div>
+            <div className="flex space-x-6">
+              <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+              <Link to="/hr-services" className="text-gray-600 hover:text-gray-900">HR Services</Link>
+              <Link to="/file-complaint" className="bg-gray-800 text-white px-4 py-2 rounded text-sm font-medium">
+                Report a Concern
+              </Link>
+              <Link to="/resources" className="text-gray-600 hover:text-gray-900">Resources</Link>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Bell className="h-5 w-5 text-gray-600" />
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                2
+              </div>
+            </div>
+            <div className="text-gray-700 font-medium">John Doe</div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="text-center mb-8 bg-bg-elevated rounded-lg p-8 border border-input-border">
-          <h1 className="text-3xl font-semibold text-text-primary mb-2">
-            Report a Concern - Your Voice Matters
-          </h1>
-          <p className="text-lg text-text-secondary">
-            We're here to listen and support you through this process
-          </p>
+        <h1 className="text-2xl font-semibold text-gray-900 mb-6">Report a Workplace Concern</h1>
+
+        {/* Privacy Notice */}
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center">
+            <Lock className="h-5 w-5 text-green-600 mr-3" />
+            <div>
+              <h3 className="font-medium text-gray-900">Your privacy is protected</h3>
+              <p className="text-sm text-gray-600 mt-1">
+                All reports are handled confidentially and in accordance with company policy and legal requirements.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Progress Indicator */}
-        <div className="flex items-center justify-center max-w-4xl mx-auto mb-8">
-          <div className="flex items-center justify-between w-full max-w-2xl">
+        <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center space-x-8">
             {[
               { number: 1, label: "Type of Concern" },
               { number: 2, label: "Details" },
               { number: 3, label: "Evidence" },
               { number: 4, label: "Review" }
             ].map((step, index) => (
-              <div key={step.number} className="flex items-center flex-1">
+              <div key={step.number} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
                       step.number === currentStep 
-                        ? 'bg-status-warning text-white' 
+                        ? 'bg-orange-500 text-white' 
                         : step.number < currentStep
-                        ? 'bg-status-success text-white'
-                        : 'bg-text-light text-text-muted'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-gray-300 text-gray-600'
                     }`}
                   >
-                    {step.number}
+                    {step.number < currentStep ? <CheckCircle className="h-5 w-5" /> : step.number}
                   </div>
-                  <span className={`mt-2 text-sm font-medium ${
+                  <span className={`mt-2 text-sm ${
                     step.number === currentStep 
-                      ? 'text-text-primary' 
-                      : 'text-text-muted'
+                      ? 'text-gray-900 font-medium' 
+                      : 'text-gray-500'
                   }`}>
                     {step.label}
                   </span>
                 </div>
                 {index < 3 && (
-                  <div className={`flex-1 h-0.5 mx-4 ${
-                    step.number < currentStep ? 'bg-status-success' : 'bg-input-border'
+                  <div className={`w-16 h-0.5 mx-4 ${
+                    step.number < currentStep ? 'bg-green-500' : 'bg-gray-300'
                   }`} />
                 )}
               </div>
@@ -462,36 +535,37 @@ const FileComplaint = () => {
         </div>
 
         {/* Step Content */}
-        <div className="form-container fade-in">
+        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
           {renderStepContent()}
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-8">
-          <button
+        <div className="flex justify-between">
+          <Button
             onClick={handlePrev}
             disabled={currentStep === 1}
-            className={`btn ${currentStep === 1 ? 'btn-disabled' : 'btn-gentle'}`}
+            variant="outline"
+            className="px-6"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </button>
+            {currentStep === 1 ? 'Save & Exit' : 'Back'}
+          </Button>
           {currentStep < 4 ? (
-            <button
+            <Button
               onClick={handleNext}
-              className="btn btn-primary"
+              className="bg-gray-800 hover:bg-gray-900 text-white px-6"
             >
               Continue
               <ArrowRight className="ml-2 h-4 w-4" />
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={handleSubmit}
-              className="btn btn-primary"
+              className="bg-gray-800 hover:bg-gray-900 text-white px-6"
             >
-              Submit Complaint
-              <CheckCircle className="ml-2 h-4 w-4" />
-            </button>
+              Continue to Review
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
           )}
         </div>
       </div>
