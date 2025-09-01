@@ -384,31 +384,6 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Statistics Section */}
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-8">
-            Making a Difference
-          </h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-2">60%</div>
-              <div className="text-white/70 text-sm">Increase in Reporting</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">75%</div>
-              <div className="text-white/70 text-sm">Faster Processing</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">100%</div>
-              <div className="text-white/70 text-sm">Compliance Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-400 mb-2">4.8/5</div>
-              <div className="text-white/70 text-sm">User Satisfaction</div>
-            </div>
-          </div>
-        </div>
       </main>
 
       {/* Footer */}
