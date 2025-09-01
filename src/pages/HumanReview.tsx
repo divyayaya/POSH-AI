@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock, Save, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
@@ -22,40 +25,139 @@ const HumanReview = () => {
     rationale: "",
     secondaryReviewer: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDraft, setIsDraft] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const case_ = mockCases.find(c => c.id === caseId);
   const evidence = mockEvidence.filter(e => e.caseId === caseId);
   const evidenceLevel = getEvidenceLevel(case_?.evidenceScore || 0);
 
+  // Calculate form completion progress
+  const calculateProgress = () => {
+    const requiredFields = ['credibilityAssessment', 'investigationPathway', 'rationale'];
+    const completed = requiredFields.filter(field => {
+      if (field === 'rationale') return reviewData[field].length >= 100;
+      return reviewData[field as keyof typeof reviewData];
+    });
+    return (completed.length / requiredFields.length) * 100;
+  };
+
+  // Real-time validation
+  const validateField = (field: string, value: string) => {
+    const errors = { ...validationErrors };
+    
+    switch (field) {
+      case 'rationale':
+        if (value.length < 100) {
+          errors.rationale = `Minimum 100 characters required (${value.length}/100)`;
+        } else {
+          delete errors.rationale;
+        }
+        break;
+      case 'credibilityAssessment':
+        if (!value) {
+          errors.credibilityAssessment = 'Credibility assessment is required';
+        } else {
+          delete errors.credibilityAssessment;
+        }
+        break;
+      case 'investigationPathway':
+        if (!value) {
+          errors.investigationPathway = 'Investigation pathway is required';
+        } else {
+          delete errors.investigationPathway;
+        }
+        break;
+    }
+    
+    setValidationErrors(errors);
+  };
+
+  // Auto-save draft functionality
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (reviewData.credibilityAssessment || reviewData.rationale || reviewData.investigationPathway) {
+        setIsDraft(true);
+        localStorage.setItem(`draft-${caseId}`, JSON.stringify(reviewData));
+      }
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [reviewData, caseId]);
+
+  // Load draft on mount
+  useEffect(() => {
+    const draft = localStorage.getItem(`draft-${caseId}`);
+    if (draft) {
+      setReviewData(JSON.parse(draft));
+      setIsDraft(true);
+    }
+  }, [caseId]);
+
   if (!case_) {
-    return <div>Case not found</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-96">
+          <CardContent className="text-center py-8">
+            <AlertTriangle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h2 className="text-lg font-semibold mb-2">Case Not Found</h2>
+            <p className="text-muted-foreground mb-4">The requested case could not be located.</p>
+            <Button asChild>
+              <Link to="/hr-dashboard">Return to Dashboard</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   const handleSubmitReview = async () => {
-    if (!reviewData.credibilityAssessment || !reviewData.investigationPathway || !reviewData.rationale) {
-      toast.error("Please complete all required fields");
+    setIsSubmitting(true);
+    
+    // Validate all fields
+    validateField('credibilityAssessment', reviewData.credibilityAssessment);
+    validateField('investigationPathway', reviewData.investigationPathway);
+    validateField('rationale', reviewData.rationale);
+
+    if (!reviewData.credibilityAssessment || !reviewData.investigationPathway || reviewData.rationale.length < 100) {
+      toast.error("Please complete all required fields correctly");
+      setIsSubmitting(false);
       return;
     }
 
-    if (reviewData.rationale.length < 100) {
-      toast.error("Rationale must be at least 100 characters");
-      return;
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Simulate n8n workflow trigger for human review submission
+      const reviewSubmission = {
+        caseId: case_.id,
+        reviewerId: "ICC-001",
+        pathway: reviewData.investigationPathway,
+        credibility: reviewData.credibilityAssessment,
+        timestamp: new Date().toISOString()
+      };
+
+      console.log("Triggering n8n workflow: human-review-submitted", reviewSubmission);
+
+      // Clear draft after successful submission
+      localStorage.removeItem(`draft-${caseId}`);
+      setIsDraft(false);
+
+      toast.success(
+        `Review submitted successfully. Case ${case_.id} has been ${reviewData.investigationPathway === 'formal' ? 'assigned for formal investigation' : 'routed for ' + reviewData.investigationPathway}.`
+      );
+    } catch (error) {
+      toast.error("Failed to submit review. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
-    // Simulate n8n workflow trigger for human review submission
-    const reviewSubmission = {
-      caseId: case_.id,
-      reviewerId: "ICC-001",
-      pathway: reviewData.investigationPathway,
-      credibility: reviewData.credibilityAssessment,
-      timestamp: new Date().toISOString()
-    };
-
-    console.log("Triggering n8n workflow: human-review-submitted", reviewSubmission);
-
-    toast.success(
-      `Review submitted successfully. Case ${case_.id} has been ${reviewData.investigationPathway === 'formal' ? 'assigned for formal investigation' : 'routed for ' + reviewData.investigationPathway}.`
-    );
+  const handleSaveDraft = () => {
+    localStorage.setItem(`draft-${caseId}`, JSON.stringify(reviewData));
+    setIsDraft(true);
+    toast.success("Draft saved successfully");
   };
 
   return (
@@ -72,7 +174,18 @@ const HumanReview = () => {
             <div className="text-center bg-status-error/20 px-6 py-3 rounded-lg border border-status-error/30">
               <h1 className="text-xl font-semibold text-status-error">Human Evaluation Required</h1>
               <p className="text-sm text-text-secondary">Case {case_.id}</p>
-              <div className="w-3 h-3 bg-status-error rounded-full animate-pulse mx-auto mt-2"></div>
+              <div className="flex items-center justify-center gap-2 mt-2">
+                <div className="w-3 h-3 bg-status-error rounded-full animate-pulse"></div>
+                <span className="text-xs text-text-muted">
+                  {calculateProgress()}% Complete
+                </span>
+              </div>
+              {isDraft && (
+                <Badge variant="secondary" className="mt-2">
+                  <Save className="h-3 w-3 mr-1" />
+                  Draft Saved
+                </Badge>
+              )}
             </div>
             <Badge variant="outline" className="bg-status-error text-white border-status-error">High Priority</Badge>
           </div>
@@ -80,6 +193,15 @@ const HumanReview = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
+        {/* Progress Indicator */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-medium text-text-secondary">Review Progress</h2>
+            <span className="text-sm text-text-muted">{Math.round(calculateProgress())}% Complete</span>
+          </div>
+          <Progress value={calculateProgress()} className="h-2" />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Case Summary (Left Panel) */}
           <Card className="bg-bg-elevated shadow-lg">
@@ -233,24 +355,44 @@ const HumanReview = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div>
-                <Label className="text-base font-medium">Credibility Assessment *</Label>
-                <p className="text-xs text-muted-foreground mb-3">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-medium text-status-error">Credibility Assessment *</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Consider evidence quality, witness reliability, and consistency of statements</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <p className="text-xs text-muted-foreground">
                   Rate the overall credibility of the complaint (1=Low, 5=High)
                 </p>
                 <RadioGroup 
                   value={reviewData.credibilityAssessment} 
-                  onValueChange={(value) => setReviewData({...reviewData, credibilityAssessment: value})}
+                  onValueChange={(value) => {
+                    setReviewData({...reviewData, credibilityAssessment: value});
+                    validateField('credibilityAssessment', value);
+                  }}
+                  className={validationErrors.credibilityAssessment ? "border border-destructive rounded-md p-2" : ""}
                 >
                   {[1, 2, 3, 4, 5].map((rating) => (
-                    <div key={rating} className="flex items-center space-x-2">
+                    <div key={rating} className="flex items-center space-x-2 p-2 rounded-md hover:bg-muted/50 transition-colors">
                       <RadioGroupItem value={rating.toString()} id={`rating-${rating}`} />
-                      <Label htmlFor={`rating-${rating}`} className="text-sm">
+                      <Label htmlFor={`rating-${rating}`} className="text-sm cursor-pointer flex-1">
                         {rating} - {rating === 1 ? 'Very Low' : rating === 2 ? 'Low' : rating === 3 ? 'Moderate' : rating === 4 ? 'High' : 'Very High'}
                       </Label>
                     </div>
                   ))}
                 </RadioGroup>
+                {validationErrors.credibilityAssessment && (
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {validationErrors.credibilityAssessment}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -273,22 +415,44 @@ const HumanReview = () => {
                 </RadioGroup>
               </div>
 
-              <div>
-                <Label className="text-base font-medium">Investigation Pathway *</Label>
-                <p className="text-xs text-muted-foreground mb-3">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-medium text-status-error">Investigation Pathway *</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Consider case severity, organizational impact, and legal requirements</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <p className="text-xs text-muted-foreground">
                   Select the appropriate next steps for this case
                 </p>
-                <Select onValueChange={(value) => setReviewData({...reviewData, investigationPathway: value})}>
-                  <SelectTrigger>
+                <Select 
+                  value={reviewData.investigationPathway}
+                  onValueChange={(value) => {
+                    setReviewData({...reviewData, investigationPathway: value});
+                    validateField('investigationPathway', value);
+                  }}
+                >
+                  <SelectTrigger className={validationErrors.investigationPathway ? "border-destructive" : ""}>
                     <SelectValue placeholder="Choose pathway" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="formal">Formal Investigation</SelectItem>
-                    <SelectItem value="mediation">Mediation Process</SelectItem>
-                    <SelectItem value="alternative">Alternative Resolution</SelectItem>
-                    <SelectItem value="dismiss">Dismiss (Insufficient Evidence)</SelectItem>
+                    <SelectItem value="formal">🔍 Formal Investigation</SelectItem>
+                    <SelectItem value="mediation">🤝 Mediation Process</SelectItem>
+                    <SelectItem value="alternative">⚖️ Alternative Resolution</SelectItem>
+                    <SelectItem value="dismiss">❌ Dismiss (Insufficient Evidence)</SelectItem>
                   </SelectContent>
                 </Select>
+                {validationErrors.investigationPathway && (
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <AlertTriangle className="h-3 w-3" />
+                    {validationErrors.investigationPathway}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -308,19 +472,42 @@ const HumanReview = () => {
                 </Select>
               </div>
 
-              <div>
-                <Label className="text-base font-medium">Decision Rationale *</Label>
-                <p className="text-xs text-muted-foreground mb-3">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-medium text-status-error">Decision Rationale *</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info className="h-4 w-4 text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Include evidence assessment, organizational considerations, and legal compliance factors</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <p className="text-xs text-muted-foreground">
                   Provide detailed justification for your decision (minimum 100 characters)
                 </p>
                 <Textarea
                   placeholder="Explain your reasoning for the chosen pathway, considering evidence quality, case complexity, and organizational context..."
                   value={reviewData.rationale}
-                  onChange={(e) => setReviewData({...reviewData, rationale: e.target.value})}
-                  className="min-h-[120px]"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setReviewData({...reviewData, rationale: value});
+                    validateField('rationale', value);
+                  }}
+                  className={`min-h-[120px] ${validationErrors.rationale ? "border-destructive" : ""}`}
                 />
-                <div className="text-xs text-muted-foreground mt-1">
-                  {reviewData.rationale.length}/500 characters (minimum 100 required)
+                <div className="flex items-center justify-between">
+                  <div className={`text-xs ${reviewData.rationale.length >= 100 ? 'text-success' : 'text-muted-foreground'}`}>
+                    {reviewData.rationale.length}/500 characters 
+                    {reviewData.rationale.length >= 100 && <CheckCircle className="inline h-3 w-3 ml-1" />}
+                  </div>
+                  {validationErrors.rationale && (
+                    <p className="text-sm text-destructive flex items-center gap-1">
+                      <AlertTriangle className="h-3 w-3" />
+                      {validationErrors.rationale.split('(')[0]}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -348,17 +535,61 @@ const HumanReview = () => {
                 </div>
               </div>
 
-              <div className="flex space-x-2">
-                <Button 
-                  onClick={handleSubmitReview}
-                  className="flex-1"
-                  disabled={!reviewData.credibilityAssessment || !reviewData.investigationPathway || !reviewData.rationale}
-                >
-                  Submit Review
-                </Button>
-                <Button variant="outline" size="icon">
-                  <AlertTriangle className="h-4 w-4" />
-                </Button>
+              <div className="flex flex-col gap-3">
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={handleSaveDraft}
+                    variant="outline" 
+                    className="flex-1"
+                    disabled={isSubmitting}
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Save Draft
+                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <AlertTriangle className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Flag case for additional support</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      className="w-full"
+                      disabled={!reviewData.credibilityAssessment || !reviewData.investigationPathway || reviewData.rationale.length < 100 || isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Submitting...
+                        </>
+                      ) : (
+                        'Submit Review'
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirm Review Submission</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to submit this review for Case {case_.id}? 
+                        This will route the case to <strong>{reviewData.investigationPathway}</strong> and cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleSubmitReview}>
+                        Confirm Submission
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </CardContent>
           </Card>
