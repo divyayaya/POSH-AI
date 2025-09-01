@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { AppHeader } from "@/components/AppHeader";
+import AppHeader from "@/components/AppHeader";
 import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock, Save, Info, Eye, Check, TrendingUp, Target, Lightbulb, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -163,7 +163,7 @@ const HumanReview = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary">
-      <AppHeader userRole="icc" />
+      <AppHeader />
 
       <main className="container mx-auto px-6 py-8 max-w-7xl">
         {/* Breadcrumb and Header */}

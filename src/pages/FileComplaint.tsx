@@ -34,7 +34,7 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockEmployeeData, calculateEvidenceScore, getEvidenceLevel } from "@/lib/mockData";
-import { AppHeader } from "@/components/AppHeader";
+import AppHeader from "@/components/AppHeader";
 
 // Form data interface
 interface FormData {
