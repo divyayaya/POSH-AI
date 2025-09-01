@@ -239,88 +239,7 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Key Features Section */}
-        <div className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Why Choose Our Platform?
-            </h2>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Built with the latest UX research and trauma-informed design principles
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl text-white">AI-Powered Assessment</CardTitle>
-                <CardDescription className="text-white/70">
-                  Intelligent evidence analysis with human oversight
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/60 mb-4">
-                  Real-time evidence scoring and smart pathway recommendations ensure 
-                  your case gets the appropriate level of attention and care.
-                </p>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li>• Evidence strength analysis</li>
-                  <li>• Automatic pathway routing</li>
-                  <li>• Pattern recognition</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mb-4">
-                  <Eye className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl text-white">Human-in-the-Loop</CardTitle>
-                <CardDescription className="text-white/70">
-                  Expert oversight for critical decisions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/60 mb-4">
-                  Trained ICC members provide human judgment for complex cases, 
-                  ensuring fair and thorough evaluation of every situation.
-                </p>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li>• Expert human review</li>
-                  <li>• Alternative resolution options</li>
-                  <li>• Appeal mechanisms</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl text-white">Automated Compliance</CardTitle>
-                <CardDescription className="text-white/70">
-                  POSH Act timeline management
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/60 mb-4">
-                  Automatic deadline tracking and proactive alerts ensure 100% 
-                  compliance with legal requirements and timelines.
-                </p>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li>• 90-day deadline tracking</li>
-                  <li>• Proactive escalations</li>
-                  <li>• Audit-ready reports</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        
 
         {/* Support Resources Section */}
         <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-8 mb-16">
@@ -384,6 +303,31 @@ const Index = () => {
           </div>
         </div>
 
+        {/* Statistics Section */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-white mb-8">
+            Making a Difference
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-blue-400 mb-2">60%</div>
+              <div className="text-white/70 text-sm">Increase in Reporting</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-green-400 mb-2">75%</div>
+              <div className="text-white/70 text-sm">Faster Processing</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-purple-400 mb-2">100%</div>
+              <div className="text-white/70 text-sm">Compliance Rate</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-orange-400 mb-2">4.8/5</div>
+              <div className="text-white/70 text-sm">User Satisfaction</div>
+            </div>
+          </div>
+        </div>
       </main>
 
       {/* Footer */}
