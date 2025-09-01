@@ -12,7 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { AppHeader } from "@/components/AppHeader";
-import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock, Save, Info } from "lucide-react";
+import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock, Save, Info, Eye, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
@@ -287,6 +287,16 @@ const HumanReview = () => {
                     85% consistency score - Statements align well with provided evidence
                   </div>
                 </div>
+
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
+                  <div className="text-sm font-medium text-amber-900 mb-2">AI Incident Summary</div>
+                  <div className="text-sm text-amber-800 leading-relaxed">
+                    The incident involves allegations of {case_.incidentType.toLowerCase()} within the {case_.department} department. 
+                    Based on the submitted evidence and initial analysis, the complainant has provided {evidence.length} pieces of evidence 
+                    with varying credibility ratings. The AI assessment indicates {case_.evidenceScore < 40 ? 'weak' : case_.evidenceScore > 70 ? 'strong' : 'moderate'} 
+                    evidence requiring human review to determine appropriate next steps.
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -304,7 +314,20 @@ const HumanReview = () => {
                         ev.type === 'witness' ? 'bg-green-50 text-green-700 border-green-200' : 
                         'bg-red-50 text-red-700 border-red-200'
                       }`}>{ev.type}</Badge>
-                      <Badge variant="secondary" className="bg-muted text-muted-foreground">{ev.aiAnalysisScore} pts</Badge>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          onClick={() => {
+                            toast.info(`Opening ${ev.type}: ${ev.description.slice(0, 30)}...`);
+                          }}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Badge variant="secondary" className="bg-muted text-muted-foreground">{ev.aiAnalysisScore} pts</Badge>
+                      </div>
                     </div>
                     <div className="text-sm text-foreground">{ev.description}</div>
                     {ev.metadata && (
@@ -334,7 +357,11 @@ const HumanReview = () => {
                 {/* Step 1: Credibility Assessment */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">1</div>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+                      reviewData.credibilityAssessment ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                    }`}>
+                      {reviewData.credibilityAssessment ? <Check className="h-4 w-4" /> : '1'}
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <Label className="text-base font-semibold text-foreground">Credibility Assessment</Label>
@@ -395,7 +422,11 @@ const HumanReview = () => {
                 {/* Step 2: Investigation Pathway */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold">2</div>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+                      reviewData.investigationPathway ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                    }`}>
+                      {reviewData.investigationPathway ? <Check className="h-4 w-4" /> : '2'}
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <Label className="text-base font-semibold text-foreground">Investigation Pathway</Label>
@@ -426,40 +457,40 @@ const HumanReview = () => {
                       <SelectTrigger className={`h-12 ${validationErrors.investigationPathway ? "border-destructive" : ""}`}>
                         <SelectValue placeholder="Select investigation pathway" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="text-left">
                         <SelectItem value="formal" className="py-3">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 text-left">
                             <span className="text-lg">🔍</span>
-                            <div>
-                              <div className="font-medium">Formal Investigation</div>
-                              <div className="text-xs text-muted-foreground">Comprehensive inquiry with formal procedures</div>
+                            <div className="text-left">
+                              <div className="font-medium text-left">Formal Investigation</div>
+                              <div className="text-xs text-muted-foreground text-left">Comprehensive inquiry with formal procedures</div>
                             </div>
                           </div>
                         </SelectItem>
                         <SelectItem value="mediation" className="py-3">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 text-left">
                             <span className="text-lg">🤝</span>
-                            <div>
-                              <div className="font-medium">Mediation Process</div>
-                              <div className="text-xs text-muted-foreground">Facilitated resolution between parties</div>
+                            <div className="text-left">
+                              <div className="font-medium text-left">Mediation Process</div>
+                              <div className="text-xs text-muted-foreground text-left">Facilitated resolution between parties</div>
                             </div>
                           </div>
                         </SelectItem>
                         <SelectItem value="alternative" className="py-3">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 text-left">
                             <span className="text-lg">⚖️</span>
-                            <div>
-                              <div className="font-medium">Alternative Resolution</div>
-                              <div className="text-xs text-muted-foreground">Tailored approach based on case specifics</div>
+                            <div className="text-left">
+                              <div className="font-medium text-left">Alternative Resolution</div>
+                              <div className="text-xs text-muted-foreground text-left">Tailored approach based on case specifics</div>
                             </div>
                           </div>
                         </SelectItem>
                         <SelectItem value="dismiss" className="py-3">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3 text-left">
                             <span className="text-lg">❌</span>
-                            <div>
-                              <div className="font-medium">Dismiss Case</div>
-                              <div className="text-xs text-muted-foreground">Insufficient evidence to proceed</div>
+                            <div className="text-left">
+                              <div className="font-medium text-left">Dismiss Case</div>
+                              <div className="text-xs text-muted-foreground text-left">Insufficient evidence to proceed</div>
                             </div>
                           </div>
                         </SelectItem>
@@ -479,7 +510,11 @@ const HumanReview = () => {
                 {/* Step 3: Rationale */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-green-100 text-green-700 rounded-full text-sm font-semibold">3</div>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+                      reviewData.rationale.length >= 100 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                    }`}>
+                      {reviewData.rationale.length >= 100 ? <Check className="h-4 w-4" /> : '3'}
+                    </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <Label className="text-base font-semibold text-foreground">Decision Rationale</Label>
@@ -530,7 +565,11 @@ const HumanReview = () => {
                 {/* Optional: Secondary Reviewer */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-gray-100 text-gray-600 rounded-full text-sm font-semibold">4</div>
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
+                      reviewData.secondaryReviewer ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                    }`}>
+                      {reviewData.secondaryReviewer ? <Check className="h-4 w-4" /> : '4'}
+                    </div>
                     <div>
                       <Label className="text-base font-semibold text-foreground">Secondary Reviewer</Label>
                       <p className="text-sm text-muted-foreground">
