@@ -22,55 +22,37 @@ const Index = () => {
       </header>
 
       <main className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-white mb-6">
-            AI-Enhanced POSH
-            <br />
-            <span className="text-secondary">Compliance System</span>
+        {/* Main Heading */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-white mb-8">
+            AI-Enhanced POSH Compliance System
           </h1>
-          <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
-            Transforming workplace safety through intelligent automation. 
-            Increase reporting rates by 60% and reduce processing time by 75% 
-            with AI-powered workflows and human oversight.
-          </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          {/* Role Selection Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-glow">
               <Link to="/file-complaint">
                 <FileText className="mr-2 h-5 w-5" />
-                File a Complaint
+                Employee
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary backdrop-blur-sm">
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-glow">
               <Link to="/hr-dashboard">
                 <Users className="mr-2 h-5 w-5" />
-                HR Dashboard
+                HR Professional
               </Link>
             </Button>
-          </div>
-          
-          <div className="mt-8 text-center">
-            <p className="text-sm text-white/70 mb-4">Experience the full AI-powered workflow:</p>
-            <div className="flex flex-wrap justify-center gap-2 text-xs">
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                Auto HRIS Integration
-              </Badge>
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                Real-time Evidence Scoring
-              </Badge>
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                n8n Workflow Automation
-              </Badge>
-              <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                Human-in-the-Loop Review
-              </Badge>
-            </div>
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90 shadow-glow">
+              <Link to="/human-review/POSH-2024-001">
+                <Shield className="mr-2 h-5 w-5" />
+                ICC Member
+              </Link>
+            </Button>
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <div className="grid md:grid-cols-3 gap-6">
           <Card className="bg-white/10 border-white/20 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-white">
@@ -119,72 +101,6 @@ const Index = () => {
               <p className="text-white/70">
                 Automatic monitoring of POSH Act timelines with proactive alerts and escalations.
               </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Key Metrics */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-white mb-8">Proven Impact</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-secondary mb-2">+60%</div>
-              <div className="text-white/80">Reporting Rate Increase</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-secondary mb-2">75%</div>
-              <div className="text-white/80">Faster Processing</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-secondary mb-2">100%</div>
-              <div className="text-white/80">Compliance Rate</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-secondary mb-2">$1.2M</div>
-              <div className="text-white/80">Annual Savings</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Access */}
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="bg-white/10 border-white/20 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-white">System Access</CardTitle>
-              <CardDescription className="text-white/80">
-                Choose your role to access the appropriate interface
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button asChild variant="outline" className="w-full border-white/30 text-white hover:bg-white hover:text-primary">
-                <Link to="/file-complaint">Employee - File Complaint</Link>
-              </Button>
-              <Button asChild variant="outline" className="w-full border-white/30 text-white hover:bg-white hover:text-primary">
-                <Link to="/hr-dashboard">HR Professional - Dashboard</Link>
-              </Button>
-              <Button asChild variant="outline" className="w-full border-white/30 text-white hover:bg-white hover:text-primary">
-                <Link to="/human-review/POSH-2024-001">ICC Member - Review Cases</Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white/10 border-white/20 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <BarChart3 className="mr-2 h-5 w-5 text-secondary" />
-                Integration & Testing
-              </CardTitle>
-              <CardDescription className="text-white/80">
-                n8n workflows and system administration tools
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button asChild variant="outline" className="w-full border-white/30 text-white hover:bg-white hover:text-primary">
-                <Link to="/admin/webhook-test">Webhook Testing Interface</Link>
-              </Button>
-              <div className="text-sm text-white/70">
-                Test n8n workflow integrations and monitor system health
-              </div>
             </CardContent>
           </Card>
         </div>
