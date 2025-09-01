@@ -125,44 +125,62 @@ const HRDashboard = () => {
 
           {/* Active Cases Widget */}
           <Card className="lg:col-span-3 bg-card border border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-foreground font-semibold">
-                <FileText className="w-5 h-5 text-primary" />
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center space-x-3 text-foreground font-semibold">
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                  <FileText className="w-4 h-4 text-primary" />
+                </div>
                 <span>Active Cases</span>
+                <Badge variant="secondary" className="ml-auto">
+                  {mockCases.filter(c => c.status !== 'resolved').length}
+                </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {mockCases.filter(c => c.status !== 'resolved').map(case_ => (
-                  <div key={case_.id} className={`p-4 rounded-lg border-l-4 bg-muted/30 ${
-                    case_.priority === 'high' ? 'border-l-destructive' :
-                    case_.status === 'investigating' ? 'border-l-orange-500' :
-                    'border-l-primary'
-                  }`}>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h4 className="font-semibold text-foreground">{case_.id}</h4>
-                        <p className="text-sm text-muted-foreground">{case_.department}</p>
-                        <div className="flex items-center space-x-2 mt-2">
-                          <Badge variant={
-                            case_.priority === 'high' ? 'destructive' :
-                            case_.priority === 'medium' ? 'secondary' :
-                            'outline'
-                          }>
+            <CardContent className="space-y-3">
+              {mockCases.filter(c => c.status !== 'resolved').map(case_ => (
+                <div key={case_.id} className="group relative overflow-hidden rounded-xl border border-border bg-card hover:shadow-md transition-all duration-200">
+                  {/* Priority indicator */}
+                  <div className={`absolute left-0 top-0 bottom-0 w-1 ${
+                    case_.priority === 'high' ? 'bg-destructive' :
+                    case_.priority === 'medium' ? 'bg-warning' :
+                    'bg-success'
+                  }`} />
+                  
+                  <div className="p-4 pl-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h4 className="font-semibold text-foreground text-base">{case_.id}</h4>
+                          <Badge 
+                            variant={case_.priority === 'high' ? 'destructive' : case_.priority === 'medium' ? 'secondary' : 'outline'}
+                            className="text-xs font-medium"
+                          >
                             {case_.priority.toUpperCase()}
                           </Badge>
                         </div>
+                        <p className="text-sm text-muted-foreground mb-1">{case_.department}</p>
+                        <div className="flex items-center space-x-2">
+                          <div className={`w-2 h-2 rounded-full ${
+                            case_.status === 'investigating' ? 'bg-warning' :
+                            case_.status === 'new' ? 'bg-primary' :
+                            'bg-success'
+                          }`} />
+                          <span className="text-xs font-medium text-muted-foreground capitalize">
+                            {case_.status === 'investigating' ? 'Under Investigation' : case_.status}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="default" asChild>
-                          <Link to={`/human-review/${case_.id}`}>View</Link>
+                      
+                      <div className="flex items-center space-x-2 ml-4">
+                        <Button size="sm" variant="default" className="font-medium" asChild>
+                          <Link to={`/human-review/${case_.id}`}>Review</Link>
                         </Button>
-                        <Button size="sm" variant="outline">Assign</Button>
+                        <Button size="sm" variant="outline" className="font-medium">Assign</Button>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </CardContent>
           </Card>
         </div>
@@ -170,45 +188,84 @@ const HRDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
           {/* Recent Activity Feed */}
           <Card className="bg-card border border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center text-foreground">
-                <BarChart3 className="mr-2 h-5 w-5 text-primary" />
-                Recent Activity
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center space-x-3 text-foreground">
+                <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
+                  <BarChart3 className="w-4 h-4 text-primary" />
+                </div>
+                <span>Recent Activity</span>
+                <Badge variant="outline" className="ml-auto text-xs">Live</Badge>
               </CardTitle>
               <CardDescription>
                 Real-time system updates and case activities
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-primary bg-accent rounded-r-lg">
-                <FileText className="h-4 w-4 text-primary mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">New complaint filed - POSH-2024-001</div>
-                  <div className="text-xs text-muted-foreground">5 minutes ago • Marketing Department</div>
+              <div className="group relative overflow-hidden rounded-lg border border-border bg-gradient-to-r from-primary/5 to-transparent hover:shadow-sm transition-all duration-200">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary" />
+                <div className="flex items-start space-x-4 p-4 pl-6">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 flex-shrink-0">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-foreground mb-1">New complaint filed - POSH-2024-001</div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-medium text-muted-foreground">5 minutes ago</span>
+                      <span className="text-xs text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">Marketing Department</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-success bg-success-muted rounded-r-lg">
-                <Users className="h-4 w-4 text-success mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">ICC member assigned to POSH-2024-002</div>
-                  <div className="text-xs text-muted-foreground">2 hours ago • Sales Department</div>
+              <div className="group relative overflow-hidden rounded-lg border border-border bg-gradient-to-r from-success/5 to-transparent hover:shadow-sm transition-all duration-200">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-success" />
+                <div className="flex items-start space-x-4 p-4 pl-6">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-success/10 flex-shrink-0">
+                    <Users className="h-4 w-4 text-success" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-foreground mb-1">ICC member assigned to POSH-2024-002</div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-medium text-muted-foreground">2 hours ago</span>
+                      <span className="text-xs text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">Sales Department</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-warning bg-warning-muted rounded-r-lg">
-                <AlertTriangle className="h-4 w-4 text-warning mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Evidence uploaded for POSH-2024-003</div>
-                  <div className="text-xs text-muted-foreground">4 hours ago • Engineering Department</div>
+              <div className="group relative overflow-hidden rounded-lg border border-border bg-gradient-to-r from-warning/5 to-transparent hover:shadow-sm transition-all duration-200">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-warning" />
+                <div className="flex items-start space-x-4 p-4 pl-6">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-warning/10 flex-shrink-0">
+                    <AlertTriangle className="h-4 w-4 text-warning" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-foreground mb-1">Evidence uploaded for POSH-2024-003</div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-medium text-muted-foreground">4 hours ago</span>
+                      <span className="text-xs text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">Engineering Department</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-success bg-success-muted rounded-r-lg">
-                <CheckCircle className="h-4 w-4 text-success mt-0.5" />
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground">Human review completed - POSH-2024-001</div>
-                  <div className="text-xs text-muted-foreground">6 hours ago • Marketing Department</div>
+              <div className="group relative overflow-hidden rounded-lg border border-border bg-gradient-to-r from-success/5 to-transparent hover:shadow-sm transition-all duration-200">
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-success" />
+                <div className="flex items-start space-x-4 p-4 pl-6">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-success/10 flex-shrink-0">
+                    <CheckCircle className="h-4 w-4 text-success" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-foreground mb-1">Human review completed - POSH-2024-001</div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-medium text-muted-foreground">6 hours ago</span>
+                      <span className="text-xs text-muted-foreground">•</span>
+                      <span className="text-xs text-muted-foreground">Marketing Department</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
