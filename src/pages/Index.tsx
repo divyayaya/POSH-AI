@@ -240,9 +240,8 @@ const Index = () => {
               <h3 className="font-semibold text-white mb-2">Crisis Helpline</h3>
               <p className="text-white/70 text-sm mb-3">24/7 confidential support</p>
               <Button 
-                variant="outline" 
                 size="sm" 
-                className="border-white/30 text-white hover:bg-white hover:text-gray-900"
+                className="bg-slate-500 text-white hover:bg-slate-600"
                 onClick={() => window.open('tel:1-800-HELP', '_blank')}
               >
                 1-800-HELP
@@ -256,9 +255,8 @@ const Index = () => {
               <h3 className="font-semibold text-white mb-2">Live Chat</h3>
               <p className="text-white/70 text-sm mb-3">Connect with trained counselors</p>
               <Button 
-                variant="outline" 
                 size="sm" 
-                className="border-white/30 text-white hover:bg-white hover:text-gray-900"
+                className="bg-slate-500 text-white hover:bg-slate-600"
                 onClick={() => window.open('/chat', '_blank')}
               >
                 Start Chat
@@ -272,9 +270,8 @@ const Index = () => {
               <h3 className="font-semibold text-white mb-2">Resources</h3>
               <p className="text-white/70 text-sm mb-3">Policies, guides, and FAQ</p>
               <Button 
-                variant="outline" 
                 size="sm" 
-                className="border-white/30 text-white hover:bg-white hover:text-gray-900"
+                className="bg-slate-500 text-white hover:bg-slate-600"
                 onClick={() => window.open('/resources', '_blank')}
               >
                 View Resources
