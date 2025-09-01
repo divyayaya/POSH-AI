@@ -151,49 +151,38 @@ const HRDashboard = () => {
 
       <main className="px-6 py-0 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-5 gap-6">
-          {/* Compliance Status Widget */}
+          {/* Quick Actions Panel */}
           <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center text-foreground">
-                <Clock className="mr-2 h-5 w-5 text-primary" />
-                Compliance Status
-              </CardTitle>
+              <CardTitle className="text-foreground">Quick Actions</CardTitle>
               <CardDescription>
-                Deadline tracking and compliance monitoring
+                Common tasks and system management
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {mockDeadlines.map((deadline) => (
-                <div key={deadline.id} className="border border-border rounded-lg p-4 bg-muted/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium text-foreground">{deadline.caseId}</div>
-                    <Badge 
-                      variant={deadline.daysRemaining < 7 ? "destructive" : deadline.daysRemaining < 30 ? "secondary" : "outline"}
-                    >
-                      {deadline.daysRemaining} days remaining
-                    </Badge>
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {deadline.deadlineType.charAt(0).toUpperCase() + deadline.deadlineType.slice(1)} deadline: {deadline.dueDate}
-                  </div>
-                  {deadline.daysRemaining < 7 && (
-                    <div className="mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded text-xs text-destructive">
-                      <AlertTriangle className="inline h-3 w-3 mr-1" />
-                      Urgent: Investigation completion required
-                    </div>
-                  )}
-                </div>
-              ))}
+            <CardContent className="space-y-3">
+              <Button className="w-full justify-start" variant="outline">
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Generate Compliance Report
+              </Button>
               
-              <div className="bg-success-muted border border-success rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-medium text-sm text-foreground">Annual Compliance Report</div>
-                    <div className="text-xs text-muted-foreground">Due in 45 days</div>
-                  </div>
-                  <CheckCircle className="h-5 w-5 text-success" />
-                </div>
-              </div>
+              <Button className="w-full justify-start" variant="outline">
+                <Calendar className="mr-2 h-4 w-4" />
+                Schedule ICC Meeting
+              </Button>
+              
+              <Button className="w-full justify-start" variant="outline" asChild>
+                <Link to="/human-review/POSH-2024-001">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Review Pending Cases
+                </Link>
+              </Button>
+              
+              <Button className="w-full justify-start" variant="outline" asChild>
+                <Link to="/admin/webhook-test">
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  Test System Integrations
+                </Link>
+              </Button>
             </CardContent>
           </Card>
 
@@ -260,6 +249,52 @@ const HRDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          {/* Compliance Status Widget */}
+          <Card className="bg-card border border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center text-foreground">
+                <Clock className="mr-2 h-5 w-5 text-primary" />
+                Compliance Status
+              </CardTitle>
+              <CardDescription>
+                Deadline tracking and compliance monitoring
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {mockDeadlines.map((deadline) => (
+                <div key={deadline.id} className="border border-border rounded-lg p-4 bg-muted/20">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-medium text-foreground">{deadline.caseId}</div>
+                    <Badge 
+                      variant={deadline.daysRemaining < 7 ? "destructive" : deadline.daysRemaining < 30 ? "secondary" : "outline"}
+                    >
+                      {deadline.daysRemaining} days remaining
+                    </Badge>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {deadline.deadlineType.charAt(0).toUpperCase() + deadline.deadlineType.slice(1)} deadline: {deadline.dueDate}
+                  </div>
+                  {deadline.daysRemaining < 7 && (
+                    <div className="mt-2 p-2 bg-destructive/10 border border-destructive/20 rounded text-xs text-destructive">
+                      <AlertTriangle className="inline h-3 w-3 mr-1" />
+                      Urgent: Investigation completion required
+                    </div>
+                  )}
+                </div>
+              ))}
+              
+              <div className="bg-success-muted border border-success rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium text-sm text-foreground">Annual Compliance Report</div>
+                    <div className="text-xs text-muted-foreground">Due in 45 days</div>
+                  </div>
+                  <CheckCircle className="h-5 w-5 text-success" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Recent Activity Feed */}
           <Card className="bg-card border border-border shadow-sm">
             <CardHeader className="pb-4">
@@ -342,41 +377,6 @@ const HRDashboard = () => {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions Panel */}
-          <Card className="bg-card border border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-foreground">Quick Actions</CardTitle>
-              <CardDescription>
-                Common tasks and system management
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button className="w-full justify-start" variant="outline">
-                <BarChart3 className="mr-2 h-4 w-4" />
-                Generate Compliance Report
-              </Button>
-              
-              <Button className="w-full justify-start" variant="outline">
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule ICC Meeting
-              </Button>
-              
-              <Button className="w-full justify-start" variant="outline" asChild>
-                <Link to="/human-review/POSH-2024-001">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Review Pending Cases
-                </Link>
-              </Button>
-              
-              <Button className="w-full justify-start" variant="outline" asChild>
-                <Link to="/admin/webhook-test">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Test System Integrations
-                </Link>
-              </Button>
             </CardContent>
           </Card>
         </div>
