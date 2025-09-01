@@ -78,49 +78,6 @@ const HRDashboard = () => {
 
       <main className="px-6 py-0 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Active Cases Widget */}
-          <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-foreground font-semibold">
-                <FileText className="w-5 h-5 text-primary" />
-                <span>Active Cases</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {mockCases.filter(c => c.status !== 'resolved').map(case_ => (
-                  <div key={case_.id} className={`p-4 rounded-lg border-l-4 bg-muted/30 ${
-                    case_.priority === 'high' ? 'border-l-destructive' :
-                    case_.status === 'investigating' ? 'border-l-orange-500' :
-                    'border-l-primary'
-                  }`}>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h4 className="font-semibold text-foreground">{case_.id}</h4>
-                        <p className="text-sm text-muted-foreground">{case_.department}</p>
-                        <div className="flex items-center space-x-2 mt-2">
-                          <Badge variant={
-                            case_.priority === 'high' ? 'destructive' :
-                            case_.priority === 'medium' ? 'secondary' :
-                            'outline'
-                          }>
-                            {case_.priority.toUpperCase()}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="default" asChild>
-                          <Link to={`/human-review/${case_.id}`}>View</Link>
-                        </Button>
-                        <Button size="sm" variant="outline">Assign</Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Compliance Status Widget */}
           <Card className="bg-card border border-border shadow-sm">
             <CardHeader>
@@ -163,6 +120,49 @@ const HRDashboard = () => {
                   </div>
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Active Cases Widget */}
+          <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2 text-foreground font-semibold">
+                <FileText className="w-5 h-5 text-primary" />
+                <span>Active Cases</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {mockCases.filter(c => c.status !== 'resolved').map(case_ => (
+                  <div key={case_.id} className={`p-4 rounded-lg border-l-4 bg-muted/30 ${
+                    case_.priority === 'high' ? 'border-l-destructive' :
+                    case_.status === 'investigating' ? 'border-l-orange-500' :
+                    'border-l-primary'
+                  }`}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-semibold text-foreground">{case_.id}</h4>
+                        <p className="text-sm text-muted-foreground">{case_.department}</p>
+                        <div className="flex items-center space-x-2 mt-2">
+                          <Badge variant={
+                            case_.priority === 'high' ? 'destructive' :
+                            case_.priority === 'medium' ? 'secondary' :
+                            'outline'
+                          }>
+                            {case_.priority.toUpperCase()}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button size="sm" variant="default" asChild>
+                          <Link to={`/human-review/${case_.id}`}>View</Link>
+                        </Button>
+                        <Button size="sm" variant="outline">Assign</Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
