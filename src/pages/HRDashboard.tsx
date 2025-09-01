@@ -146,38 +146,6 @@ const HRDashboard = () => {
               </div>
             </div>
           </div>
-
-          {/* Additional Insights Row */}
-          <div className="mt-6 pt-6 border-t border-border">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 mx-auto rounded-lg bg-success/10 mb-2">
-                  <Bell className="w-4 h-4 text-success" />
-                </div>
-                <div className="text-lg font-bold text-success">+127%</div>
-                <div className="text-sm text-muted-foreground">Increased Reporting</div>
-                <div className="text-xs text-muted-foreground">More employees feel safe to report</div>
-              </div>
-              
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 mx-auto rounded-lg bg-primary/10 mb-2">
-                  <AlertTriangle className="w-4 h-4 text-primary" />
-                </div>
-                <div className="text-lg font-bold text-primary">3</div>
-                <div className="text-sm text-muted-foreground">Active Cases</div>
-                <div className="text-xs text-muted-foreground">Currently under investigation</div>
-              </div>
-              
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="flex items-center justify-center w-8 h-8 mx-auto rounded-lg bg-warning/10 mb-2">
-                  <Calendar className="w-4 h-4 text-warning" />
-                </div>
-                <div className="text-lg font-bold text-warning">0</div>
-                <div className="text-sm text-muted-foreground">Overdue Items</div>
-                <div className="text-xs text-muted-foreground">All compliance tasks on track</div>
-              </div>
-            </div>
-          </div>
         </CardContent>
       </Card>
 
