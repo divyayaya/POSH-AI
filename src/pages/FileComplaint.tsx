@@ -34,6 +34,7 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockEmployeeData, calculateEvidenceScore, getEvidenceLevel } from "@/lib/mockData";
+import { AppHeader } from "@/components/AppHeader";
 
 // Form data interface
 interface FormData {
@@ -997,89 +998,14 @@ const FileComplaint = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Enhanced Navigation */}
-      <nav className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-40">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
-              Company Portal
-            </Link>
-            <div className="hidden md:flex space-x-6">
-              <Link to="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</Link>
-              <Link to="/hr-services" className="text-gray-600 hover:text-gray-900 transition-colors">HR Services</Link>
-              <span className="bg-gray-800 text-white px-4 py-2 rounded text-sm font-medium">
-                Report a Concern
-              </span>
-              <Link to="/resources" className="text-gray-600 hover:text-gray-900 transition-colors">Resources</Link>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            {/* Auto-save indicator */}
-            <div className="flex items-center text-sm text-gray-500">
-              {isAutoSaving ? (
-                <>
-                  <Save className="w-4 h-4 mr-2 animate-pulse text-blue-500" />
-                  <span>Saving...</span>
-                </>
-              ) : lastSaved ? (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                  <span>Saved {lastSaved.toLocaleTimeString()}</span>
-                </>
-              ) : null}
-            </div>
-
-            {/* Support button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowSupportOptions(!showSupportOptions)}
-              className="relative"
-            >
-              <HelpCircle className="w-4 h-4 mr-2" />
-              Need Help?
-            </Button>
-
-            <div className="text-gray-700 font-medium">John Doe</div>
-          </div>
-        </div>
-
-        {/* Support options dropdown */}
-        {showSupportOptions && (
-          <div className="absolute top-full right-4 mt-2 w-72 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-800">Immediate Support</h3>
-            </div>
-            <div className="p-4 space-y-3">
-              <a 
-                href="tel:1-800-HELP" 
-                className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <Phone className="w-5 h-5 text-blue-600 mr-3" />
-                <div>
-                  <p className="font-medium text-gray-800">Crisis Helpline</p>
-                  <p className="text-sm text-gray-600">1-800-HELP (24/7)</p>
-                </div>
-              </a>
-              <button className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors w-full text-left">
-                <MessageCircle className="w-5 h-5 text-green-600 mr-3" />
-                <div>
-                  <p className="font-medium text-gray-800">Live Chat</p>
-                  <p className="text-sm text-gray-600">Connect with trained counselors</p>
-                </div>
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
-
+    <div className="min-h-screen bg-background">
+      <AppHeader />
+      
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Enhanced Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-semibold text-gray-800 mb-3">Report a Workplace Concern</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="text-3xl font-semibold text-foreground mb-3">Report a Workplace Concern</h1>
+          <p className="text-muted-foreground mb-6">
             Your voice matters. We're here to support you through this process.
           </p>
 
@@ -1118,8 +1044,8 @@ const FileComplaint = () => {
         {/* Enhanced Progress Indicator */}
         <div className="mb-12">
           <div className="text-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-800">Filing Progress</h2>
-            <p className="text-sm text-gray-600 mt-1">Estimated time: 5-10 minutes total</p>
+            <h2 className="text-lg font-semibold text-foreground">Filing Progress</h2>
+            <p className="text-sm text-muted-foreground mt-1">Estimated time: 5-10 minutes total</p>
           </div>
           
           <Progress value={getStepProgress()} className="mb-4" />
@@ -1145,12 +1071,12 @@ const FileComplaint = () => {
                     >
                       {step.number < currentStep ? <CheckCircle className="h-6 w-6" /> : step.number}
                     </div>
-                    <div className={`text-sm font-medium mb-1 ${
-                      step.number === currentStep ? 'text-gray-800' : 'text-gray-500'
+                    <div className={`text-sm font-medium mb-1 text-center ${
+                      step.number === currentStep ? 'text-foreground' : 'text-muted-foreground'
                     }`}>
                       {step.label}
                     </div>
-                    <div className="text-xs text-gray-400">
+                    <div className="text-xs text-muted-foreground text-center">
                       {step.timeEstimate}
                     </div>
                   </div>
