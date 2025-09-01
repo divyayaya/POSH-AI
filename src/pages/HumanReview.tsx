@@ -245,23 +245,14 @@ const HumanReview = () => {
                 
                 <Separator />
                 
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <div>
-                      <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Complainant</Label>
-                      <div className="text-sm font-medium text-foreground mt-1">{case_.complainant}</div>
-                    </div>
-                    <div>
-                      <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Respondent</Label>
-                      <div className="text-sm font-medium text-foreground mt-1">{case_.respondent}</div>
-                    </div>
-                  </div>
-                  
+                <div className="space-y-3">
                   <div>
-                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">AI Incident Summary</Label>
-                    <div className="text-sm text-muted-foreground leading-relaxed p-3 bg-muted/50 rounded-lg border">
-                      <p>Allegation of {case_.incidentType.toLowerCase()} involving inappropriate conduct in the {case_.department}. Initial assessment indicates {case_.evidenceScore < 40 ? 'potential for collaborative resolution' : case_.evidenceScore > 70 ? 'serious concerns requiring formal investigation' : 'moderate complexity case suitable for structured resolution'}. Evidence quality: {case_.evidenceScore < 40 ? 'Limited' : case_.evidenceScore > 70 ? 'Strong' : 'Moderate'}.</p>
-                    </div>
+                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Complainant</Label>
+                    <div className="text-sm font-medium text-foreground mt-1">{case_.complainant}</div>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Respondent</Label>
+                    <div className="text-sm font-medium text-foreground mt-1">{case_.respondent}</div>
                   </div>
                 </div>
               </CardContent>
@@ -278,7 +269,7 @@ const HumanReview = () => {
                     <div>
                       <div className="text-lg font-semibold">AI Assessment</div>
                       <div className="text-sm text-muted-foreground font-normal">
-                        Machine learning analysis of case evidence
+                        Analysis of case evidence
                       </div>
                     </div>
                   </div>
@@ -421,7 +412,13 @@ const HumanReview = () => {
             {/* Evidence Summary */}
             <Card>
               <CardHeader className="pb-4">
-                <CardTitle className="text-foreground">Evidence Summary</CardTitle>
+                <CardTitle className="flex items-center text-foreground">
+                  <FileText className="mr-2 h-5 w-5" />
+                  Evidence Summary
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  Documentation and witness statements collected for this case
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 {evidence.map((ev) => (
