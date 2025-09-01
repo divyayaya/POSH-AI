@@ -268,129 +268,149 @@ const HumanReview = () => {
             </Card>
 
             {/* AI Assessment */}
-            <Card>
-              <CardHeader className="pb-6">
-                <CardTitle className="flex items-center text-foreground">
-                  <Brain className="mr-2 h-5 w-5 text-blue-600" />
-                  AI Assessment
-                </CardTitle>
-                <CardDescription className="text-sm">
-                  Machine learning analysis of evidence strength and case complexity
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Evidence Strength Indicator */}
-                <div className="relative">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm font-semibold text-foreground">Evidence Strength</span>
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+                <CardTitle className="flex items-center justify-between text-foreground">
+                  <div className="flex items-center">
+                    <div className="p-2 bg-blue-100 rounded-lg mr-3">
+                      <Brain className="h-5 w-5 text-blue-600" />
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">{case_.evidenceScore}<span className="text-sm font-normal text-muted-foreground">/100</span></div>
-                      <div className="text-xs text-muted-foreground">Confidence Score</div>
-                    </div>
-                  </div>
-                  
-                  <div className="relative">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          case_.evidenceScore >= 70 ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
-                          case_.evidenceScore >= 40 ? 'bg-gradient-to-r from-amber-500 to-orange-600' :
-                          'bg-gradient-to-r from-red-500 to-rose-600'
-                        }`}
-                        style={{ width: `${case_.evidenceScore}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                      <span>Weak</span>
-                      <span>Moderate</span>
-                      <span>Strong</span>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-3 p-3 rounded-lg border-l-4 border-blue-500 bg-blue-50">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Shield className="h-3 w-3 text-blue-600" />
-                      <span className="text-xs font-medium text-blue-900 uppercase tracking-wide">Assessment Level</span>
-                    </div>
-                    <div className="text-sm font-semibold text-blue-800">{evidenceLevel.level}</div>
-                    <div className="text-xs text-blue-700 mt-1">{evidenceLevel.description}</div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Recommended Action */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-purple-600" />
-                    <span className="text-sm font-semibold text-foreground">Recommended Action</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${
-                        case_.evidenceScore >= 70 ? 'bg-red-500' :
-                        case_.evidenceScore >= 40 ? 'bg-amber-500' :
-                        'bg-green-500'
-                      }`} />
-                      <div>
-                        <div className="font-medium text-foreground">
-                          {case_.evidenceScore < 40 ? 'Mediation' : case_.evidenceScore > 70 ? 'Formal Investigation' : 'Alternative Resolution'}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {case_.evidenceScore < 40 ? 'Collaborative resolution recommended' : 
-                           case_.evidenceScore > 70 ? 'Requires comprehensive investigation' : 
-                           'Structured resolution process'}
-                        </div>
+                    <div>
+                      <div className="text-lg font-semibold">AI Assessment</div>
+                      <div className="text-sm text-muted-foreground font-normal">
+                        Machine learning analysis of case evidence
                       </div>
                     </div>
-                    <Badge variant="outline" className="font-medium">
-                      85% Match
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-blue-600">{case_.evidenceScore}</div>
+                    <div className="text-xs text-muted-foreground">Confidence Score</div>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              
+              <CardContent className="p-0">
+                {/* Evidence Strength - Primary Focus */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base font-semibold text-foreground">Evidence Strength Analysis</h3>
+                    <Badge 
+                      variant="outline" 
+                      className={`${
+                        case_.evidenceScore >= 70 ? 'bg-green-50 text-green-700 border-green-200' :
+                        case_.evidenceScore >= 40 ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                        'bg-red-50 text-red-700 border-red-200'
+                      }`}
+                    >
+                      {evidenceLevel.level}
                     </Badge>
                   </div>
                   
-                  <div className="text-xs text-muted-foreground flex items-center gap-1">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
-                    Statements align well with provided evidence
+                  <div className="space-y-4">
+                    <div className="relative">
+                      <div className="w-full bg-muted rounded-full h-3">
+                        <div 
+                          className={`h-3 rounded-full transition-all duration-700 ${
+                            case_.evidenceScore >= 70 ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
+                            case_.evidenceScore >= 40 ? 'bg-gradient-to-r from-amber-500 to-orange-600' :
+                            'bg-gradient-to-r from-red-500 to-rose-600'
+                          }`}
+                          style={{ width: `${case_.evidenceScore}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                        <span>Weak (0-39)</span>
+                        <span>Moderate (40-69)</span>
+                        <span>Strong (70-100)</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <Shield className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="font-medium text-foreground mb-1">{evidenceLevel.level} Evidence Quality</div>
+                          <div className="text-sm text-muted-foreground leading-relaxed">{evidenceLevel.description}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
                 <Separator />
 
-                {/* AI Summary */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-amber-600" />
-                    <span className="text-sm font-semibold text-foreground">Key Insights</span>
-                  </div>
+                {/* Recommended Action - Clear Decision Support */}
+                <div className="p-6">
+                  <h3 className="text-base font-semibold text-foreground mb-4">Recommended Resolution Path</h3>
                   
-                  <div className="p-4">
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                        <div className="p-2 rounded">
-                          <div className="text-lg font-bold text-foreground">{evidence.length}</div>
-                          <div className="text-xs text-muted-foreground">Evidence Items</div>
-                        </div>
-                        <div className="p-2 rounded">
-                          <div className="text-lg font-bold text-foreground">
-                            {case_.evidenceScore < 40 ? 'Low' : case_.evidenceScore > 70 ? 'High' : 'Med'}
+                  <div className="bg-gradient-to-r from-muted/50 to-muted/30 rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-4 h-4 rounded-full ${
+                          case_.evidenceScore >= 70 ? 'bg-red-500' :
+                          case_.evidenceScore >= 40 ? 'bg-amber-500' :
+                          'bg-green-500'
+                        }`} />
+                        <div>
+                          <div className="font-semibold text-foreground text-lg">
+                            {case_.evidenceScore < 40 ? 'Mediation' : case_.evidenceScore > 70 ? 'Formal Investigation' : 'Alternative Resolution'}
                           </div>
-                          <div className="text-xs text-muted-foreground">Risk Level</div>
-                        </div>
-                        <div className="p-2 rounded">
-                          <div className="text-lg font-bold text-foreground">3-5</div>
-                          <div className="text-xs text-muted-foreground">Days Est.</div>
+                          <div className="text-sm text-muted-foreground">
+                            {case_.evidenceScore < 40 ? 'Collaborative approach recommended' : 
+                             case_.evidenceScore > 70 ? 'Comprehensive investigation required' : 
+                             'Structured resolution with documentation'}
+                          </div>
                         </div>
                       </div>
-                      
-                      <div className="text-sm text-muted-foreground leading-relaxed">
-                        <strong>Incident Analysis:</strong> Allegations of {case_.incidentType.toLowerCase()} in {case_.department}. 
-                        Evidence quality suggests {case_.evidenceScore < 40 ? 'collaborative resolution may resolve concerns effectively' : 
-                        case_.evidenceScore > 70 ? 'formal procedures required due to severity indicators' : 
-                        'balanced approach needed with structured resolution process'}.
+                      <div className="text-right">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-semibold">
+                          85% Match
+                        </Badge>
+                        <div className="text-xs text-muted-foreground mt-1">AI Confidence</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span>Evidence patterns align with recommended pathway</span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Key Metrics & Summary */}
+                <div className="p-6">
+                  <h3 className="text-base font-semibold text-foreground mb-4">Case Analytics</h3>
+                  
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-foreground">{evidence.length}</div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wide">Evidence Items</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-foreground">
+                        {case_.evidenceScore < 40 ? 'Low' : case_.evidenceScore > 70 ? 'High' : 'Med'}
+                      </div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wide">Risk Level</div>
+                    </div>
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <div className="text-2xl font-bold text-foreground">3-5</div>
+                      <div className="text-xs text-muted-foreground uppercase tracking-wide">Days Est.</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-muted/20 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <Lightbulb className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <div className="font-medium text-foreground mb-2">AI Summary</div>
+                        <div className="text-sm text-muted-foreground leading-relaxed">
+                          Analysis of {case_.incidentType.toLowerCase()} allegations in {case_.department} indicates{' '}
+                          {case_.evidenceScore < 40 ? 'potential for collaborative resolution through mediation. Evidence suggests misunderstandings may be addressed through facilitated dialogue' : 
+                          case_.evidenceScore > 70 ? 'serious concerns requiring formal investigation. Evidence quality supports comprehensive review with potential disciplinary outcomes' : 
+                          'moderate complexity suitable for structured alternative resolution. Documentation and clear process recommended'}.
+                        </div>
                       </div>
                     </div>
                   </div>
