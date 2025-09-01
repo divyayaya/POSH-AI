@@ -35,17 +35,41 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockEmployeeData, calculateEvidenceScore, getEvidenceLevel } from "@/lib/mockData";
 
+// Form data interface
+interface FormData {
+  incidentType: string;
+  respondentName: string;
+  incidentDate: string;
+  incidentTime: string;
+  description: string;
+  witnesses: string;
+  location: string;
+  additionalContext: string;
+  contactMethod: string;
+  isAnonymous: boolean;
+}
+
+// Uploaded file interface
+interface UploadedFile {
+  file: File;
+  name: string;
+  size: number;
+  type: string;
+  status: 'uploading' | 'uploaded';
+  id: number;
+}
+
 const FileComplaint = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState(null);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [showSupportOptions, setShowSupportOptions] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
-  const fileInputRef = useRef();
-  const cameraInputRef = useRef();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     incidentType: "",
     respondentName: "",
     incidentDate: "",
@@ -58,8 +82,8 @@ const FileComplaint = () => {
     isAnonymous: false
   });
 
-  const [validation, setValidation] = useState({});
-  const [touchedFields, setTouchedFields] = useState({});
+  const [validation, setValidation] = useState<Record<string, string>>({});
+  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   // Auto-save functionality
   useEffect(() => {
@@ -117,8 +141,8 @@ const FileComplaint = () => {
     }
   ];
 
-  const validateField = (fieldName, value) => {
-    const errors = {};
+  const validateField = (fieldName: keyof FormData, value: string) => {
+    const errors: Record<string, string> = {};
     
     switch (fieldName) {
       case 'incidentType':
@@ -141,28 +165,31 @@ const FileComplaint = () => {
     return errors;
   };
 
-  const handleFieldChange = (fieldName, value) => {
+  const handleFieldChange = (fieldName: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [fieldName]: value }));
     
-    // Real-time validation after field is touched
-    if (touchedFields[fieldName]) {
+    // Real-time validation after field is touched (only for string fields)
+    if (touchedFields[fieldName] && typeof value === 'string') {
       const fieldErrors = validateField(fieldName, value);
       setValidation(prev => ({ ...prev, [fieldName]: fieldErrors[fieldName] }));
     }
   };
 
-  const handleFieldBlur = (fieldName) => {
+  const handleFieldBlur = (fieldName: keyof FormData) => {
     setTouchedFields(prev => ({ ...prev, [fieldName]: true }));
-    const fieldErrors = validateField(fieldName, formData[fieldName]);
-    setValidation(prev => ({ ...prev, [fieldName]: fieldErrors[fieldName] }));
+    const fieldValue = formData[fieldName];
+    if (typeof fieldValue === 'string') {
+      const fieldErrors = validateField(fieldName, fieldValue);
+      setValidation(prev => ({ ...prev, [fieldName]: fieldErrors[fieldName] }));
+    }
   };
 
   const mockEvidenceScore = 45; // Based on form data
   const evidenceLevel = getEvidenceLevel(mockEvidenceScore);
 
-  const handleFileSelect = (files) => {
-    const fileArray = Array.from(files);
-    const validFiles = fileArray.filter(file => {
+  const handleFileSelect = (files: FileList | File[]) => {
+    const fileArray = Array.from(files) as File[];
+    const validFiles = fileArray.filter((file: File) => {
       // File size validation (10MB limit)
       if (file.size > 10 * 1024 * 1024) {
         toast.error(`File "${file.name}" is too large. Maximum size is 10MB.`);
@@ -171,21 +198,21 @@ const FileComplaint = () => {
       return true;
     });
 
-    setUploadedFiles(prev => [...prev, ...validFiles.map(file => ({
+    setUploadedFiles(prev => [...prev, ...validFiles.map((file: File) => ({
       file,
       name: file.name,
       size: file.size,
       type: file.type,
-      status: 'uploading',
+      status: 'uploading' as const,
       id: Date.now() + Math.random()
     }))]);
 
     // Simulate upload
-    validFiles.forEach((file, index) => {
+    validFiles.forEach((file: File, index: number) => {
       setTimeout(() => {
         setUploadedFiles(prev => prev.map(f => 
           f.name === file.name && f.status === 'uploading' 
-            ? { ...f, status: 'uploaded' } 
+            ? { ...f, status: 'uploaded' as const } 
             : f
         ));
       }, 1000 + (index * 500));
@@ -567,7 +594,7 @@ const FileComplaint = () => {
                 <button
                   type="button"
                   className="flex items-center justify-center px-4 py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-                  onClick={() => cameraInputRef.current.click()}
+                  onClick={() => cameraInputRef.current?.click()}
                 >
                   <Camera className="w-8 h-8 text-gray-400 mr-3" />
                   <div className="text-center">
@@ -579,7 +606,7 @@ const FileComplaint = () => {
                 <button
                   type="button"
                   className="flex items-center justify-center px-4 py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors"
-                  onClick={() => fileInputRef.current.click()}
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Upload className="w-8 h-8 text-gray-400 mr-3" />
                   <div className="text-center">
@@ -605,7 +632,7 @@ const FileComplaint = () => {
                   setIsDragOver(false);
                   handleFileSelect(e.dataTransfer.files);
                 }}
-                onClick={() => fileInputRef.current.click()}
+                onClick={() => fileInputRef.current?.click()}
               >
                 <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-600 mb-2 font-medium">
