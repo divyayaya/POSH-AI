@@ -34,7 +34,6 @@ const HRDashboard = () => {
       <AppHeader 
         userRole="hr" 
         notifications={notifications}
-        customTitle="HR Dashboard"
       />
 
       {/* Enhanced Header */}
@@ -77,9 +76,9 @@ const HRDashboard = () => {
       </Card>
 
       <main className="px-6 py-0 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-5 gap-6">
           {/* Compliance Status Widget */}
-          <Card className="bg-card border border-border shadow-sm">
+          <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center text-foreground">
                 <Clock className="mr-2 h-5 w-5 text-primary" />
@@ -125,7 +124,7 @@ const HRDashboard = () => {
           </Card>
 
           {/* Active Cases Widget */}
-          <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
+          <Card className="lg:col-span-3 bg-card border border-border shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2 text-foreground font-semibold">
                 <FileText className="w-5 h-5 text-primary" />
@@ -243,26 +242,23 @@ const HRDashboard = () => {
               
               <Separator />
               
-              <div className="space-y-3">
-                <div className="text-sm font-medium text-foreground">System Integration Status</div>
-                <div className="bg-muted/30 rounded-lg p-4">
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-3 w-3 text-green-600" />
-                      <span className="text-foreground">HRIS Connected</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-3 w-3 text-green-600" />
-                      <span className="text-foreground">Email Gateway</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-3 w-3 text-green-600" />
-                      <span className="text-foreground">Document Storage</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <AlertTriangle className="h-3 w-3 text-orange-500" />
-                      <span className="text-foreground">Calendar Sync</span>
-                    </div>
+              <div className="bg-muted/30 rounded-lg p-4">
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span className="text-foreground">HRIS Connected</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span className="text-foreground">Email Gateway</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-3 w-3 text-green-600" />
+                    <span className="text-foreground">Document Storage</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <AlertTriangle className="h-3 w-3 text-orange-500" />
+                    <span className="text-foreground">Calendar Sync</span>
                   </div>
                 </div>
               </div>
