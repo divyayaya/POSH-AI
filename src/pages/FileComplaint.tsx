@@ -422,18 +422,39 @@ const FileComplaint = () => {
         </div>
 
         {/* Progress Indicator */}
-        <div className="progress-indicator max-w-2xl mx-auto mb-8">
-          {[1, 2, 3, 4].map((step, index) => (
-            <div key={step} className="flex items-center">
-              <div
-                className={`progress-step ${
-                  step < currentStep ? 'completed' :
-                  step === currentStep ? 'current' : 'pending'
-                }`}
-              >
-                {step}
+        <div className="flex items-center justify-between max-w-4xl mx-auto mb-8">
+          {[
+            { number: 1, label: "Type of Concern" },
+            { number: 2, label: "Details" },
+            { number: 3, label: "Evidence" },
+            { number: 4, label: "Review" }
+          ].map((step, index) => (
+            <div key={step.number} className="flex items-center flex-1">
+              <div className="flex flex-col items-center">
+                <div
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
+                    step.number === currentStep 
+                      ? 'bg-status-warning text-white' 
+                      : step.number < currentStep
+                      ? 'bg-status-success text-white'
+                      : 'bg-text-light text-text-muted'
+                  }`}
+                >
+                  {step.number}
+                </div>
+                <span className={`mt-2 text-sm font-medium ${
+                  step.number === currentStep 
+                    ? 'text-text-primary' 
+                    : 'text-text-muted'
+                }`}>
+                  {step.label}
+                </span>
               </div>
-              {index < 3 && <div className="progress-connector" />}
+              {index < 3 && (
+                <div className={`flex-1 h-0.5 mx-4 ${
+                  step.number < currentStep ? 'bg-status-success' : 'bg-input-border'
+                }`} />
+              )}
             </div>
           ))}
         </div>
