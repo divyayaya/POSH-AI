@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, ArrowRight, Shield, AlertTriangle, FileText, Users, CheckCircle, Bell, Lock, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -451,31 +452,7 @@ const FileComplaint = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Bar */}
-      <nav className="bg-white border-b border-gray-200 px-6 py-3">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center space-x-8">
-            <div className="text-lg font-semibold text-gray-900">Company Portal</div>
-            <div className="flex space-x-6">
-              <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-              <Link to="/hr-services" className="text-gray-600 hover:text-gray-900">HR Services</Link>
-              <Link to="/file-complaint" className="bg-gray-800 text-white px-4 py-2 rounded text-sm font-medium">
-                Report a Concern
-              </Link>
-              <Link to="/resources" className="text-gray-600 hover:text-gray-900">Resources</Link>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Bell className="h-5 w-5 text-gray-600" />
-              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                2
-              </div>
-            </div>
-            <div className="text-gray-700 font-medium">John Doe</div>
-          </div>
-        </div>
-      </nav>
+      <AppHeader userRole="employee" notifications={2} />
 
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Header */}

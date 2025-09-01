@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock, Save, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -162,37 +163,38 @@ const HumanReview = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary">
-      <header className="border-b bg-bg-elevated shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" asChild className="text-text-secondary hover:text-text-primary">
-              <Link to="/hr-dashboard">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Link>
-            </Button>
-            <div className="text-center bg-status-error/20 px-6 py-3 rounded-lg border border-status-error/30">
-              <h1 className="text-xl font-semibold text-status-error">Human Evaluation Required</h1>
-              <p className="text-sm text-text-secondary">Case {case_.id}</p>
-              <div className="flex items-center justify-center gap-2 mt-2">
-                <div className="w-3 h-3 bg-status-error rounded-full animate-pulse"></div>
-                <span className="text-xs text-text-muted">
-                  {calculateProgress()}% Complete
-                </span>
-              </div>
-              {isDraft && (
-                <Badge variant="secondary" className="mt-2">
-                  <Save className="h-3 w-3 mr-1" />
-                  Draft Saved
-                </Badge>
-              )}
-            </div>
-            <Badge variant="outline" className="bg-status-error text-white border-status-error">High Priority</Badge>
-          </div>
-        </div>
-      </header>
+      <AppHeader 
+        userRole="icc" 
+        customActions={
+          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
+            <Link to="/hr-dashboard">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Dashboard
+            </Link>
+          </Button>
+        }
+      />
 
       <main className="container mx-auto px-4 py-8">
+        {/* Case Status Header */}
+        <div className="mb-6 text-center bg-status-error/20 px-6 py-4 rounded-lg border border-status-error/30">
+          <h1 className="text-xl font-semibold text-status-error">Human Evaluation Required</h1>
+          <p className="text-sm text-text-secondary">Case {case_.id}</p>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <div className="w-3 h-3 bg-status-error rounded-full animate-pulse"></div>
+            <span className="text-xs text-text-muted">
+              {calculateProgress()}% Complete
+            </span>
+          </div>
+          {isDraft && (
+            <Badge variant="secondary" className="mt-2">
+              <Save className="h-3 w-3 mr-1" />
+              Draft Saved
+            </Badge>
+          )}
+          <Badge variant="outline" className="bg-status-error text-white border-status-error mt-2">High Priority</Badge>
+        </div>
+
         {/* Progress Indicator */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">

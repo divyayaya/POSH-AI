@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, Bell, Users, FileText, Clock, AlertTriangle, CheckCircle, BarChart3, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockCases, mockDeadlines } from "@/lib/mockData";
@@ -30,21 +31,11 @@ const HRDashboard = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary">
-      {/* Header */}
-      <div className="bg-bg-elevated border-b border-input-border px-6 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-text-primary">HR Dashboard</h1>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Bell className="w-6 h-6 text-gentle-teal cursor-pointer" />
-              <span className="absolute -top-1 -right-1 bg-status-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                3
-              </span>
-            </div>
-            <span className="text-sm text-text-secondary">Welcome, Sarah Chen</span>
-          </div>
-        </div>
-      </div>
+      <AppHeader 
+        userRole="hr" 
+        notifications={notifications}
+        customTitle="HR Dashboard"
+      />
 
       {/* Metrics Banner */}
       <div className="bg-gradient-to-r from-primary-navy to-gentle-teal p-8 text-white">
