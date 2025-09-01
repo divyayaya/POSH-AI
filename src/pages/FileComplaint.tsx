@@ -1009,36 +1009,6 @@ const FileComplaint = () => {
             Your voice matters. We're here to support you through this process.
           </p>
 
-          {/* Enhanced Privacy Notice */}
-          <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <Lock className="h-5 w-5 text-green-600" />
-              </div>
-              <div className="text-left">
-                <h3 className="font-semibold text-green-800 text-lg mb-2">Your privacy is protected</h3>
-                <p className="text-green-700 mb-4 leading-relaxed">
-                  All reports are handled confidentially and in accordance with company policy and legal requirements. 
-                  Your information is secure and will only be shared with authorized personnel involved in the resolution process.
-                </p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                    <span className="text-green-700">Encrypted & Secure</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                    <span className="text-green-700">No Retaliation Policy</span>
-                  </div>
-                  <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                    <span className="text-green-700">24/7 Support Available</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Enhanced Progress Indicator */}
@@ -1051,28 +1021,32 @@ const FileComplaint = () => {
           <Progress value={getStepProgress()} className="mb-4" />
           
           <div className="flex items-center justify-center">
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center justify-between w-full max-w-3xl">
               {[
                 { number: 1, label: "Type of Concern", timeEstimate: "1-2 min" },
                 { number: 2, label: "Details", timeEstimate: "2-3 min" },
                 { number: 3, label: "Evidence", timeEstimate: "2-4 min" },
                 { number: 4, label: "Review", timeEstimate: "1-2 min" }
               ].map((step, index) => (
-                <div key={step.number} className="flex items-center">
-                  <div className="text-center">
+                <div key={step.number} className="flex items-center flex-1">
+                  <div className="text-center w-full">
                     <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold mb-2 transition-all duration-200 ${
+                      className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold mb-3 mx-auto transition-all duration-200 ${
                         step.number === currentStep 
                           ? 'bg-orange-500 text-white ring-4 ring-orange-200' 
                           : step.number < currentStep
                           ? 'bg-green-500 text-white'
-                          : 'bg-gray-300 text-gray-600'
+                          : 'bg-muted text-muted-foreground'
                       }`}
                     >
                       {step.number < currentStep ? <CheckCircle className="h-6 w-6" /> : step.number}
                     </div>
                     <div className={`text-sm font-medium mb-1 text-center ${
-                      step.number === currentStep ? 'text-foreground' : 'text-muted-foreground'
+                      step.number === currentStep 
+                        ? 'text-foreground' 
+                        : step.number < currentStep
+                        ? 'text-foreground'
+                        : 'text-muted-foreground'
                     }`}>
                       {step.label}
                     </div>
@@ -1081,8 +1055,8 @@ const FileComplaint = () => {
                     </div>
                   </div>
                   {index < 3 && (
-                    <div className={`w-16 h-0.5 mx-4 transition-colors duration-200 ${
-                      step.number < currentStep ? 'bg-green-500' : 'bg-gray-300'
+                    <div className={`flex-1 h-0.5 mx-6 transition-colors duration-200 ${
+                      step.number < currentStep ? 'bg-green-500' : 'bg-border'
                     }`} />
                   )}
                 </div>
