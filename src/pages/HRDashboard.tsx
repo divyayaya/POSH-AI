@@ -45,30 +45,39 @@ const HRDashboard = () => {
         </p>
       </div>
 
-      {/* Metrics Banner */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 p-8 text-primary-foreground mb-8 mx-6 rounded-xl">
-        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-2">+60%</div>
-            <div className="text-sm opacity-90">Reporting Rate Increase</div>
+      {/* Key Performance Indicators */}
+      <Card className="mb-8 mx-6 bg-card border border-border shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-foreground">Key Performance Indicators for POSH Compliance</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+              <div className="text-3xl font-bold text-green-600">+60%</div>
+              <div className="text-sm text-muted-foreground">Reporting Rate Increase</div>
+              <div className="text-xs text-muted-foreground">vs. previous year</div>
+            </div>
+            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+              <div className="text-3xl font-bold text-primary">75%</div>
+              <div className="text-sm text-muted-foreground">Faster Processing</div>
+              <div className="text-xs text-muted-foreground">avg. 2 hrs vs. 8 hrs</div>
+            </div>
+            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+              <div className="text-3xl font-bold text-green-600">100%</div>
+              <div className="text-sm text-muted-foreground">Compliance Rate</div>
+              <div className="text-xs text-muted-foreground">on-time completion</div>
+            </div>
+            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+              <div className="text-3xl font-bold text-primary">4.7/5</div>
+              <div className="text-sm text-muted-foreground">User Satisfaction</div>
+              <div className="text-xs text-muted-foreground">employee feedback</div>
+            </div>
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-2">75%</div>
-            <div className="text-sm opacity-90">Faster Processing</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-2">100%</div>
-            <div className="text-sm opacity-90">Compliance Rate</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-2">4.7/5</div>
-            <div className="text-sm opacity-90">User Satisfaction</div>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       <main className="px-6 py-0 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Active Cases Widget */}
           <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
             <CardHeader>
@@ -177,7 +186,6 @@ const HRDashboard = () => {
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">New complaint filed - POSH-2024-001</div>
                   <div className="text-xs text-muted-foreground">5 minutes ago • Marketing Department</div>
-                  <div className="text-xs text-muted-foreground">n8n workflow: case_created ✓ triggered</div>
                 </div>
               </div>
 
@@ -186,7 +194,6 @@ const HRDashboard = () => {
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">ICC member assigned to POSH-2024-002</div>
                   <div className="text-xs text-muted-foreground">2 hours ago • Sales Department</div>
-                  <div className="text-xs text-muted-foreground">n8n workflow: investigator_assigned ✓ completed</div>
                 </div>
               </div>
 
@@ -195,7 +202,6 @@ const HRDashboard = () => {
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">Evidence uploaded for POSH-2024-003</div>
                   <div className="text-xs text-muted-foreground">4 hours ago • Engineering Department</div>
-                  <div className="text-xs text-muted-foreground">n8n workflow: evidence_analysis ⏳ processing</div>
                 </div>
               </div>
 
@@ -204,7 +210,6 @@ const HRDashboard = () => {
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">Human review completed - POSH-2024-001</div>
                   <div className="text-xs text-muted-foreground">6 hours ago • Marketing Department</div>
-                  <div className="text-xs text-muted-foreground">n8n workflow: pathway_determination ✓ completed</div>
                 </div>
               </div>
             </CardContent>
@@ -248,11 +253,11 @@ const HRDashboard = () => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-3 w-3 text-green-600" />
-                      <span className="text-foreground">n8n Workflows</span>
+                      <span className="text-foreground">Email Gateway</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle className="h-3 w-3 text-green-600" />
-                      <span className="text-foreground">Email Gateway</span>
+                      <span className="text-foreground">Document Storage</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <AlertTriangle className="h-3 w-3 text-orange-500" />
@@ -265,46 +270,12 @@ const HRDashboard = () => {
               <Button className="w-full justify-start" variant="outline" asChild>
                 <Link to="/admin/webhook-test">
                   <BarChart3 className="mr-2 h-4 w-4" />
-                  Test n8n Integrations
+                  Test System Integrations
                 </Link>
               </Button>
             </CardContent>
           </Card>
         </div>
-
-        {/* System Metrics */}
-        <Card className="mt-6 bg-card border border-border shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-foreground">System Performance Metrics</CardTitle>
-            <CardDescription>
-              Key performance indicators for POSH compliance system
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="text-3xl font-bold text-green-600">+60%</div>
-                <div className="text-sm text-muted-foreground">Reporting Rate Increase</div>
-                <div className="text-xs text-muted-foreground">vs. previous year</div>
-              </div>
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="text-3xl font-bold text-primary">75%</div>
-                <div className="text-sm text-muted-foreground">Faster Processing</div>
-                <div className="text-xs text-muted-foreground">avg. 2 hrs vs. 8 hrs</div>
-              </div>
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="text-3xl font-bold text-green-600">100%</div>
-                <div className="text-sm text-muted-foreground">Compliance Rate</div>
-                <div className="text-xs text-muted-foreground">on-time completion</div>
-              </div>
-              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-                <div className="text-3xl font-bold text-primary">4.7/5</div>
-                <div className="text-sm text-muted-foreground">User Satisfaction</div>
-                <div className="text-xs text-muted-foreground">employee feedback</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </main>
     </div>
   );
