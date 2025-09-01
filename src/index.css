@@ -2,182 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
-/* POSH System Design Tokens - Professional & Trustworthy */
+/* Trauma-Informed POSH System Design Tokens */
 
 @layer base {
   :root {
-    /* Core POSH System Colors (HSL format) */
-    --background: 0 0% 98%;
-    --foreground: 210 22% 22%;
+    /* Trauma-Informed Color Palette (HSL format) */
+    --background: 42 44% 96%; /* Warm Cream #FAF7F0 */
+    --foreground: 210 29% 24%; /* Primary Navy #2C3E50 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 210 22% 22%;
+    --card: 0 0% 100%; /* Pure white for elevated surfaces */
+    --card-foreground: 210 29% 24%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 22% 22%;
+    --popover-foreground: 210 29% 24%;
 
-    /* Primary: Deep Professional Blue */
-    --primary: 210 22% 22%; /* #2D3748 equivalent */
-    --primary-foreground: 0 0% 98%;
-    --primary-hover: 210 22% 18%;
+    /* Primary: Trust & Stability Navy */
+    --primary: 210 29% 24%; /* #2C3E50 */
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 29% 29%; /* Slightly lighter for hover */
 
-    /* Secondary: Warm Teal for Trust */
-    --secondary: 176 38% 39%; /* #319795 equivalent */
-    --secondary-foreground: 0 0% 98%;
-    --secondary-hover: 176 38% 35%;
+    /* Secondary: Soft Sage for Comfort */
+    --secondary: 98 39% 70%; /* #7FB069 */
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 98 39% 65%;
 
-    /* Success: Forest Green */
-    --success: 142 69% 58%; /* #38A169 equivalent */
-    --success-foreground: 0 0% 98%;
-    --success-muted: 142 69% 95%;
+    /* Success: Forest Green for Completion */
+    --success: 135 15% 42%; /* #5A7C65 */
+    --success-foreground: 0 0% 100%;
+    --success-muted: 135 15% 95%;
 
-    /* Warning: Professional Amber */
-    --warning: 35 91% 65%; /* #D69E2E equivalent */
-    --warning-foreground: 0 0% 98%;
-    --warning-muted: 35 91% 95%;
+    /* Warning: Gentle Amber (Non-alarming) */
+    --warning: 32 65% 69%; /* #E6B17A */
+    --warning-foreground: 210 29% 24%;
+    --warning-muted: 32 65% 95%;
 
-    /* System Colors */
-    --muted: 210 17% 96%;
-    --muted-foreground: 210 10% 57%;
+    /* Trauma-Informed System Colors */
+    --muted: 42 20% 93%; /* Softer background variant */
+    --muted-foreground: 220 13% 35%; /* Warm Slate #475569 */
 
-    --accent: 176 38% 95%;
-    --accent-foreground: 176 38% 39%;
+    /* Gentle Teal for Interactive Elements */
+    --accent: 195 38% 90%; /* Light version for backgrounds */
+    --accent-foreground: 195 38% 47%; /* Gentle Teal #4A90A4 */
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    /* Soft Coral for Gentle Errors */
+    --destructive: 8 62% 74%; /* #E8998D */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 210 17% 92%;
-    --input: 210 17% 92%;
-    --ring: 176 38% 39%;
+    /* Form & Interactive Elements */
+    --border: 195 20% 85%; /* Soft borders */
+    --input: 42 30% 97%; /* Input backgrounds */
+    --ring: 195 38% 47%; /* Focus rings - Gentle Teal */
 
     /* Design System Extensions */
     --radius: 0.75rem;
     --radius-sm: 0.5rem;
     --radius-lg: 1rem;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(210 22% 22%) 0%, hsl(210 22% 18%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(176 38% 39%) 0%, hsl(176 38% 35%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(176 38% 39%) 0%, hsl(210 22% 22%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 98%) 0%, hsl(210 17% 96%) 100%);
+    /* Trauma-Informed Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 29% 24%) 0%, hsl(210 29% 29%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(98 39% 70%) 0%, hsl(98 39% 65%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(195 38% 47%) 0%, hsl(210 29% 24%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(42 44% 96%) 0%, hsl(42 20% 93%) 100%);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(210 22% 22% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(210 22% 22% / 0.1), 0 2px 4px -1px hsl(210 22% 22% / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(210 22% 22% / 0.1), 0 4px 6px -2px hsl(210 22% 22% / 0.05);
-    --shadow-xl: 0 20px 25px -5px hsl(210 22% 22% / 0.1), 0 10px 10px -5px hsl(210 22% 22% / 0.04);
-    --shadow-glow: 0 0 0 1px hsl(176 38% 39% / 0.3), 0 0 20px hsl(176 38% 39% / 0.2);
+    /* Gentle Shadows with Trauma-Informed Colors */
+    --shadow-sm: 0 1px 2px 0 hsl(210 29% 24% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(210 29% 24% / 0.08), 0 2px 4px -1px hsl(210 29% 24% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(210 29% 24% / 0.08), 0 4px 6px -2px hsl(210 29% 24% / 0.04);
+    --shadow-xl: 0 20px 25px -5px hsl(210 29% 24% / 0.08), 0 10px 10px -5px hsl(210 29% 24% / 0.03);
+    --shadow-glow: 0 0 0 1px hsl(195 38% 47% / 0.2), 0 0 20px hsl(195 38% 47% / 0.15);
 
-    /* Animations */
+    /* Smooth Animations for Comfort */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    /* Evidence Scoring Colors */
-    --evidence-low: 0 84% 60%;
-    --evidence-medium: 35 91% 65%;
-    --evidence-high: 142 69% 58%;
+    /* Trauma-Informed Evidence Scoring */
+    --evidence-low: 32 65% 69%; /* Gentle Amber - Non-alarming */
+    --evidence-medium: 98 39% 70%; /* Soft Sage - Encouraging */
+    --evidence-high: 135 15% 42%; /* Forest Green - Positive */
 
-    /* Status Colors */
-    --status-new: 258 90% 66%;
-    --status-investigating: 35 91% 65%;
-    --status-resolved: 142 69% 58%;
+    /* Gentle Status Colors */
+    --status-new: 225 37% 76%; /* Soft Lavender - Calming */
+    --status-investigating: 195 38% 47%; /* Gentle Teal - Processing */
+    --status-resolved: 135 15% 42%; /* Forest Green - Completion */
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Trauma-Informed Sidebar for Light Mode */
+    --sidebar-background: 42 44% 98%;
+    --sidebar-foreground: 210 29% 24%;
+    --sidebar-primary: 195 38% 47%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 42 20% 95%;
+    --sidebar-accent-foreground: 210 29% 24%;
+    --sidebar-border: 195 20% 88%;
+    --sidebar-ring: 195 38% 47%;
   }
 
   .dark {
-    --background: 210 22% 22%;
-    --foreground: 0 0% 98%;
+    /* Trauma-Informed Dark Mode */
+    --background: 210 29% 15%; /* Dark Navy for low light comfort */
+    --foreground: 42 44% 96%; /* Warm cream text */
 
-    --card: 210 22% 22%;
-    --card-foreground: 0 0% 98%;
+    --card: 210 29% 18%;
+    --card-foreground: 42 44% 96%;
 
-    --popover: 210 22% 22%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 210 29% 18%;
+    --popover-foreground: 42 44% 96%;
 
-    --primary: 0 0% 98%;
-    --primary-foreground: 210 22% 22%;
+    --primary: 42 44% 96%;
+    --primary-foreground: 210 29% 24%;
 
-    --secondary: 176 38% 35%;
-    --secondary-foreground: 0 0% 98%;
+    /* Muted versions of trauma-informed colors for dark mode */
+    --secondary: 98 30% 45%; /* Darker sage */
+    --secondary-foreground: 42 44% 96%;
 
-    --muted: 210 17% 17%;
-    --muted-foreground: 210 10% 65%;
+    --muted: 210 20% 20%;
+    --muted-foreground: 220 13% 65%;
 
-    --accent: 176 38% 15%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 195 25% 25%;
+    --accent-foreground: 195 38% 80%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 8 50% 55%; /* Softer coral for dark mode */
+    --destructive-foreground: 42 44% 96%;
 
-    --border: 210 17% 17%;
-    --input: 210 17% 17%;
-    --ring: 176 38% 39%;
+    --border: 210 20% 25%;
+    --input: 210 20% 22%;
+    --ring: 195 38% 60%;
 
-    --success: 142 69% 58%;
-    --success-foreground: 0 0% 98%;
-    --success-muted: 142 69% 15%;
+    --success: 135 20% 50%;
+    --success-foreground: 42 44% 96%;
+    --success-muted: 135 20% 15%;
 
-    --warning: 35 91% 65%;
-    --warning-foreground: 0 0% 98%;
-    --warning-muted: 35 91% 15%;
+    --warning: 32 50% 55%;
+    --warning-foreground: 42 44% 96%;
+    --warning-muted: 32 50% 15%;
 
-    --evidence-low: 0 84% 60%;
-    --evidence-medium: 35 91% 65%;
-    --evidence-high: 142 69% 58%;
+    /* Dark mode trauma-informed colors */
+    --evidence-low: 32 50% 55%;
+    --evidence-medium: 98 30% 50%;
+    --evidence-high: 135 20% 50%;
 
-    --status-new: 258 90% 66%;
-    --status-investigating: 35 91% 65%;
-    --status-resolved: 142 69% 58%;
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --status-new: 225 30% 55%;
+    --status-investigating: 195 30% 55%;
+    --status-resolved: 135 20% 50%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Sidebar colors for dark mode */
+    --sidebar-background: 210 29% 12%;
+    --sidebar-foreground: 42 44% 90%;
+    --sidebar-primary: 195 38% 60%;
+    --sidebar-primary-foreground: 210 29% 15%;
+    --sidebar-accent: 210 25% 20%;
+    --sidebar-accent-foreground: 42 44% 90%;
+    --sidebar-border: 210 25% 22%;
+    --sidebar-ring: 195 38% 60%;
   }
 }
 
