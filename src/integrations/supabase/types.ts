@@ -14,7 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cases: {
+        Row: {
+          ai_analysis: Json | null
+          case_number: string
+          complainant_name: string
+          created_at: string
+          description: string
+          evidence_score: number
+          id: string
+          metadata: Json | null
+          priority: Database["public"]["Enums"]["case_priority"]
+          respondent_name: string
+          status: Database["public"]["Enums"]["case_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          case_number: string
+          complainant_name: string
+          created_at?: string
+          description: string
+          evidence_score?: number
+          id?: string
+          metadata?: Json | null
+          priority?: Database["public"]["Enums"]["case_priority"]
+          respondent_name: string
+          status?: Database["public"]["Enums"]["case_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          case_number?: string
+          complainant_name?: string
+          created_at?: string
+          description?: string
+          evidence_score?: number
+          id?: string
+          metadata?: Json | null
+          priority?: Database["public"]["Enums"]["case_priority"]
+          respondent_name?: string
+          status?: Database["public"]["Enums"]["case_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      compliance_deadlines: {
+        Row: {
+          case_id: string
+          created_at: string
+          deadline_date: string
+          deadline_type: string
+          description: string
+          id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          deadline_date: string
+          deadline_type: string
+          description: string
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          deadline_date?: string
+          deadline_type?: string
+          description?: string
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compliance_deadlines_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidence: {
+        Row: {
+          ai_analysis: Json | null
+          case_id: string
+          created_at: string
+          description: string
+          file_url: string | null
+          id: string
+          metadata: Json | null
+          score: number
+          type: Database["public"]["Enums"]["evidence_type"]
+          updated_at: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          case_id: string
+          created_at?: string
+          description: string
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          score?: number
+          type: Database["public"]["Enums"]["evidence_type"]
+          updated_at?: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          case_id?: string
+          created_at?: string
+          description?: string
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          score?: number
+          type?: Database["public"]["Enums"]["evidence_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +158,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      case_priority: "low" | "medium" | "high" | "critical"
+      case_status:
+        | "pending"
+        | "under_review"
+        | "investigating"
+        | "mediation"
+        | "closed"
+        | "escalated"
+      evidence_type:
+        | "witness_statement"
+        | "document"
+        | "physical_evidence"
+        | "digital_evidence"
+        | "email"
+        | "chat_log"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +299,24 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      case_priority: ["low", "medium", "high", "critical"],
+      case_status: [
+        "pending",
+        "under_review",
+        "investigating",
+        "mediation",
+        "closed",
+        "escalated",
+      ],
+      evidence_type: [
+        "witness_statement",
+        "document",
+        "physical_evidence",
+        "digital_evidence",
+        "email",
+        "chat_log",
+      ],
+    },
   },
 } as const
