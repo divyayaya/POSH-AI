@@ -175,84 +175,93 @@ const HumanReview = () => {
         }
       />
 
-      <main className="container mx-auto px-6 py-8 max-w-7xl">
-        {/* Breadcrumb and Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <Link to="/hr-dashboard" className="hover:text-foreground transition-colors">HR Dashboard</Link>
-            <span>/</span>
-            <span className="text-foreground">Human Review</span>
-          </div>
-          
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground mb-2">Case Review Required</h1>
-              <div className="flex items-center gap-4">
-                <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
-                  <Clock className="h-3 w-3 mr-1" />
-                  Pending Review
-                </Badge>
-                <span className="text-sm text-muted-foreground">Case ID: {case_.id}</span>
-                {isDraft && (
-                  <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
-                    <Save className="h-3 w-3 mr-1" />
-                    Draft Saved
-                  </Badge>
-                )}
-              </div>
+      <main className="w-full max-w-none">
+        {/* Header Section - Autolayout Container */}
+        <div className="sticky top-0 z-10 bg-bg-primary/95 backdrop-blur-sm border-b border-border">
+          <div className="container mx-auto px-6 py-4">
+            {/* Breadcrumb */}
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+              <Link to="/hr-dashboard" className="hover:text-foreground transition-colors">HR Dashboard</Link>
+              <span>/</span>
+              <span className="text-foreground">Human Review</span>
             </div>
             
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground mb-1">Review Progress</div>
-              <div className="flex items-center gap-2">
-                <Progress value={calculateProgress()} className="h-2 w-32" />
-                <span className="text-sm font-medium">{Math.round(calculateProgress())}%</span>
+            {/* Header Content - Flexible Layout */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <h1 className="text-2xl font-bold text-foreground mb-2 truncate">Case Review Required</h1>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 shrink-0">
+                    <Clock className="h-3 w-3 mr-1" />
+                    Pending Review
+                  </Badge>
+                  <span className="text-sm text-muted-foreground shrink-0">Case ID: {case_.id}</span>
+                  {isDraft && (
+                    <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200 shrink-0">
+                      <Save className="h-3 w-3 mr-1" />
+                      Draft Saved
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              
+              {/* Progress Indicator - Auto-sized */}
+              <div className="flex-shrink-0">
+                <div className="text-sm text-muted-foreground mb-1 text-right">Review Progress</div>
+                <div className="flex items-center gap-3">
+                  <Progress value={calculateProgress()} className="h-2 w-32" />
+                  <span className="text-sm font-medium min-w-[3rem] text-right">{Math.round(calculateProgress())}%</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-5 gap-8">
-          {/* Left Sidebar - Case Context */}
-          <div className="xl:col-span-2 space-y-6">
-            {/* Case Overview */}
-            <Card>
+        {/* Main Content - Autolayout Grid */}
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col xl:flex-row gap-8 min-h-0">
+            {/* Left Sidebar - Case Context Stack */}
+            <div className="xl:w-[400px] xl:flex-shrink-0 flex flex-col gap-6">
+            {/* Case Overview - Autolayout Card */}
+            <Card className="flex-shrink-0">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center text-foreground">
                   <FileText className="mr-2 h-5 w-5" />
                   Case Overview
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
+              <CardContent>
+                {/* Key Details - Auto Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                  <div className="flex flex-col gap-1">
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Incident Type</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.incidentType}</div>
+                    <div className="text-sm font-medium text-foreground">{case_.incidentType}</div>
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Department</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.department}</div>
+                    <div className="text-sm font-medium text-foreground">{case_.department}</div>
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Submitted</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.submissionDate}</div>
+                    <div className="text-sm font-medium text-foreground">{case_.submissionDate}</div>
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Deadline</Label>
-                    <div className="text-sm font-medium text-amber-600 mt-1">{case_.deadline}</div>
+                    <div className="text-sm font-medium text-amber-600">{case_.deadline}</div>
                   </div>
                 </div>
                 
-                <Separator />
+                <Separator className="my-4" />
                 
-                <div className="space-y-3">
-                  <div>
+                {/* Parties - Vertical Stack */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1">
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Complainant</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.complainant}</div>
+                    <div className="text-sm font-medium text-foreground">{case_.complainant}</div>
                   </div>
-                  <div>
+                  <div className="flex flex-col gap-1">
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Respondent</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.respondent}</div>
+                    <div className="text-sm font-medium text-foreground">{case_.respondent}</div>
                   </div>
                 </div>
               </CardContent>
@@ -392,51 +401,62 @@ const HumanReview = () => {
               </CardContent>
             </Card>
 
-            {/* Evidence Summary */}
-            <Card>
-              <CardHeader className="pb-4">
+            {/* Evidence Summary - Flexible List */}
+            <Card className="flex-1 min-h-0">
+              <CardHeader className="pb-4 flex-shrink-0">
                 <CardTitle className="text-foreground">Evidence Summary</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {evidence.map((ev) => (
-                  <div key={ev.id} className="border border-border rounded-lg p-3 bg-card hover:bg-accent/5 transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className={`${
-                        ev.type === 'document' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                        ev.type === 'witness' ? 'bg-green-50 text-green-700 border-green-200' : 
-                        'bg-red-50 text-red-700 border-red-200'
-                      }`}>{ev.type}</Badge>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                          onClick={() => {
-                            toast.info(`Opening ${ev.type}: ${ev.description.slice(0, 30)}...`);
-                          }}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Button>
-                        <Badge variant="secondary" className="bg-muted text-muted-foreground">{ev.aiAnalysisScore} pts</Badge>
+              <CardContent className="flex-1 overflow-auto">
+                <div className="flex flex-col gap-3">
+                  {evidence.map((ev) => (
+                    <div key={ev.id} className="border border-border rounded-lg p-4 bg-card hover:bg-accent/5 transition-all duration-200 animate-fade-in">
+                      {/* Header Row - Auto-justified */}
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <Badge variant="outline" className={`flex-shrink-0 ${
+                          ev.type === 'document' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                          ev.type === 'witness' ? 'bg-green-50 text-green-700 border-green-200' : 
+                          'bg-red-50 text-red-700 border-red-200'
+                        }`}>{ev.type}</Badge>
+                        
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-3 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+                            onClick={() => {
+                              toast.info(`Opening ${ev.type}: ${ev.description.slice(0, 30)}...`);
+                            }}
+                          >
+                            <Eye className="h-3 w-3 mr-1" />
+                            View
+                          </Button>
+                          <Badge variant="secondary" className="bg-muted text-muted-foreground text-xs">
+                            {ev.aiAnalysisScore} pts
+                          </Badge>
+                        </div>
                       </div>
+                      
+                      {/* Content - Flexible */}
+                      <div className="text-sm text-foreground leading-relaxed mb-2">{ev.description}</div>
+                      
+                      {/* Metadata - Auto-positioned */}
+                      {ev.metadata && (
+                        <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/50">
+                          <span>Credibility: {ev.credibilityRating}/5.0</span>
+                          <span className="text-muted-foreground/70">AI Analyzed</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="text-sm text-foreground">{ev.description}</div>
-                    {ev.metadata && (
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Credibility: {ev.credibilityRating}/5.0
-                      </div>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Main Area - Review Form */}
-          <div className="xl:col-span-3">
-            <Card className="sticky top-8">
-              <CardHeader className="pb-6">
+          {/* Right Main Area - Review Form Stack */}
+          <div className="flex-1 xl:min-w-0">
+            <Card className="h-fit xl:sticky xl:top-24">
+              <CardHeader className="pb-6 flex-shrink-0">
                 <CardTitle className="flex items-center text-foreground">
                   <User className="mr-2 h-5 w-5 text-green-600" />
                   Human Review Decision
@@ -445,35 +465,35 @@ const HumanReview = () => {
                   Complete all required fields to submit your review decision
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-8">
-                {/* Step 1: Credibility Assessment */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.credibilityAssessment ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+              <CardContent className="flex flex-col gap-8">
+                {/* Step 1: Credibility Assessment - Auto-spaced Container */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300 ${
+                      reviewData.credibilityAssessment ? 'bg-green-100 text-green-700 scale-105' : 'bg-orange-100 text-orange-700'
                     }`}>
                       {reviewData.credibilityAssessment ? <Check className="h-4 w-4" /> : '1'}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
                         <Label className="text-base font-semibold text-foreground">Credibility Assessment</Label>
                         <span className="text-red-500">*</span>
                         <Tooltip>
                           <TooltipTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
+                            <Info className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Consider evidence quality, witness reliability, and consistency of statements</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         Rate the overall credibility of the complaint based on available evidence
                       </p>
                     </div>
                   </div>
                   
-                  <div className="ml-11">
+                  <div className="pl-14">
                     <RadioGroup 
                       value={reviewData.credibilityAssessment} 
                       onValueChange={(value) => {
@@ -511,34 +531,34 @@ const HumanReview = () => {
 
                 <Separator />
 
-                {/* Step 2: Investigation Pathway */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.investigationPathway ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                {/* Step 2: Investigation Pathway - Auto-spaced Container */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300 ${
+                      reviewData.investigationPathway ? 'bg-green-100 text-green-700 scale-105' : 'bg-orange-100 text-orange-700'
                     }`}>
                       {reviewData.investigationPathway ? <Check className="h-4 w-4" /> : '2'}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
                         <Label className="text-base font-semibold text-foreground">Investigation Pathway</Label>
                         <span className="text-red-500">*</span>
                         <Tooltip>
                           <TooltipTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
+                            <Info className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Consider case severity, organizational impact, and legal requirements</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         Choose the most appropriate next steps for this case
                       </p>
                     </div>
                   </div>
                   
-                  <div className="ml-11">
+                  <div className="pl-14">
                     <Select 
                       value={reviewData.investigationPathway}
                       onValueChange={(value) => {
@@ -599,34 +619,34 @@ const HumanReview = () => {
 
                 <Separator />
 
-                {/* Step 3: Rationale */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.rationale.length >= 100 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                {/* Step 3: Rationale - Auto-spaced Container */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300 ${
+                      reviewData.rationale.length >= 100 ? 'bg-green-100 text-green-700 scale-105' : 'bg-orange-100 text-orange-700'
                     }`}>
                       {reviewData.rationale.length >= 100 ? <Check className="h-4 w-4" /> : '3'}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
                         <Label className="text-base font-semibold text-foreground">Decision Rationale</Label>
                         <span className="text-red-500">*</span>
                         <Tooltip>
                           <TooltipTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
+                            <Info className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Include evidence assessment, organizational considerations, and legal compliance factors</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         Provide detailed justification for your decision (minimum 100 characters)
                       </p>
                     </div>
                   </div>
                   
-                  <div className="ml-11">
+                  <div className="pl-14">
                     <Textarea
                       placeholder="Explain your reasoning for the chosen pathway, considering evidence quality, case complexity, organizational context, and compliance requirements..."
                       value={reviewData.rationale}
@@ -654,23 +674,23 @@ const HumanReview = () => {
 
                 <Separator />
 
-                {/* Optional: Secondary Reviewer */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.secondaryReviewer ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                {/* Optional: Secondary Reviewer - Auto-spaced Container */}
+                <div className="flex flex-col gap-6">
+                  <div className="flex items-start gap-4">
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-semibold transition-all duration-300 ${
+                      reviewData.secondaryReviewer ? 'bg-green-100 text-green-700 scale-105' : 'bg-orange-100 text-orange-700'
                     }`}>
                       {reviewData.secondaryReviewer ? <Check className="h-4 w-4" /> : '4'}
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <Label className="text-base font-semibold text-foreground">Secondary Reviewer</Label>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         Optional: Assign another ICC member for dual review
                       </p>
                     </div>
                   </div>
                   
-                  <div className="ml-11">
+                  <div className="pl-14">
                     <Select onValueChange={(value) => setReviewData({...reviewData, secondaryReviewer: value})}>
                       <SelectTrigger className="h-12">
                         <SelectValue placeholder="Select ICC member (optional)" />
@@ -686,8 +706,8 @@ const HumanReview = () => {
 
                 <Separator />
 
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-3 pt-4">
+                {/* Action Buttons - Auto-layout Stack */}
+                <div className="flex flex-col gap-4 pt-6 mt-6 border-t border-border">
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button 
@@ -737,6 +757,7 @@ const HumanReview = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
         </div>
       </main>
     </div>
