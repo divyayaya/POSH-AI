@@ -240,8 +240,6 @@ const HRDashboard = () => {
                 </Link>
               </Button>
               
-              <Separator />
-              
               <Button className="w-full justify-start" variant="outline" asChild>
                 <Link to="/admin/webhook-test">
                   <BarChart3 className="mr-2 h-4 w-4" />
