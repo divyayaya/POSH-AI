@@ -89,6 +89,23 @@ const Index = () => {
                 <p className="text-xs text-white/70">Secure • Confidential • Supportive</p>
               </div>
             </div>
+            
+            <div className="flex items-center space-x-3">
+              <Badge variant="secondary" className="bg-green-500/20 text-green-300 border-green-500/30">
+                <CheckCircle className="w-3 h-3 mr-1" />
+                Live Demo
+              </Badge>
+              
+              {/* Quick help button */}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-white/80 hover:text-white hover:bg-white/10"
+                onClick={() => window.open('/help', '_blank')}
+              >
+                Need Help?
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -98,6 +115,9 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <div className="mb-8">
+            <Badge className="mb-6 bg-blue-500/20 text-blue-300 border-blue-500/30">
+              Trauma-Informed Design • WCAG 2.1 AA Compliant
+            </Badge>
             
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Safe Space for
@@ -216,89 +236,6 @@ const Index = () => {
                 </Card>
               );
             })}
-          </div>
-        </div>
-
-        {/* Key Features Section */}
-        <div className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Why Choose Our Platform?
-            </h2>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
-              Built with the latest UX research and trauma-informed design principles
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl text-white">AI-Powered Assessment</CardTitle>
-                <CardDescription className="text-white/70">
-                  Intelligent evidence analysis with human oversight
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/60 mb-4">
-                  Real-time evidence scoring and smart pathway recommendations ensure 
-                  your case gets the appropriate level of attention and care.
-                </p>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li>• Evidence strength analysis</li>
-                  <li>• Automatic pathway routing</li>
-                  <li>• Pattern recognition</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center mb-4">
-                  <Eye className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl text-white">Human-in-the-Loop</CardTitle>
-                <CardDescription className="text-white/70">
-                  Expert oversight for critical decisions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/60 mb-4">
-                  Trained ICC members provide human judgment for complex cases, 
-                  ensuring fair and thorough evaluation of every situation.
-                </p>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li>• Expert human review</li>
-                  <li>• Alternative resolution options</li>
-                  <li>• Appeal mechanisms</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300">
-              <CardHeader>
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                  <Clock className="h-6 w-6 text-white" />
-                </div>
-                <CardTitle className="text-xl text-white">Automated Compliance</CardTitle>
-                <CardDescription className="text-white/70">
-                  POSH Act timeline management
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-white/60 mb-4">
-                  Automatic deadline tracking and proactive alerts ensure 100% 
-                  compliance with legal requirements and timelines.
-                </p>
-                <ul className="space-y-2 text-sm text-white/50">
-                  <li>• 90-day deadline tracking</li>
-                  <li>• Proactive escalations</li>
-                  <li>• Audit-ready reports</li>
-                </ul>
-              </CardContent>
-            </Card>
           </div>
         </div>
 
