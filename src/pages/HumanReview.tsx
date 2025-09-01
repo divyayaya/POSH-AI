@@ -163,17 +163,7 @@ const HumanReview = () => {
 
   return (
     <div className="min-h-screen bg-bg-primary">
-      <AppHeader 
-        userRole="icc" 
-        customActions={
-          <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground">
-            <Link to="/hr-dashboard">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Link>
-          </Button>
-        }
-      />
+      <AppHeader userRole="icc" />
 
       <main className="container mx-auto px-6 py-8 max-w-7xl">
         {/* Breadcrumb and Header */}
