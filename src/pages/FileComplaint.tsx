@@ -91,42 +91,34 @@ const FileComplaint = () => {
                 {incidentTypes.map((type) => {
                   const Icon = type.icon;
                   return (
-                    <Card 
+                    <div 
                       key={type.id}
-                      className={`cursor-pointer transition-all hover:shadow-md bg-bg-elevated border-input-border hover:border-gentle-teal hover:shadow-gentle-teal/10 ${
-                        formData.incidentType === type.id 
-                          ? 'border-gentle-teal ring-2 ring-gentle-teal/20' 
-                          : ''
+                      className={`widget-card cursor-pointer ${
+                        formData.incidentType === type.id ? 'ring-2 ring-gentle-teal border-gentle-teal' : ''
                       }`}
                       onClick={() => setFormData({ ...formData, incidentType: type.id })}
                     >
-                      <CardContent className="p-6 text-center">
-                        <Icon className={`h-8 w-8 mx-auto mb-3 ${
-                          formData.incidentType === type.id ? 'text-gentle-teal' : 'text-gentle-teal'
-                        }`} />
+                      <div className="text-center">
+                        <Icon className="h-8 w-8 mx-auto mb-3 text-gentle-teal" />
                         <h3 className="font-medium text-text-primary">{type.label}</h3>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
             </div>
 
             {formData.incidentType === 'unsure' && (
-              <Card className="bg-soft-lavender/20 border border-soft-lavender/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center text-text-primary">
-                    <Users className="mr-2 h-5 w-5 text-gentle-teal" />
-                    Guided Assessment Available
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-text-secondary">
-                    Our AI-powered assessment tool will help determine the most appropriate category 
-                    and investigation pathway based on your specific situation.
-                  </p>
-                </CardContent>
-              </Card>
+              <div className="alert alert-info">
+                <div className="flex items-center mb-2">
+                  <Users className="mr-2 h-5 w-5 text-gentle-teal" />
+                  <span className="font-medium text-text-primary">Guided Assessment Available</span>
+                </div>
+                <p className="text-sm text-text-secondary">
+                  Our AI-powered assessment tool will help determine the most appropriate category 
+                  and investigation pathway based on your specific situation.
+                </p>
+              </div>
             )}
           </div>
         );
@@ -430,64 +422,53 @@ const FileComplaint = () => {
         </div>
 
         {/* Progress Indicator */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between max-w-2xl mx-auto">
-            {[1, 2, 3, 4].map((step) => (
-              <div key={step} className="flex items-center">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
-                    step < currentStep
-                      ? 'bg-status-success text-white'
-                      : step === currentStep
-                      ? 'bg-gentle-teal text-white shadow-lg shadow-gentle-teal/30'
-                      : 'bg-text-light text-white'
-                  }`}
-                >
-                  {step}
-                </div>
-                {step < 4 && (
-                  <div
-                    className={`w-16 h-1 mx-2 transition-colors ${
-                      step < currentStep ? 'bg-status-success' : 'bg-text-light'
-                    }`}
-                  />
-                )}
+        <div className="progress-indicator max-w-2xl mx-auto mb-8">
+          {[1, 2, 3, 4].map((step, index) => (
+            <div key={step} className="flex items-center">
+              <div
+                className={`progress-step ${
+                  step < currentStep ? 'completed' :
+                  step === currentStep ? 'current' : 'pending'
+                }`}
+              >
+                {step}
               </div>
-            ))}
-          </div>
+              {index < 3 && <div className="progress-connector" />}
+            </div>
+          ))}
         </div>
 
         {/* Step Content */}
-        <div className="bg-bg-elevated rounded-lg shadow-sm p-8 mb-8 border border-input-border">
+        <div className="form-container fade-in">
           {renderStepContent()}
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between">
-          <Button
+        <div className="flex justify-between mt-8">
+          <button
             onClick={handlePrev}
             disabled={currentStep === 1}
-            className="bg-btn-gentle hover:bg-btn-gentle-hover text-btn-gentle-foreground px-6"
+            className={`btn ${currentStep === 1 ? 'btn-disabled' : 'btn-gentle'}`}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
-          </Button>
+          </button>
           {currentStep < 4 ? (
-            <Button
+            <button
               onClick={handleNext}
-              className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary-foreground hover:shadow-lg hover:-translate-y-0.5 transition-all px-6"
+              className="btn btn-primary"
             >
               Continue
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               onClick={handleSubmit}
-              className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary-foreground hover:shadow-lg hover:-translate-y-0.5 transition-all px-6"
+              className="btn btn-primary"
             >
               Submit Complaint
               <CheckCircle className="ml-2 h-4 w-4" />
-            </Button>
+            </button>
           )}
         </div>
       </div>
