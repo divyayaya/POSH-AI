@@ -184,7 +184,7 @@ const HumanReview = () => {
                 </Badge>
                 <span className="text-sm text-muted-foreground">Case ID: {case_.id}</span>
                 {isDraft && (
-                  <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
+                  <Badge variant="secondary" className="bg-success-muted text-success border-success/20">
                     <Save className="h-3 w-3 mr-1" />
                     Draft Saved
                   </Badge>
@@ -253,8 +253,8 @@ const HumanReview = () => {
               <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
                 <CardTitle className="flex items-center justify-between text-foreground">
                   <div className="flex items-center">
-                    <div className="p-2 bg-blue-100 rounded-lg mr-3">
-                      <Brain className="h-5 w-5 text-blue-600" />
+                    <div className="p-2 bg-primary/10 rounded-lg mr-3">
+                      <Brain className="h-5 w-5 text-primary" />
                     </div>
                     <div>
                       <div className="text-lg font-semibold">AI Assessment</div>
@@ -264,7 +264,7 @@ const HumanReview = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">{case_.evidenceScore}</div>
+                    <div className="text-2xl font-bold text-primary">{case_.evidenceScore}</div>
                     <div className="text-xs text-muted-foreground">Confidence Score</div>
                   </div>
                 </CardTitle>
@@ -278,9 +278,9 @@ const HumanReview = () => {
                     <Badge 
                       variant="outline" 
                       className={`${
-                        case_.evidenceScore >= 70 ? 'bg-green-50 text-green-700 border-green-200' :
-                        case_.evidenceScore >= 40 ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                        'bg-red-50 text-red-700 border-red-200'
+                        case_.evidenceScore >= 70 ? 'bg-success-muted text-success border-success/20' :
+                        case_.evidenceScore >= 40 ? 'bg-warning-muted text-warning border-warning/20' :
+                        'bg-destructive/10 text-destructive border-destructive/20'
                       }`}
                     >
                       {evidenceLevel.level}
@@ -308,7 +308,7 @@ const HumanReview = () => {
                     
                     <div className="bg-muted/50 rounded-lg p-4">
                       <div className="flex items-start gap-3">
-                        <Shield className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <div className="font-medium text-foreground mb-1">{evidenceLevel.level} Evidence Quality</div>
                           <div className="text-sm text-muted-foreground leading-relaxed">{evidenceLevel.description}</div>
@@ -353,7 +353,7 @@ const HumanReview = () => {
                   </div>
                   
                   <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <CheckCircle className="h-4 w-4 text-success" />
                     <span>Evidence patterns align with recommended pathway</span>
                   </div>
                 </div>
@@ -415,15 +415,15 @@ const HumanReview = () => {
                   <div key={ev.id} className="border border-border rounded-lg p-3 bg-card hover:bg-accent/5 transition-colors">
                     <div className="flex items-center justify-between mb-2">
                       <Badge variant="outline" className={`${
-                        ev.type === 'document' ? 'bg-orange-50 text-orange-700 border-orange-200' :
-                        ev.type === 'witness' ? 'bg-green-50 text-green-700 border-green-200' : 
-                        'bg-red-50 text-red-700 border-red-200'
+                        ev.type === 'document' ? 'bg-warning-muted text-warning border-warning/20' :
+                        ev.type === 'witness' ? 'bg-success-muted text-success border-success/20' : 
+                        'bg-destructive/10 text-destructive border-destructive/20'
                       }`}>{ev.type}</Badge>
                       <div className="flex items-center gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          className="h-6 px-2 text-xs text-primary hover:text-primary/80 hover:bg-primary/5"
                           onClick={() => {
                             toast.info(`Opening ${ev.type}: ${ev.description.slice(0, 30)}...`);
                           }}
@@ -451,7 +451,7 @@ const HumanReview = () => {
             <Card className="sticky top-8">
               <CardHeader className="pb-6">
                 <CardTitle className="flex items-center text-foreground">
-                  <User className="mr-2 h-5 w-5 text-green-600" />
+                  <User className="mr-2 h-5 w-5 text-accent-foreground" />
                   Human Review Decision
                 </CardTitle>
                 <CardDescription>
@@ -463,14 +463,14 @@ const HumanReview = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.credibilityAssessment ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                      reviewData.credibilityAssessment ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
                     }`}>
                       {reviewData.credibilityAssessment ? <Check className="h-4 w-4" /> : '1'}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <Label className="text-base font-semibold text-foreground">Credibility Assessment</Label>
-                        <span className="text-red-500">*</span>
+                        <span className="text-destructive">*</span>
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="h-4 w-4 text-muted-foreground" />
@@ -528,14 +528,14 @@ const HumanReview = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.investigationPathway ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                      reviewData.investigationPathway ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
                     }`}>
                       {reviewData.investigationPathway ? <Check className="h-4 w-4" /> : '2'}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <Label className="text-base font-semibold text-foreground">Investigation Pathway</Label>
-                        <span className="text-red-500">*</span>
+                        <span className="text-destructive">*</span>
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="h-4 w-4 text-muted-foreground" />
@@ -616,14 +616,14 @@ const HumanReview = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.rationale.length >= 100 ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                      reviewData.rationale.length >= 100 ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
                     }`}>
                       {reviewData.rationale.length >= 100 ? <Check className="h-4 w-4" /> : '3'}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
                         <Label className="text-base font-semibold text-foreground">Decision Rationale</Label>
-                        <span className="text-red-500">*</span>
+                        <span className="text-destructive">*</span>
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="h-4 w-4 text-muted-foreground" />
@@ -651,7 +651,7 @@ const HumanReview = () => {
                       className={`min-h-[100px] resize-none ${validationErrors.rationale ? "border-destructive" : ""}`}
                     />
                     <div className="flex items-center justify-between mt-2">
-                      <div className={`text-xs ${reviewData.rationale.length >= 100 ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      <div className={`text-xs ${reviewData.rationale.length >= 100 ? 'text-success' : 'text-muted-foreground'}`}>
                         {reviewData.rationale.length}/500 characters
                         {reviewData.rationale.length >= 100 && <CheckCircle className="inline h-3 w-3 ml-1" />}
                       </div>
@@ -671,7 +671,7 @@ const HumanReview = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.secondaryReviewer ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                      reviewData.secondaryReviewer ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
                     }`}>
                       {reviewData.secondaryReviewer ? <Check className="h-4 w-4" /> : '4'}
                     </div>

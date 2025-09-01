@@ -28,15 +28,15 @@ const Index = () => {
     {
       id: "employee",
       title: "Employee",
-      subtitle: "Report a workplace concern",
+      subtitle: "Report a workplace concern",  
       description: "Confidential reporting with AI guidance and human support",
       icon: FileText,
       route: "/file-complaint",
-      color: "bg-blue-500",
-      hoverColor: "hover:bg-blue-600",
+      color: "bg-gentle-teal",
+      hoverColor: "hover:bg-gentle-teal/90",
       features: [
         "Anonymous reporting option",
-        "Step-by-step guidance",
+        "Step-by-step guidance", 
         "Auto-save progress",
         "24/7 support access"
       ]
@@ -48,11 +48,11 @@ const Index = () => {
       description: "Streamlined case management with automated workflows",
       icon: Users,
       route: "/hr-dashboard",
-      color: "bg-green-500",
-      hoverColor: "hover:bg-green-600", 
+      color: "bg-soft-sage", 
+      hoverColor: "hover:bg-soft-sage/90",
       features: [
         "Real-time case tracking",
-        "Automated compliance alerts",
+        "Automated compliance alerts", 
         "Integrated reporting tools",
         "Performance analytics"
       ]
@@ -63,13 +63,13 @@ const Index = () => {
       subtitle: "Review cases & investigations",
       description: "Human oversight for complex cases requiring expert judgment",
       icon: Shield,
-      route: "/human-review/POSH-2024-001",
-      color: "bg-purple-500",
-      hoverColor: "hover:bg-purple-600",
+      route: "/human-review/POSH-2024-001", 
+      color: "bg-soft-lavender",
+      hoverColor: "hover:bg-soft-lavender/90",
       features: [
         "Evidence analysis tools",
         "Assessment workflows",
-        "Collaborative reviews",
+        "Collaborative reviews", 
         "Decision tracking"
       ]
     }
@@ -261,32 +261,6 @@ const Index = () => {
               >
                 View Resources
               </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Statistics Section */}
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-8">
-            Making a Difference
-          </h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">60%</div>
-              <div className="text-xs text-muted-foreground">Increase in Reporting</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-success mb-2">75%</div>
-              <div className="text-xs text-muted-foreground">Faster Processing</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-accent-foreground mb-2">100%</div>
-              <div className="text-xs text-muted-foreground">Compliance Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-warning mb-2">4.8/5</div>
-              <div className="text-xs text-muted-foreground">User Satisfaction</div>
             </div>
           </div>
         </div>

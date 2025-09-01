@@ -52,7 +52,7 @@ const HRDashboard = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-              <div className="text-3xl font-bold text-green-600">+60%</div>
+              <div className="text-3xl font-bold text-success">+60%</div>
               <div className="text-sm text-muted-foreground">Reporting Rate Increase</div>
               <div className="text-xs text-muted-foreground">vs. previous year</div>
             </div>
@@ -62,7 +62,7 @@ const HRDashboard = () => {
               <div className="text-xs text-muted-foreground">avg. 2 hrs vs. 8 hrs</div>
             </div>
             <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-              <div className="text-3xl font-bold text-green-600">100%</div>
+              <div className="text-3xl font-bold text-success">100%</div>
               <div className="text-sm text-muted-foreground">Compliance Rate</div>
               <div className="text-xs text-muted-foreground">on-time completion</div>
             </div>
@@ -111,13 +111,13 @@ const HRDashboard = () => {
                 </div>
               ))}
               
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="bg-success-muted border border-success rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium text-sm text-foreground">Annual Compliance Report</div>
                     <div className="text-xs text-muted-foreground">Due in 45 days</div>
                   </div>
-                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  <CheckCircle className="h-5 w-5 text-success" />
                 </div>
               </div>
             </CardContent>
@@ -180,32 +180,32 @@ const HRDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-blue-500 bg-blue-50 rounded-r-lg">
-                <FileText className="h-4 w-4 text-blue-600 mt-0.5" />
+              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-primary bg-accent rounded-r-lg">
+                <FileText className="h-4 w-4 text-primary mt-0.5" />
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">New complaint filed - POSH-2024-001</div>
                   <div className="text-xs text-muted-foreground">5 minutes ago • Marketing Department</div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-green-500 bg-green-50 rounded-r-lg">
-                <Users className="h-4 w-4 text-green-600 mt-0.5" />
+              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-success bg-success-muted rounded-r-lg">
+                <Users className="h-4 w-4 text-success mt-0.5" />
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">ICC member assigned to POSH-2024-002</div>
                   <div className="text-xs text-muted-foreground">2 hours ago • Sales Department</div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-orange-500 bg-orange-50 rounded-r-lg">
-                <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5" />
+              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-warning bg-warning-muted rounded-r-lg">
+                <AlertTriangle className="h-4 w-4 text-warning mt-0.5" />
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">Evidence uploaded for POSH-2024-003</div>
                   <div className="text-xs text-muted-foreground">4 hours ago • Engineering Department</div>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-green-500 bg-green-50 rounded-r-lg">
-                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5" />
+              <div className="flex items-start space-x-3 p-3 border-l-2 border-l-success bg-success-muted rounded-r-lg">
+                <CheckCircle className="h-4 w-4 text-success mt-0.5" />
                 <div className="flex-1">
                   <div className="text-sm font-medium text-foreground">Human review completed - POSH-2024-001</div>
                   <div className="text-xs text-muted-foreground">6 hours ago • Marketing Department</div>

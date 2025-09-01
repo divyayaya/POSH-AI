@@ -276,7 +276,7 @@ const FileComplaint = () => {
                       )}
                       
                       <div className="flex items-start space-x-4">
-                        <Icon className="w-8 h-8 text-blue-600 mt-1 flex-shrink-0" />
+                        <Icon className="w-8 h-8 text-primary mt-1 flex-shrink-0" />
                         
                         <div className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 mt-1 relative">
                           {isSelected && (
@@ -298,7 +298,7 @@ const FileComplaint = () => {
 
             {/* Validation error */}
             {validation.incidentType && (
-              <div className="text-red-600 text-sm flex items-center mt-2">
+              <div className="text-destructive text-sm flex items-center mt-2">
                 <AlertTriangle className="w-4 h-4 mr-2" />
                 {validation.incidentType}
               </div>
@@ -307,8 +307,8 @@ const FileComplaint = () => {
             {/* Helpful note */}
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-start">
-                <Info className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-blue-800">
+                <Info className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-primary/80">
                   <p className="font-medium mb-1">Not sure which option fits your situation?</p>
                   <p>Choose "I'm not sure" and we'll help guide you through some questions to determine the best category. You can always change this later.</p>
                 </div>
@@ -324,11 +324,11 @@ const FileComplaint = () => {
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <div className="mb-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">Your Information</h2>
-                <div className="flex items-start space-x-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="flex items-start space-x-3 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                  <Info className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <div className="text-sm">
-                    <p className="text-blue-800 font-medium mb-1">Information automatically filled from your HR profile</p>
-                    <p className="text-blue-700">Please verify accuracy and update any incorrect information. All fields are editable.</p>
+                    <p className="text-primary/80 font-medium mb-1">Information automatically filled from your HR profile</p>
+                    <p className="text-primary/70">Please verify accuracy and update any incorrect information. All fields are editable.</p>
                   </div>
                 </div>
               </div>
@@ -337,7 +337,7 @@ const FileComplaint = () => {
                 <div className="space-y-2">
                   <Label htmlFor="fullName" className="text-sm font-medium text-gray-700">
                     Full Name
-                    <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Auto-filled</Badge>
+                    <Badge className="ml-2 bg-primary/10 text-primary text-xs">Auto-filled</Badge>
                   </Label>
                   <Input
                     id="fullName"
@@ -349,7 +349,7 @@ const FileComplaint = () => {
                 <div className="space-y-2">
                   <Label htmlFor="department" className="text-sm font-medium text-gray-700">
                     Department
-                    <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Auto-filled</Badge>
+                    <Badge className="ml-2 bg-primary/10 text-primary text-xs">Auto-filled</Badge>
                   </Label>
                   <Input
                     id="department"
@@ -361,7 +361,7 @@ const FileComplaint = () => {
                 <div className="space-y-2">
                   <Label htmlFor="manager" className="text-sm font-medium text-gray-700">
                     Manager
-                    <Badge className="ml-2 bg-blue-100 text-blue-800 text-xs">Auto-filled</Badge>
+                    <Badge className="ml-2 bg-primary/10 text-primary text-xs">Auto-filled</Badge>
                   </Label>
                   <Input
                     id="manager"
@@ -373,7 +373,7 @@ const FileComplaint = () => {
                 <div className="space-y-2">
                   <Label htmlFor="contactMethod" className="text-sm font-medium text-gray-700">
                     Preferred Contact Method
-                    <span className="text-red-500 ml-1">*</span>
+                    <span className="text-destructive ml-1">*</span>
                   </Label>
                   <Select value={formData.contactMethod} onValueChange={(value) => handleFieldChange('contactMethod', value)}>
                     <SelectTrigger>
@@ -403,7 +403,7 @@ const FileComplaint = () => {
                     Who was involved in this incident?
                     <button 
                       type="button"
-                      className="ml-2 text-blue-600 hover:text-blue-800"
+                      className="ml-2 text-primary hover:text-primary/80"
                       title="You can be as specific or general as you'd like"
                     >
                       <HelpCircle className="w-4 h-4" />
@@ -436,7 +436,7 @@ const FileComplaint = () => {
                       className={validation.incidentDate ? 'border-red-500' : ''}
                     />
                     {validation.incidentDate && (
-                      <p className="text-red-600 text-sm">{validation.incidentDate}</p>
+                      <p className="text-destructive text-sm">{validation.incidentDate}</p>
                     )}
                   </div>
 
@@ -495,17 +495,17 @@ const FileComplaint = () => {
                     </div>
                   </div>
                   {validation.description && (
-                    <p className="text-red-600 text-sm">{validation.description}</p>
+                    <p className="text-destructive text-sm">{validation.description}</p>
                   )}
                   
                   {/* Writing prompts */}
                   <details className="text-xs">
-                    <summary className="text-blue-600 hover:text-blue-800 cursor-pointer">
+                    <summary className="text-primary hover:text-primary/80 cursor-pointer">
                       Need help getting started? ▼
                     </summary>
-                    <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                      <p className="font-medium text-blue-800 mb-2">Consider including:</p>
-                      <ul className="space-y-1 text-blue-700">
+                    <div className="mt-2 p-3 bg-primary/5 border border-primary/20 rounded-md">
+                      <p className="font-medium text-primary/80 mb-2">Consider including:</p>
+                      <ul className="space-y-1 text-primary/70">
                         <li>• What exactly was said or done?</li>
                         <li>• How did this behavior affect you?</li>
                         <li>• Were there any witnesses present?</li>
@@ -519,12 +519,12 @@ const FileComplaint = () => {
             </div>
 
             {/* Privacy reminder */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <div className="bg-warning-muted border border-warning/20 rounded-lg p-4">
               <div className="flex items-start">
-                <Heart className="w-5 h-5 text-yellow-600 mr-3 mt-0.5 flex-shrink-0" />
+                <Heart className="w-5 h-5 text-warning mr-3 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
-                  <p className="text-yellow-800 font-medium mb-1">Privacy Reminder</p>
-                  <p className="text-yellow-700">
+                  <p className="text-warning font-medium mb-1">Privacy Reminder</p>
+                  <p className="text-warning/80">
                     Only share information you're comfortable providing. You can always add more details later, 
                     and our team will work with whatever level of detail you're able to provide.
                   </p>
@@ -552,7 +552,7 @@ const FileComplaint = () => {
                   <h3 className="text-lg font-semibold text-gray-800 mb-2">Witnesses</h3>
                   <p className="text-sm text-gray-600">Anyone who may have seen or heard what happened</p>
                 </div>
-                <div className="flex items-center text-sm text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
+                <div className="flex items-center text-sm text-warning bg-warning-muted px-3 py-1 rounded-full">
                   <CheckCircle className="w-4 h-4 mr-1" />
                   +30 points each
                 </div>
