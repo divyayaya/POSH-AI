@@ -242,27 +242,6 @@ const HRDashboard = () => {
               
               <Separator />
               
-              <div className="bg-muted/30 rounded-lg p-4">
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
-                    <span className="text-foreground">HRIS Connected</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
-                    <span className="text-foreground">Email Gateway</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-3 w-3 text-green-600" />
-                    <span className="text-foreground">Document Storage</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <AlertTriangle className="h-3 w-3 text-orange-500" />
-                    <span className="text-foreground">Calendar Sync</span>
-                  </div>
-                </div>
-              </div>
-              
               <Button className="w-full justify-start" variant="outline" asChild>
                 <Link to="/admin/webhook-test">
                   <BarChart3 className="mr-2 h-4 w-4" />
