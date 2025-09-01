@@ -245,14 +245,23 @@ const HumanReview = () => {
                 
                 <Separator />
                 
-                <div className="space-y-3">
-                  <div>
-                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Complainant</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.complainant}</div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div>
+                      <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Complainant</Label>
+                      <div className="text-sm font-medium text-foreground mt-1">{case_.complainant}</div>
+                    </div>
+                    <div>
+                      <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Respondent</Label>
+                      <div className="text-sm font-medium text-foreground mt-1">{case_.respondent}</div>
+                    </div>
                   </div>
+                  
                   <div>
-                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Respondent</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.respondent}</div>
+                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 block">AI Incident Summary</Label>
+                    <div className="text-sm text-muted-foreground leading-relaxed p-3 bg-muted/50 rounded-lg border">
+                      <p>Allegation of {case_.incidentType.toLowerCase()} involving inappropriate conduct in the {case_.department}. Initial assessment indicates {case_.evidenceScore < 40 ? 'potential for collaborative resolution' : case_.evidenceScore > 70 ? 'serious concerns requiring formal investigation' : 'moderate complexity case suitable for structured resolution'}. Evidence quality: {case_.evidenceScore < 40 ? 'Limited' : case_.evidenceScore > 70 ? 'Strong' : 'Moderate'}.</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -264,9 +273,6 @@ const HumanReview = () => {
                 <CardTitle className="flex items-center text-foreground">
                   <Brain className="mr-2 h-5 w-5 text-blue-600" />
                   AI Assessment
-                  <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-700 text-xs">
-                    Automated Analysis
-                  </Badge>
                 </CardTitle>
                 <CardDescription className="text-sm">
                   Machine learning analysis of evidence strength and case complexity
@@ -323,7 +329,7 @@ const HumanReview = () => {
                     <span className="text-sm font-semibold text-foreground">Recommended Action</span>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 rounded-lg border-2 border-dashed border-purple-200 bg-purple-50">
+                  <div className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${
                         case_.evidenceScore >= 70 ? 'bg-red-500' :
@@ -331,17 +337,17 @@ const HumanReview = () => {
                         'bg-green-500'
                       }`} />
                       <div>
-                        <div className="font-medium text-purple-900">
+                        <div className="font-medium text-foreground">
                           {case_.evidenceScore < 40 ? 'Mediation' : case_.evidenceScore > 70 ? 'Formal Investigation' : 'Alternative Resolution'}
                         </div>
-                        <div className="text-xs text-purple-700">
+                        <div className="text-xs text-muted-foreground">
                           {case_.evidenceScore < 40 ? 'Collaborative resolution recommended' : 
                            case_.evidenceScore > 70 ? 'Requires comprehensive investigation' : 
                            'Structured resolution process'}
                         </div>
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300 font-medium">
+                    <Badge variant="outline" className="font-medium">
                       85% Match
                     </Badge>
                   </div>
@@ -361,26 +367,26 @@ const HumanReview = () => {
                     <span className="text-sm font-semibold text-foreground">Key Insights</span>
                   </div>
                   
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
+                  <div className="p-4">
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 gap-4 text-center">
-                        <div className="p-2 bg-white/60 rounded border border-amber-200">
-                          <div className="text-lg font-bold text-amber-800">{evidence.length}</div>
-                          <div className="text-xs text-amber-700">Evidence Items</div>
+                        <div className="p-2 rounded">
+                          <div className="text-lg font-bold text-foreground">{evidence.length}</div>
+                          <div className="text-xs text-muted-foreground">Evidence Items</div>
                         </div>
-                        <div className="p-2 bg-white/60 rounded border border-amber-200">
-                          <div className="text-lg font-bold text-amber-800">
+                        <div className="p-2 rounded">
+                          <div className="text-lg font-bold text-foreground">
                             {case_.evidenceScore < 40 ? 'Low' : case_.evidenceScore > 70 ? 'High' : 'Med'}
                           </div>
-                          <div className="text-xs text-amber-700">Risk Level</div>
+                          <div className="text-xs text-muted-foreground">Risk Level</div>
                         </div>
-                        <div className="p-2 bg-white/60 rounded border border-amber-200">
-                          <div className="text-lg font-bold text-amber-800">3-5</div>
-                          <div className="text-xs text-amber-700">Days Est.</div>
+                        <div className="p-2 rounded">
+                          <div className="text-lg font-bold text-foreground">3-5</div>
+                          <div className="text-xs text-muted-foreground">Days Est.</div>
                         </div>
                       </div>
                       
-                      <div className="text-sm text-amber-800 leading-relaxed">
+                      <div className="text-sm text-muted-foreground leading-relaxed">
                         <strong>Incident Analysis:</strong> Allegations of {case_.incidentType.toLowerCase()} in {case_.department}. 
                         Evidence quality suggests {case_.evidenceScore < 40 ? 'collaborative resolution may resolve concerns effectively' : 
                         case_.evidenceScore > 70 ? 'formal procedures required due to severity indicators' : 
