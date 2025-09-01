@@ -46,30 +46,136 @@ const HRDashboard = () => {
 
       {/* Key Performance Indicators */}
       <Card className="mb-8 mx-6 bg-card border border-border shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-foreground">Key Performance Indicators for POSH Compliance</CardTitle>
+        <CardHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="text-foreground flex items-center space-x-3">
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10">
+                  <BarChart3 className="w-5 h-5 text-primary" />
+                </div>
+                <span>POSH Compliance Progress</span>
+              </CardTitle>
+              <CardDescription className="mt-2">
+                Track key metrics and improvements in workplace safety compliance
+              </CardDescription>
+            </div>
+            <Badge variant="outline" className="text-xs font-medium">
+              This Quarter
+            </Badge>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-              <div className="text-3xl font-bold text-success">+60%</div>
-              <div className="text-sm text-muted-foreground">Reporting Rate Increase</div>
-              <div className="text-xs text-muted-foreground">vs. previous year</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Cases Resolved Metric */}
+            <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-success/5 to-success/10 p-6 hover:shadow-md transition-all duration-200">
+              <div className="absolute top-4 right-4">
+                <CheckCircle className="w-6 h-6 text-success/60" />
+              </div>
+              <div className="space-y-3">
+                <div className="text-3xl font-bold text-success">12</div>
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold text-foreground">Cases Resolved</div>
+                  <div className="text-xs text-muted-foreground">+3 from last quarter</div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-full bg-success/20 rounded-full h-2">
+                    <div className="bg-success h-2 rounded-full" style={{width: '85%'}}></div>
+                  </div>
+                  <span className="text-xs font-medium text-success">85%</span>
+                </div>
+              </div>
             </div>
-            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-              <div className="text-3xl font-bold text-primary">75%</div>
-              <div className="text-sm text-muted-foreground">Faster Processing</div>
-              <div className="text-xs text-muted-foreground">avg. 2 hrs vs. 8 hrs</div>
+
+            {/* Average Response Time */}
+            <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-primary/5 to-primary/10 p-6 hover:shadow-md transition-all duration-200">
+              <div className="absolute top-4 right-4">
+                <Clock className="w-6 h-6 text-primary/60" />
+              </div>
+              <div className="space-y-3">
+                <div className="text-3xl font-bold text-primary">2.4hrs</div>
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold text-foreground">Avg Response Time</div>
+                  <div className="text-xs text-muted-foreground">75% faster than before</div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-full bg-primary/20 rounded-full h-2">
+                    <div className="bg-primary h-2 rounded-full" style={{width: '92%'}}></div>
+                  </div>
+                  <span className="text-xs font-medium text-primary">92%</span>
+                </div>
+              </div>
             </div>
-            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-              <div className="text-3xl font-bold text-success">100%</div>
-              <div className="text-sm text-muted-foreground">Compliance Rate</div>
-              <div className="text-xs text-muted-foreground">on-time completion</div>
+
+            {/* Training Completion */}
+            <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-warning/5 to-warning/10 p-6 hover:shadow-md transition-all duration-200">
+              <div className="absolute top-4 right-4">
+                <Users className="w-6 h-6 text-warning/60" />
+              </div>
+              <div className="space-y-3">
+                <div className="text-3xl font-bold text-warning">94%</div>
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold text-foreground">Staff Training Rate</div>
+                  <div className="text-xs text-muted-foreground">268 of 285 employees</div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-full bg-warning/20 rounded-full h-2">
+                    <div className="bg-warning h-2 rounded-full" style={{width: '94%'}}></div>
+                  </div>
+                  <span className="text-xs font-medium text-warning">94%</span>
+                </div>
+              </div>
             </div>
-            <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
-              <div className="text-3xl font-bold text-primary">4.7/5</div>
-              <div className="text-sm text-muted-foreground">User Satisfaction</div>
-              <div className="text-xs text-muted-foreground">employee feedback</div>
+
+            {/* Policy Compliance */}
+            <div className="relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-accent/5 to-accent/10 p-6 hover:shadow-md transition-all duration-200">
+              <div className="absolute top-4 right-4">
+                <FileText className="w-6 h-6 text-accent-foreground/60" />
+              </div>
+              <div className="space-y-3">
+                <div className="text-3xl font-bold text-accent-foreground">100%</div>
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold text-foreground">Policy Adherence</div>
+                  <div className="text-xs text-muted-foreground">All deadlines met</div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-full bg-accent/40 rounded-full h-2">
+                    <div className="bg-accent-foreground h-2 rounded-full" style={{width: '100%'}}></div>
+                  </div>
+                  <span className="text-xs font-medium text-accent-foreground">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Insights Row */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 mx-auto rounded-lg bg-success/10 mb-2">
+                  <Bell className="w-4 h-4 text-success" />
+                </div>
+                <div className="text-lg font-bold text-success">+127%</div>
+                <div className="text-sm text-muted-foreground">Increased Reporting</div>
+                <div className="text-xs text-muted-foreground">More employees feel safe to report</div>
+              </div>
+              
+              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 mx-auto rounded-lg bg-primary/10 mb-2">
+                  <AlertTriangle className="w-4 h-4 text-primary" />
+                </div>
+                <div className="text-lg font-bold text-primary">3</div>
+                <div className="text-sm text-muted-foreground">Active Cases</div>
+                <div className="text-xs text-muted-foreground">Currently under investigation</div>
+              </div>
+              
+              <div className="text-center space-y-2 p-4 bg-muted/20 rounded-lg">
+                <div className="flex items-center justify-center w-8 h-8 mx-auto rounded-lg bg-warning/10 mb-2">
+                  <Calendar className="w-4 h-4 text-warning" />
+                </div>
+                <div className="text-lg font-bold text-warning">0</div>
+                <div className="text-sm text-muted-foreground">Overdue Items</div>
+                <div className="text-xs text-muted-foreground">All compliance tasks on track</div>
+              </div>
             </div>
           </div>
         </CardContent>
