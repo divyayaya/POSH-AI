@@ -19,6 +19,7 @@ export default {
 		},
 		extend: {
 			colors: {
+				/* Legacy compatibility */
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -54,6 +55,62 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				
+				/* Trauma-Informed Design System */
+				'bg-primary': 'hsl(var(--bg-primary))',
+				'bg-secondary': 'hsl(var(--bg-secondary))',
+				'bg-tertiary': 'hsl(var(--bg-tertiary))',
+				'bg-elevated': 'hsl(var(--bg-elevated))',
+				
+				'text-primary': 'hsl(var(--text-primary))',
+				'text-secondary': 'hsl(var(--text-secondary))',
+				'text-muted': 'hsl(var(--text-muted))',
+				'text-light': 'hsl(var(--text-light))',
+				
+				'gentle-teal': 'hsl(var(--gentle-teal))',
+				'soft-sage': 'hsl(var(--soft-sage))',
+				'soft-lavender': 'hsl(var(--soft-lavender))',
+				'primary-navy': 'hsl(var(--primary-navy))',
+				
+				'btn-primary': {
+					DEFAULT: 'hsl(var(--btn-primary))',
+					hover: 'hsl(var(--btn-primary-hover))',
+					active: 'hsl(var(--btn-primary-active))',
+					foreground: 'hsl(var(--btn-primary-text))'
+				},
+				'btn-secondary': {
+					DEFAULT: 'hsl(var(--btn-secondary))',
+					hover: 'hsl(var(--btn-secondary-hover))',
+					active: 'hsl(var(--btn-secondary-active))',
+					foreground: 'hsl(var(--btn-secondary-text))'
+				},
+				'btn-gentle': {
+					DEFAULT: 'hsl(var(--btn-gentle))',
+					hover: 'hsl(var(--btn-gentle-hover))',
+					active: 'hsl(var(--btn-gentle-active))',
+					foreground: 'hsl(var(--btn-gentle-text))'
+				},
+				
+				'input-border': 'hsl(var(--input-border))',
+				'input-border-focus': 'hsl(var(--input-border-focus))',
+				'input-border-error': 'hsl(var(--input-border-error))',
+				'input-background': 'hsl(var(--input-background))',
+				'input-background-disabled': 'hsl(var(--input-background-disabled))',
+				
+				evidence: {
+					low: 'hsl(var(--evidence-low))',
+					medium: 'hsl(var(--evidence-medium))',
+					high: 'hsl(var(--evidence-high))'
+				},
+				
+				status: {
+					success: 'hsl(var(--status-success))',
+					warning: 'hsl(var(--status-warning))',
+					error: 'hsl(var(--status-error))',
+					info: 'hsl(var(--status-info))'
+				},
+				
+				/* Legacy status colors for compatibility */
 				success: {
 					DEFAULT: 'hsl(var(--success))',
 					foreground: 'hsl(var(--success-foreground))',
@@ -63,26 +120,6 @@ export default {
 					DEFAULT: 'hsl(var(--warning))',
 					foreground: 'hsl(var(--warning-foreground))',
 					muted: 'hsl(var(--warning-muted))'
-				},
-				evidence: {
-					low: 'hsl(var(--evidence-low))',
-					medium: 'hsl(var(--evidence-medium))',
-					high: 'hsl(var(--evidence-high))'
-				},
-				status: {
-					new: 'hsl(var(--status-new))',
-					investigating: 'hsl(var(--status-investigating))',
-					resolved: 'hsl(var(--status-resolved))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
 			backgroundImage: {

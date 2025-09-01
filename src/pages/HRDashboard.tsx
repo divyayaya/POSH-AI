@@ -29,84 +29,87 @@ const HRDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-white">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" asChild>
-                <Link to="/">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Home
-                </Link>
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold">HR Professional Dashboard</h1>
-                <p className="text-sm text-muted-foreground">POSH Compliance Management</p>
-              </div>
+    <div className="min-h-screen bg-bg-primary">
+      {/* Header */}
+      <div className="bg-bg-elevated border-b border-input-border px-6 py-4">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold text-text-primary">HR Dashboard</h1>
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Bell className="w-6 h-6 text-gentle-teal cursor-pointer" />
+              <span className="absolute -top-1 -right-1 bg-status-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                3
+              </span>
             </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="relative">
-                <Bell className="h-4 w-4" />
-                {notifications > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs">
-                    {notifications}
-                  </Badge>
-                )}
-              </Button>
-              <Badge variant="secondary">HR Manager</Badge>
-            </div>
+            <span className="text-sm text-text-secondary">Welcome, Sarah Chen</span>
           </div>
         </div>
-      </header>
+      </div>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Main Dashboard Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      {/* Metrics Banner */}
+      <div className="bg-gradient-to-r from-primary-navy to-gentle-teal p-8 text-white">
+        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="text-center">
+            <div className="text-3xl font-bold mb-2">+60%</div>
+            <div className="text-sm opacity-90">Reporting Rate Increase</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold mb-2">75%</div>
+            <div className="text-sm opacity-90">Faster Processing</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold mb-2">100%</div>
+            <div className="text-sm opacity-90">Compliance Rate</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold mb-2">4.7/5</div>
+            <div className="text-sm opacity-90">User Satisfaction</div>
+          </div>
+        </div>
+      </div>
+
+      <main className="px-6 py-8 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 xl:grid-cols-4 gap-6">
           {/* Active Cases Widget */}
-          <Card>
+          <Card className="lg:col-span-2 bg-bg-elevated shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center">
-                <FileText className="mr-2 h-5 w-5" />
-                Active Cases
+              <CardTitle className="flex items-center space-x-2 text-text-primary font-semibold">
+                <FileText className="w-5 h-5" />
+                <span>Active Cases</span>
               </CardTitle>
-              <CardDescription>
-                Current POSH complaints requiring attention
-              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {mockCases.filter(c => c.status !== 'resolved').map((case_) => (
-                <div key={case_.id} className="border rounded-lg p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="font-medium">{case_.id}</div>
-                    <div className="flex space-x-2">
-                      <Badge variant="outline" className={`text-${getStatusColor(case_.status)}`}>
-                        {case_.status}
-                      </Badge>
-                      <Badge variant="outline" className={`text-${getPriorityColor(case_.priority)}`}>
-                        {case_.priority} priority
-                      </Badge>
+            <CardContent>
+              <div className="space-y-4">
+                {mockCases.filter(c => c.status !== 'resolved').map(case_ => (
+                  <div key={case_.id} className={`p-4 rounded-lg border-l-4 ${
+                    case_.priority === 'high' ? 'border-l-status-error bg-status-error/5' :
+                    case_.status === 'investigating' ? 'border-l-status-warning bg-status-warning/5' :
+                    'border-l-status-info bg-status-info/5'
+                  }`}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-semibold text-text-primary">{case_.id}</h4>
+                        <p className="text-sm text-text-secondary">{case_.department}</p>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <span className={`px-2 py-1 rounded text-xs font-medium ${
+                            case_.priority === 'high' ? 'bg-status-error text-white' :
+                            case_.priority === 'medium' ? 'bg-status-warning text-text-primary' :
+                            'bg-text-light text-text-secondary'
+                          }`}>
+                            {case_.priority.toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button size="sm" className="bg-btn-gentle hover:bg-btn-gentle-hover text-btn-gentle-foreground" asChild>
+                          <Link to={`/human-review/${case_.id}`}>View</Link>
+                        </Button>
+                        <Button size="sm" className="bg-btn-gentle hover:bg-btn-gentle-hover text-btn-gentle-foreground">Assign</Button>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    <div>Complainant: {case_.complainant}</div>
-                    <div>Respondent: {case_.respondent}</div>
-                    <div>Department: {case_.department}</div>
-                    <div>Evidence Score: {case_.evidenceScore}/100</div>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button size="sm" variant="outline" asChild>
-                      <Link to={`/human-review/${case_.id}`}>View Details</Link>
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      Assign Investigator
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      Update Status
-                    </Button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </CardContent>
           </Card>
 

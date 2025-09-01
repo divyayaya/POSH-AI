@@ -7,51 +7,88 @@
 @layer base {
   :root {
     /* Trauma-Informed Color Palette (HSL format) */
-    --background: 42 44% 96%; /* Warm Cream #FAF7F0 */
-    --foreground: 210 29% 24%; /* Primary Navy #2C3E50 */
+    /* Background Colors */
+    --bg-primary: 42 44% 96%; /* Main page background #FAF7F0 */
+    --bg-secondary: 42 20% 95%; /* Card backgrounds #F5F3ED */
+    --bg-tertiary: 42 15% 93%; /* Input field backgrounds #EFEEE8 */
+    --bg-elevated: 0 0% 100%; /* Modal/dropdown backgrounds #FFFFFF */
+    
+    /* Text Colors */
+    --text-primary: 210 29% 24%; /* Main headings #2C3E50 */
+    --text-secondary: 220 13% 35%; /* Body text #475569 */
+    --text-muted: 220 13% 42%; /* Placeholder text #64748B */
+    --text-light: 220 13% 58%; /* Disabled text #94A3B8 */
 
-    --card: 0 0% 100%; /* Pure white for elevated surfaces */
+    /* Interactive Element Colors */
+    --gentle-teal: 195 38% 47%; /* #4A90A4 */
+    --soft-sage: 98 39% 70%; /* #7FB069 */
+    --soft-lavender: 225 37% 76%; /* #A8B2D1 */
+    --warm-cream: 42 44% 96%; /* #FAF7F0 */
+    --primary-navy: 210 29% 24%; /* #2C3E50 */
+    --warm-slate: 220 13% 35%; /* #475569 */
+    
+    /* Button Colors */
+    --btn-primary: 210 29% 24%; /* #2C3E50 */
+    --btn-primary-hover: 210 29% 29%; /* #34495E */
+    --btn-primary-active: 210 29% 19%; /* #1A252F */
+    --btn-primary-text: 0 0% 100%;
+    
+    --btn-secondary: 98 39% 70%; /* #7FB069 */
+    --btn-secondary-hover: 98 39% 60%; /* #6B9654 */
+    --btn-secondary-active: 98 39% 52%; /* #5A7C47 */
+    --btn-secondary-text: 0 0% 100%;
+    
+    --btn-gentle: 225 37% 76%; /* #A8B2D1 */
+    --btn-gentle-hover: 225 37% 70%; /* #9AA5C4 */
+    --btn-gentle-active: 225 37% 64%; /* #8B98B7 */
+    --btn-gentle-text: 210 29% 24%;
+    
+    /* Form Element Colors */
+    --input-border: 210 20% 85%; /* #D1D9E0 */
+    --input-border-focus: 195 38% 47%; /* #4A90A4 */
+    --input-border-error: 8 62% 74%; /* #E8998D */
+    --input-background: 0 0% 99%; /* #FEFEFE */
+    --input-background-disabled: 220 13% 96%; /* #F1F5F9 */
+    
+    /* Evidence Scoring Colors */
+    --evidence-high: 135 15% 42%; /* #5A7C65 - 80+ points */
+    --evidence-medium: 98 39% 70%; /* #7FB069 - 40-79 points */
+    --evidence-low: 32 65% 69%; /* #E6B17A - <40 points */
+    
+    /* Status Colors */
+    --status-success: 135 15% 42%; /* #5A7C65 */
+    --status-warning: 32 65% 69%; /* #E6B17A */
+    --status-error: 8 62% 74%; /* #E8998D */
+    --status-info: 195 38% 47%; /* #4A90A4 */
+    
+    /* Legacy colors for compatibility */
+    --background: 42 44% 96%;
+    --foreground: 210 29% 24%;
+    --card: 0 0% 100%;
     --card-foreground: 210 29% 24%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 210 29% 24%;
-
-    /* Primary: Trust & Stability Navy */
-    --primary: 210 29% 24%; /* #2C3E50 */
+    --primary: 210 29% 24%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 210 29% 29%; /* Slightly lighter for hover */
-
-    /* Secondary: Soft Sage for Comfort */
-    --secondary: 98 39% 70%; /* #7FB069 */
+    --primary-hover: 210 29% 29%;
+    --secondary: 98 39% 70%;
     --secondary-foreground: 0 0% 100%;
     --secondary-hover: 98 39% 65%;
-
-    /* Success: Forest Green for Completion */
-    --success: 135 15% 42%; /* #5A7C65 */
+    --success: 135 15% 42%;
     --success-foreground: 0 0% 100%;
     --success-muted: 135 15% 95%;
-
-    /* Warning: Gentle Amber (Non-alarming) */
-    --warning: 32 65% 69%; /* #E6B17A */
+    --warning: 32 65% 69%;
     --warning-foreground: 210 29% 24%;
     --warning-muted: 32 65% 95%;
-
-    /* Trauma-Informed System Colors */
-    --muted: 42 20% 93%; /* Softer background variant */
-    --muted-foreground: 220 13% 35%; /* Warm Slate #475569 */
-
-    /* Gentle Teal for Interactive Elements */
-    --accent: 195 38% 90%; /* Light version for backgrounds */
-    --accent-foreground: 195 38% 47%; /* Gentle Teal #4A90A4 */
-
-    /* Soft Coral for Gentle Errors */
-    --destructive: 8 62% 74%; /* #E8998D */
+    --muted: 42 20% 93%;
+    --muted-foreground: 220 13% 35%;
+    --accent: 195 38% 90%;
+    --accent-foreground: 195 38% 47%;
+    --destructive: 8 62% 74%;
     --destructive-foreground: 0 0% 100%;
-
-    /* Form & Interactive Elements */
-    --border: 195 20% 85%; /* Soft borders */
-    --input: 42 30% 97%; /* Input backgrounds */
-    --ring: 195 38% 47%; /* Focus rings - Gentle Teal */
+    --border: 195 20% 85%;
+    --input: 42 30% 97%;
+    --ring: 195 38% 47%;
 
     /* Design System Extensions */
     --radius: 0.75rem;

@@ -71,45 +71,40 @@ const FileComplaint = () => {
         return (
           <div className="space-y-6">
             <div className="text-center space-y-4">
-              <h2 className="text-2xl font-bold">Report a Concern - Your Voice Matters</h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-2xl font-semibold text-text-primary">What type of incident would you like to report?</h2>
+              <p className="text-text-secondary max-w-2xl mx-auto">
                 We're here to support you through this process. Your report will be handled confidentially 
                 and in accordance with POSH Act requirements.
               </p>
-              <div className="flex justify-center space-x-4">
-                <Badge variant="secondary" className="bg-secondary/10">
-                  <Shield className="mr-1 h-3 w-3" />
-                  Confidential
-                </Badge>
-                <Badge variant="secondary" className="bg-secondary/10">
-                  Expected timeline: 90 days
-                </Badge>
-                <Badge variant="secondary" className="bg-secondary/10">
-                  24/7 Support Available
-                </Badge>
+              <div className="flex justify-center space-x-4 flex-wrap">
+                <div className="flex items-center space-x-2 bg-soft-sage text-white px-3 py-1 rounded-full text-sm">
+                  <Shield className="h-3 w-3" />
+                  <span>Confidential</span>
+                </div>
+                <div className="text-sm text-text-muted">Expected timeline: 90 days</div>
+                <div className="text-sm text-text-muted">24/7 Support Available</div>
               </div>
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-4 block">What type of incident would you like to report?</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {incidentTypes.map((type) => {
                   const Icon = type.icon;
                   return (
                     <Card 
                       key={type.id}
-                      className={`cursor-pointer transition-all hover:shadow-md border-2 ${
+                      className={`cursor-pointer transition-all hover:shadow-md bg-bg-elevated border-input-border hover:border-gentle-teal hover:shadow-gentle-teal/10 ${
                         formData.incidentType === type.id 
-                          ? 'border-primary bg-primary/5' 
-                          : 'border-border hover:border-primary/50'
+                          ? 'border-gentle-teal ring-2 ring-gentle-teal/20' 
+                          : ''
                       }`}
                       onClick={() => setFormData({ ...formData, incidentType: type.id })}
                     >
                       <CardContent className="p-6 text-center">
                         <Icon className={`h-8 w-8 mx-auto mb-3 ${
-                          formData.incidentType === type.id ? 'text-primary' : 'text-muted-foreground'
+                          formData.incidentType === type.id ? 'text-gentle-teal' : 'text-gentle-teal'
                         }`} />
-                        <h3 className="font-semibold">{type.label}</h3>
+                        <h3 className="font-medium text-text-primary">{type.label}</h3>
                       </CardContent>
                     </Card>
                   );
@@ -118,15 +113,15 @@ const FileComplaint = () => {
             </div>
 
             {formData.incidentType === 'unsure' && (
-              <Card className="bg-accent/50 border-secondary">
+              <Card className="bg-soft-lavender/20 border border-soft-lavender/30">
                 <CardHeader>
-                  <CardTitle className="flex items-center text-secondary">
-                    <Users className="mr-2 h-5 w-5" />
+                  <CardTitle className="flex items-center text-text-primary">
+                    <Users className="mr-2 h-5 w-5 text-gentle-teal" />
                     Guided Assessment Available
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm">
+                  <p className="text-sm text-text-secondary">
                     Our AI-powered assessment tool will help determine the most appropriate category 
                     and investigation pathway based on your specific situation.
                   </p>
@@ -422,87 +417,80 @@ const FileComplaint = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" asChild>
-              <Link to="/">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Link>
-            </Button>
-            <div className="text-center">
-              <h1 className="text-xl font-semibold">File a Complaint</h1>
-              <div className="text-sm text-muted-foreground">Step {currentStep} of 4</div>
-            </div>
-            <div className="w-24" /> {/* Spacer for centering */}
-          </div>
+    <div className="min-h-screen bg-bg-primary p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8 bg-bg-elevated rounded-lg p-8 border border-input-border">
+          <h1 className="text-3xl font-semibold text-text-primary mb-2">
+            Report a Concern - Your Voice Matters
+          </h1>
+          <p className="text-lg text-text-secondary">
+            We're here to listen and support you through this process
+          </p>
         </div>
-      </header>
 
-      {/* Progress Indicator */}
-      <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-4">
+        {/* Progress Indicator */}
+        <div className="mb-8">
           <div className="flex items-center justify-between max-w-2xl mx-auto">
-            {[1, 2, 3, 4].map((step, index) => (
+            {[1, 2, 3, 4].map((step) => (
               <div key={step} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step <= currentStep 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted text-muted-foreground'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
+                    step < currentStep
+                      ? 'bg-status-success text-white'
+                      : step === currentStep
+                      ? 'bg-gentle-teal text-white shadow-lg shadow-gentle-teal/30'
+                      : 'bg-text-light text-white'
+                  }`}
+                >
                   {step}
                 </div>
-                {index < 3 && (
-                  <div className={`h-0.5 w-16 mx-2 ${
-                    step < currentStep ? 'bg-primary' : 'bg-muted'
-                  }`} />
+                {step < 4 && (
+                  <div
+                    className={`w-16 h-1 mx-2 transition-colors ${
+                      step < currentStep ? 'bg-status-success' : 'bg-text-light'
+                    }`}
+                  />
                 )}
               </div>
             ))}
           </div>
-          <div className="flex justify-between max-w-2xl mx-auto mt-2 text-xs text-muted-foreground">
-            <span>Incident Type</span>
-            <span>Information</span>
-            <span>Evidence</span>
-            <span>Review</span>
-          </div>
+        </div>
+
+        {/* Step Content */}
+        <div className="bg-bg-elevated rounded-lg shadow-sm p-8 mb-8 border border-input-border">
+          {renderStepContent()}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between">
+          <Button
+            onClick={handlePrev}
+            disabled={currentStep === 1}
+            className="bg-btn-gentle hover:bg-btn-gentle-hover text-btn-gentle-foreground px-6"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          {currentStep < 4 ? (
+            <Button
+              onClick={handleNext}
+              className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary-foreground hover:shadow-lg hover:-translate-y-0.5 transition-all px-6"
+            >
+              Continue
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary-foreground hover:shadow-lg hover:-translate-y-0.5 transition-all px-6"
+            >
+              Submit Complaint
+              <CheckCircle className="ml-2 h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
-
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <Card>
-            <CardContent className="p-8">
-              {renderStepContent()}
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-between mt-8">
-            <Button 
-              variant="outline" 
-              onClick={handlePrev}
-              disabled={currentStep === 1}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Previous
-            </Button>
-            
-            {currentStep < 4 ? (
-              <Button onClick={handleNext}>
-                Next
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            ) : (
-              <Button onClick={handleSubmit} className="bg-primary hover:bg-primary-hover">
-                Submit Complaint
-                <CheckCircle className="ml-2 h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-      </main>
     </div>
   );
 };

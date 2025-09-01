@@ -59,21 +59,22 @@ const HumanReview = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-white">
+    <div className="min-h-screen bg-bg-primary">
+      <header className="border-b bg-bg-elevated shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" asChild className="text-text-secondary hover:text-text-primary">
               <Link to="/hr-dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Dashboard
               </Link>
             </Button>
-            <div className="text-center">
-              <h1 className="text-xl font-bold">Human Evaluation Required</h1>
-              <p className="text-sm text-muted-foreground">Case {case_.id}</p>
+            <div className="text-center bg-status-error/20 px-6 py-3 rounded-lg border border-status-error/30">
+              <h1 className="text-xl font-semibold text-status-error">Human Evaluation Required</h1>
+              <p className="text-sm text-text-secondary">Case {case_.id}</p>
+              <div className="w-3 h-3 bg-status-error rounded-full animate-pulse mx-auto mt-2"></div>
             </div>
-            <Badge variant="destructive">High Priority</Badge>
+            <Badge variant="outline" className="bg-status-error text-white border-status-error">High Priority</Badge>
           </div>
         </div>
       </header>
@@ -81,56 +82,60 @@ const HumanReview = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Case Summary (Left Panel) */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
+          <Card className="bg-bg-elevated shadow-lg">
+            <CardHeader className="border-b-2 border-soft-sage">
+              <CardTitle className="flex items-center text-text-primary font-semibold">
                 <FileText className="mr-2 h-5 w-5" />
                 Case Summary
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pt-6">
               <div>
-                <Label className="text-xs text-muted-foreground">Case ID</Label>
-                <div className="font-medium">{case_.id}</div>
+                <Label className="text-xs text-text-muted">Case ID</Label>
+                <div className="font-medium text-text-primary">{case_.id}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Incident Type</Label>
-                <div className="font-medium">{case_.incidentType}</div>
+                <Label className="text-xs text-text-muted">Incident Type</Label>
+                <div className="font-medium text-text-secondary">{case_.incidentType}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Department</Label>
-                <div className="font-medium">{case_.department}</div>
+                <Label className="text-xs text-text-muted">Department</Label>
+                <div className="font-medium text-text-secondary">{case_.department}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Complainant</Label>
-                <div className="font-medium">{case_.complainant}</div>
+                <Label className="text-xs text-text-muted">Complainant</Label>
+                <div className="font-medium text-text-secondary">{case_.complainant}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Respondent</Label>
-                <div className="font-medium">{case_.respondent}</div>
+                <Label className="text-xs text-text-muted">Respondent</Label>
+                <div className="font-medium text-text-secondary">{case_.respondent}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Submission Date</Label>
-                <div className="font-medium">{case_.submissionDate}</div>
+                <Label className="text-xs text-text-muted">Submission Date</Label>
+                <div className="font-medium text-text-secondary">{case_.submissionDate}</div>
               </div>
               <div>
-                <Label className="text-xs text-muted-foreground">Deadline</Label>
-                <div className="font-medium">{case_.deadline}</div>
+                <Label className="text-xs text-text-muted">Deadline</Label>
+                <div className="font-medium text-text-secondary">{case_.deadline}</div>
               </div>
 
               <Separator />
 
               <div className="space-y-3">
-                <h4 className="font-medium">Evidence Breakdown</h4>
+                <h4 className="font-medium text-text-primary">Evidence Breakdown</h4>
                 {evidence.map((ev) => (
-                  <div key={ev.id} className="border rounded-lg p-3">
+                  <div key={ev.id} className="border border-input-border rounded-lg p-3 bg-bg-secondary/50">
                     <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline">{ev.type}</Badge>
-                      <Badge variant="secondary">{ev.aiAnalysisScore} pts</Badge>
+                      <Badge variant="outline" className={`${
+                        ev.type === 'document' ? 'border-evidence-medium text-evidence-medium' :
+                        ev.type === 'witness' ? 'border-evidence-low text-evidence-low' : 
+                        'border-evidence-high text-evidence-high'
+                      }`}>{ev.type}</Badge>
+                      <Badge variant="secondary" className="bg-evidence-medium text-white">{ev.aiAnalysisScore} pts</Badge>
                     </div>
-                    <div className="text-sm">{ev.description}</div>
+                    <div className="text-sm text-text-secondary">{ev.description}</div>
                     {ev.metadata && (
-                      <div className="text-xs text-muted-foreground mt-1">
+                      <div className="text-xs text-text-muted mt-1">
                         Credibility: {ev.credibilityRating}/5.0
                       </div>
                     )}
