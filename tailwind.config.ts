@@ -103,11 +103,28 @@ export default {
 					high: 'hsl(var(--evidence-high))'
 				},
 				
+				/* Neutral palette for consistent grays */
+				neutral: {
+					50: 'hsl(var(--neutral-50))',
+					100: 'hsl(var(--neutral-100))',
+					200: 'hsl(var(--neutral-200))',
+					300: 'hsl(var(--neutral-300))',
+					400: 'hsl(var(--neutral-400))',
+					500: 'hsl(var(--neutral-500))',
+					600: 'hsl(var(--neutral-600))',
+					700: 'hsl(var(--neutral-700))',
+					800: 'hsl(var(--neutral-800))',
+					900: 'hsl(var(--neutral-900))'
+				},
+				
 				status: {
 					success: 'hsl(var(--status-success))',
 					warning: 'hsl(var(--status-warning))',
 					error: 'hsl(var(--status-error))',
-					info: 'hsl(var(--status-info))'
+					info: 'hsl(var(--status-info))',
+					new: 'hsl(var(--status-new))',
+					investigating: 'hsl(var(--status-investigating))',
+					resolved: 'hsl(var(--status-resolved))'
 				},
 				
 				/* Legacy status colors for compatibility */

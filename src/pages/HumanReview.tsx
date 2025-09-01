@@ -192,7 +192,7 @@ const HumanReview = () => {
               Draft Saved
             </Badge>
           )}
-          <Badge variant="outline" className="bg-status-error text-white border-status-error mt-2">High Priority</Badge>
+          <Badge variant="outline" className="bg-status-error text-destructive-foreground border-status-error mt-2">High Priority</Badge>
         </div>
 
         {/* Progress Indicator */}
@@ -255,7 +255,7 @@ const HumanReview = () => {
                         ev.type === 'witness' ? 'border-evidence-low text-evidence-low' : 
                         'border-evidence-high text-evidence-high'
                       }`}>{ev.type}</Badge>
-                      <Badge variant="secondary" className="bg-evidence-medium text-white">{ev.aiAnalysisScore} pts</Badge>
+                      <Badge variant="secondary" className="bg-evidence-medium text-secondary-foreground">{ev.aiAnalysisScore} pts</Badge>
                     </div>
                     <div className="text-sm text-text-secondary">{ev.description}</div>
                     {ev.metadata && (

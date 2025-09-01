@@ -195,7 +195,7 @@ const FileComplaint = () => {
                     <SelectTrigger className="bg-gray-100">
                       <SelectValue placeholder="Work Email" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                    <SelectContent className="bg-popover border border-border shadow-lg z-50">
                       <SelectItem value="work-email">Work Email</SelectItem>
                       <SelectItem value="personal-email">Personal Email</SelectItem>
                       <SelectItem value="phone">Phone</SelectItem>
@@ -252,7 +252,7 @@ const FileComplaint = () => {
                   <SelectTrigger className="bg-gray-100">
                     <SelectValue placeholder="Select location..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                  <SelectContent className="bg-popover border border-border shadow-lg z-50">
                     <SelectItem value="office">Office</SelectItem>
                     <SelectItem value="conference-room">Conference Room</SelectItem>
                     <SelectItem value="remote">Remote/Virtual</SelectItem>
@@ -327,7 +327,7 @@ const FileComplaint = () => {
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="font-semibold text-gray-900">Evidence Strength Assessment</h3>
-                  <Badge className="bg-red-500 text-white">25/100 points</Badge>
+                  <Badge className="bg-destructive text-destructive-foreground">25/100 points</Badge>
                 </div>
                 <div className="bg-red-100 border border-red-300 rounded p-3">
                   <div className="flex items-center mb-2">
@@ -485,10 +485,10 @@ const FileComplaint = () => {
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
                       step.number === currentStep 
-                        ? 'bg-orange-500 text-white' 
+                        ? 'bg-status-warning text-warning-foreground' 
                         : step.number < currentStep
-                        ? 'bg-green-500 text-white'
-                        : 'bg-gray-300 text-gray-600'
+                        ? 'bg-status-success text-success-foreground'
+                        : 'bg-muted text-muted-foreground'
                     }`}
                   >
                     {step.number < currentStep ? <CheckCircle className="h-5 w-5" /> : step.number}
@@ -503,7 +503,7 @@ const FileComplaint = () => {
                 </div>
                 {index < 3 && (
                   <div className={`w-16 h-0.5 mx-4 ${
-                    step.number < currentStep ? 'bg-green-500' : 'bg-gray-300'
+                    step.number < currentStep ? 'bg-status-success' : 'bg-muted'
                   }`} />
                 )}
               </div>
@@ -512,7 +512,7 @@ const FileComplaint = () => {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <div className="bg-card border border-border rounded-lg p-6 mb-6">
           {renderStepContent()}
         </div>
 
@@ -530,7 +530,7 @@ const FileComplaint = () => {
           {currentStep < 4 ? (
             <Button
               onClick={handleNext}
-              className="bg-gray-800 hover:bg-gray-900 text-white px-6"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground px-6"
             >
               Continue
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -538,7 +538,7 @@ const FileComplaint = () => {
           ) : (
             <Button
               onClick={handleSubmit}
-              className="bg-gray-800 hover:bg-gray-900 text-white px-6"
+              className="bg-primary hover:bg-primary-hover text-primary-foreground px-6"
             >
               Continue to Review
               <ArrowRight className="ml-2 h-4 w-4" />

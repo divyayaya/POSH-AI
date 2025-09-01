@@ -112,12 +112,19 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    /* Trauma-Informed Evidence Scoring */
-    --evidence-low: 32 65% 69%; /* Gentle Amber - Non-alarming */
-    --evidence-medium: 98 39% 70%; /* Soft Sage - Encouraging */
-    --evidence-high: 135 15% 42%; /* Forest Green - Positive */
+    /* Additional neutral colors for consistency */
+    --neutral-50: 220 13% 96%;
+    --neutral-100: 220 13% 91%;
+    --neutral-200: 220 13% 85%;
+    --neutral-300: 220 13% 76%;
+    --neutral-400: 220 13% 65%;
+    --neutral-500: 220 13% 46%;
+    --neutral-600: 220 13% 35%;
+    --neutral-700: 220 13% 26%;
+    --neutral-800: 220 13% 18%;
+    --neutral-900: 220 13% 9%;
 
-    /* Gentle Status Colors */
+    /* Additional Status Colors for Consistency */
     --status-new: 225 37% 76%; /* Soft Lavender - Calming */
     --status-investigating: 195 38% 47%; /* Gentle Teal - Processing */
     --status-resolved: 135 15% 42%; /* Forest Green - Completion */
@@ -171,6 +178,18 @@
     --warning: 32 50% 55%;
     --warning-foreground: 42 44% 96%;
     --warning-muted: 32 50% 15%;
+
+    /* Dark mode neutral colors */
+    --neutral-50: 210 29% 10%;
+    --neutral-100: 210 29% 15%;
+    --neutral-200: 210 29% 20%;
+    --neutral-300: 210 29% 28%;
+    --neutral-400: 210 29% 40%;
+    --neutral-500: 210 29% 54%;
+    --neutral-600: 210 29% 65%;
+    --neutral-700: 210 29% 75%;
+    --neutral-800: 210 29% 85%;
+    --neutral-900: 210 29% 95%;
 
     /* Dark mode trauma-informed colors */
     --evidence-low: 32 50% 55%;
@@ -268,7 +287,7 @@
 
 .form-error {
   border-color: hsl(var(--input-border-error)) !important;
-  background: #FEF2F2 !important;
+  background: hsl(var(--destructive) / 0.05) !important;
 }
 
 .error-message {
@@ -346,25 +365,25 @@
 }
 
 .alert-success {
-  background: #F0F9F4;
+  background: hsl(var(--success-muted));
   border-left-color: hsl(var(--status-success));
   color: hsl(var(--text-primary));
 }
 
 .alert-warning {
-  background: #FEF7ED;
+  background: hsl(var(--warning-muted));
   border-left-color: hsl(var(--status-warning));
   color: hsl(var(--text-primary));
 }
 
 .alert-error {
-  background: #FEF2F2;
+  background: hsl(var(--destructive) / 0.05);
   border-left-color: hsl(var(--status-error));
   color: hsl(var(--text-primary));
 }
 
 .alert-info {
-  background: #F0F7FF;
+  background: hsl(var(--accent) / 0.1);
   border-left-color: hsl(var(--status-info));
   color: hsl(var(--text-primary));
 }

@@ -38,7 +38,7 @@ const HRDashboard = () => {
       />
 
       {/* Metrics Banner */}
-      <div className="bg-gradient-to-r from-primary-navy to-gentle-teal p-8 text-white">
+      <div className="bg-gradient-to-r from-primary-navy to-gentle-teal p-8 text-primary-foreground">
         <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
           <div className="text-center">
             <div className="text-3xl font-bold mb-2">+60%</div>
@@ -83,7 +83,7 @@ const HRDashboard = () => {
                         <p className="text-sm text-text-secondary">{case_.department}</p>
                         <div className="flex items-center space-x-2 mt-1">
                           <span className={`px-2 py-1 rounded text-xs font-medium ${
-                            case_.priority === 'high' ? 'bg-status-error text-white' :
+                            case_.priority === 'high' ? 'bg-status-error text-destructive-foreground' :
                             case_.priority === 'medium' ? 'bg-status-warning text-text-primary' :
                             'bg-text-light text-text-secondary'
                           }`}>
