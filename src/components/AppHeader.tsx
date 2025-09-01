@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+// AppHeader component for POSH-AI system
 const AppHeader = () => {
   const location = useLocation();
   const navigate = useNavigate();
