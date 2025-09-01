@@ -259,9 +259,44 @@ const HRDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <div className="grid lg:grid-cols-5 gap-6 mt-6">
+          {/* Quick Actions Panel */}
+          <Card className="lg:col-span-2 bg-card border border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-foreground">Quick Actions</CardTitle>
+              <CardDescription>
+                Common tasks and system management
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Button className="w-full justify-start" variant="outline">
+                <BarChart3 className="mr-2 h-4 w-4" />
+                Generate Compliance Report
+              </Button>
+              
+              <Button className="w-full justify-start" variant="outline">
+                <Calendar className="mr-2 h-4 w-4" />
+                Schedule ICC Meeting
+              </Button>
+              
+              <Button className="w-full justify-start" variant="outline" asChild>
+                <Link to="/human-review/POSH-2024-001">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Review Pending Cases
+                </Link>
+              </Button>
+              
+              <Button className="w-full justify-start" variant="outline" asChild>
+                <Link to="/admin/webhook-test">
+                  <BarChart3 className="mr-2 h-4 w-4" />
+                  Test System Integrations
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Recent Activity Feed */}
-          <Card className="bg-card border border-border shadow-sm">
+          <Card className="lg:col-span-3 bg-card border border-border shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center space-x-3 text-foreground">
                 <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
@@ -345,40 +380,6 @@ const HRDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Actions Panel */}
-          <Card className="bg-card border border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-foreground">Quick Actions</CardTitle>
-              <CardDescription>
-                Common tasks and system management
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button className="w-full justify-start" variant="outline">
-                <BarChart3 className="mr-2 h-4 w-4" />
-                Generate Compliance Report
-              </Button>
-              
-              <Button className="w-full justify-start" variant="outline">
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule ICC Meeting
-              </Button>
-              
-              <Button className="w-full justify-start" variant="outline" asChild>
-                <Link to="/human-review/POSH-2024-001">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Review Pending Cases
-                </Link>
-              </Button>
-              
-              <Button className="w-full justify-start" variant="outline" asChild>
-                <Link to="/admin/webhook-test">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Test System Integrations
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </main>
     </div>
