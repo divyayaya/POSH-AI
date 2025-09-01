@@ -150,12 +150,63 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          email: string
+          employee_id: string | null
+          full_name: string
+          id: string
+          is_active: boolean
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          email: string
+          employee_id?: string | null
+          full_name: string
+          id: string
+          is_active?: boolean
+          role: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          email?: string
+          employee_id?: string | null
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      is_hr_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_icc_member: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_investigator: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
     }
     Enums: {
       case_priority: "low" | "medium" | "high" | "critical"
