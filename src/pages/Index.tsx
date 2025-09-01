@@ -76,7 +76,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <div className="min-h-screen bg-background">
       <AppHeader showNavigation={false} />
 
       <main className="container mx-auto px-4 py-8 lg:py-12">
@@ -85,15 +85,15 @@ const Index = () => {
         <div className="text-center mb-16">
           <div className="mb-8">
             
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
               Safe Space for
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent">
                 Speaking Up
               </span>
             </h1>
             
-            <p className="text-xl text-primary-foreground/80 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
               AI-enhanced POSH compliance system that builds trust, ensures confidentiality, 
               and provides human support when you need it most.
             </p>
@@ -101,17 +101,17 @@ const Index = () => {
 
           {/* Trust Indicators */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 max-w-2xl mx-auto">
-            <div className="flex items-center justify-center space-x-2 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm">
-              <Lock className="w-5 h-5 text-green-400" />
-              <span className="text-primary-foreground font-medium">100% Confidential</span>
+            <div className="flex items-center justify-center space-x-2 bg-muted/50 rounded-lg p-4 border border-border">
+              <Lock className="w-5 h-5 text-success" />
+              <span className="text-foreground font-medium">100% Confidential</span>
             </div>
-            <div className="flex items-center justify-center space-x-2 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm">
-              <Heart className="w-5 h-5 text-pink-400" />
-              <span className="text-primary-foreground font-medium">Trauma-Informed</span>
+            <div className="flex items-center justify-center space-x-2 bg-muted/50 rounded-lg p-4 border border-border">
+              <Heart className="w-5 h-5 text-destructive" />
+              <span className="text-foreground font-medium">Trauma-Informed</span>
             </div>
-            <div className="flex items-center justify-center space-x-2 bg-primary-foreground/10 rounded-lg p-4 backdrop-blur-sm">
-              <UserCheck className="w-5 h-5 text-blue-400" />
-              <span className="text-primary-foreground font-medium">Human Support</span>
+            <div className="flex items-center justify-center space-x-2 bg-muted/50 rounded-lg p-4 border border-border">
+              <UserCheck className="w-5 h-5 text-primary" />
+              <span className="text-foreground font-medium">Human Support</span>
             </div>
           </div>
         </div>
@@ -119,10 +119,10 @@ const Index = () => {
         {/* Role Selection Section */}
         <div className="mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-primary-foreground mb-4">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
               Choose Your Role to Continue
             </h2>
-            <p className="text-primary-foreground/70 text-lg">
+            <p className="text-muted-foreground text-lg">
               Select the option that best describes your access needs
             </p>
           </div>
@@ -138,10 +138,10 @@ const Index = () => {
                   className={`
                     relative group cursor-pointer transition-all duration-300 hover:scale-105
                     ${isSelected 
-                      ? 'bg-primary-foreground/20 border-blue-400 ring-2 ring-blue-400' 
-                      : 'bg-primary-foreground/10 border-primary-foreground/20 hover:bg-primary-foreground/15'
+                      ? 'bg-card border-primary ring-2 ring-primary' 
+                      : 'bg-card border-border hover:bg-accent/5'
                     } 
-                    backdrop-blur-sm hover:shadow-xl
+                    hover:shadow-xl
                   `}
                   onClick={() => setSelectedRole(role.id)}
                 >
@@ -153,25 +153,25 @@ const Index = () => {
                       <Icon className="h-8 w-8 text-primary-foreground" />
                     </div>
                     
-                    <CardTitle className="text-2xl font-bold text-primary-foreground mb-2">
+                    <CardTitle className="text-2xl font-bold text-card-foreground mb-2">
                       {role.title}
                     </CardTitle>
                     
-                    <CardDescription className="text-lg text-blue-200 font-medium">
+                    <CardDescription className="text-lg text-muted-foreground font-medium">
                       {role.subtitle}
                     </CardDescription>
                   </CardHeader>
                   
                   <CardContent>
-                    <p className="text-primary-foreground/80 mb-6 text-center leading-relaxed">
+                    <p className="text-muted-foreground mb-6 text-center leading-relaxed">
                       {role.description}
                     </p>
                     
                     {/* Feature list */}
                     <ul className="space-y-2 mb-6">
                       {role.features.map((feature, index) => (
-                        <li key={index} className="flex items-center text-sm text-primary-foreground/70">
-                          <CheckCircle className="w-4 h-4 text-green-400 mr-2 flex-shrink-0" />
+                        <li key={index} className="flex items-center text-sm text-muted-foreground">
+                          <CheckCircle className="w-4 h-4 text-success mr-2 flex-shrink-0" />
                           {feature}
                         </li>
                       ))}
@@ -182,7 +182,6 @@ const Index = () => {
                       className={`
                         w-full ${role.color} ${role.hoverColor} text-primary-foreground font-medium
                         shadow-lg hover:shadow-xl transition-all duration-300
-                        group-hover:bg-primary-foreground group-hover:text-gray-900
                       `}
                       size="lg"
                     >
@@ -195,7 +194,7 @@ const Index = () => {
                   
                   {/* Selection indicator */}
                   {isSelected && (
-                    <div className="absolute top-4 right-4 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                    <div className="absolute top-4 right-4 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
                       <CheckCircle className="w-4 h-4 text-primary-foreground" />
                     </div>
                   )}
@@ -208,56 +207,56 @@ const Index = () => {
         
 
         {/* Support Resources Section */}
-        <div className="bg-primary-foreground/5 backdrop-blur-sm rounded-2xl border border-primary-foreground/10 p-8 mb-16">
+        <div className="bg-muted/30 rounded-2xl border border-border p-8 mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-primary-foreground mb-4">
+            <h2 className="text-2xl font-bold text-foreground mb-4">
               Need Immediate Support?
             </h2>
-            <p className="text-primary-foreground/70 max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               You don't have to go through this alone. Multiple support options are available 24/7.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-primary-foreground/5 rounded-lg border border-primary-foreground/10">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-card rounded-lg border border-border">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Phone className="h-6 w-6 text-primary-foreground" />
               </div>
-              <h3 className="font-semibold text-primary-foreground mb-2">Crisis Helpline</h3>
-              <p className="text-primary-foreground/70 text-sm mb-3">24/7 confidential support</p>
+              <h3 className="font-semibold text-card-foreground mb-2">Crisis Helpline</h3>
+              <p className="text-muted-foreground text-sm mb-3">24/7 confidential support</p>
               <Button 
                 size="sm" 
-                className="bg-slate-500 text-primary-foreground hover:bg-slate-600"
+                variant="outline"
                 onClick={() => window.open('tel:1-800-HELP', '_blank')}
               >
                 1-800-HELP
               </Button>
             </div>
 
-            <div className="text-center p-6 bg-primary-foreground/5 rounded-lg border border-primary-foreground/10">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-6 w-6 text-primary-foreground" />
+            <div className="text-center p-6 bg-card rounded-lg border border-border">
+              <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="h-6 w-6 text-secondary-foreground" />
               </div>
-              <h3 className="font-semibold text-primary-foreground mb-2">Live Chat</h3>
-              <p className="text-primary-foreground/70 text-sm mb-3">Connect with trained counselors</p>
+              <h3 className="font-semibold text-card-foreground mb-2">Live Chat</h3>
+              <p className="text-muted-foreground text-sm mb-3">Connect with trained counselors</p>
               <Button 
                 size="sm" 
-                className="bg-slate-500 text-primary-foreground hover:bg-slate-600"
+                variant="outline"
                 onClick={() => window.open('/chat', '_blank')}
               >
                 Start Chat
               </Button>
             </div>
 
-            <div className="text-center p-6 bg-primary-foreground/5 rounded-lg border border-primary-foreground/10">
-              <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <FileText className="h-6 w-6 text-primary-foreground" />
+            <div className="text-center p-6 bg-card rounded-lg border border-border">
+              <div className="w-12 h-12 bg-accent-foreground rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="h-6 w-6 text-accent" />
               </div>
-              <h3 className="font-semibold text-primary-foreground mb-2">Resources</h3>
-              <p className="text-primary-foreground/70 text-sm mb-3">Policies, guides, and FAQ</p>
+              <h3 className="font-semibold text-card-foreground mb-2">Resources</h3>
+              <p className="text-muted-foreground text-sm mb-3">Policies, guides, and FAQ</p>
               <Button 
                 size="sm" 
-                className="bg-slate-500 text-primary-foreground hover:bg-slate-600"
+                variant="outline"
                 onClick={() => window.open('/resources', '_blank')}
               >
                 View Resources
@@ -268,35 +267,35 @@ const Index = () => {
 
         {/* Statistics Section */}
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-foreground mb-8">
+          <h2 className="text-2xl font-bold text-foreground mb-8">
             Making a Difference
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-400 mb-2">60%</div>
-              <div className="text-xs text-primary-foreground/70">Increase in Reporting</div>
+              <div className="text-3xl font-bold text-primary mb-2">60%</div>
+              <div className="text-xs text-muted-foreground">Increase in Reporting</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-400 mb-2">75%</div>
-              <div className="text-xs text-primary-foreground/70">Faster Processing</div>
+              <div className="text-3xl font-bold text-success mb-2">75%</div>
+              <div className="text-xs text-muted-foreground">Faster Processing</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-400 mb-2">100%</div>
-              <div className="text-xs text-primary-foreground/70">Compliance Rate</div>
+              <div className="text-3xl font-bold text-accent-foreground mb-2">100%</div>
+              <div className="text-xs text-muted-foreground">Compliance Rate</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-orange-400 mb-2">4.8/5</div>
-              <div className="text-xs text-primary-foreground/70">User Satisfaction</div>
+              <div className="text-3xl font-bold text-warning mb-2">4.8/5</div>
+              <div className="text-xs text-muted-foreground">User Satisfaction</div>
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-primary-foreground/10 bg-primary-foreground/5 backdrop-blur-sm mt-16">
+      <footer className="border-t border-border bg-muted/20 mt-16">
         <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-primary-foreground/60">
+          <div className="text-center text-muted-foreground">
             <p className="mb-2">
               Built with care for workplace safety and employee wellbeing
             </p>
