@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import AppHeader from "@/components/AppHeader";
+import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, Bell, Users, FileText, Clock, AlertTriangle, CheckCircle, BarChart3, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockCases, mockDeadlines } from "@/lib/mockData";
@@ -31,7 +31,10 @@ const HRDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <AppHeader 
+        userRole="hr" 
+        notifications={notifications}
+      />
 
       {/* Enhanced Header */}
       <div className="text-center mb-8 px-6 pt-8">

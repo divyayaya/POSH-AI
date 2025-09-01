@@ -34,9 +34,6 @@ verify_jwt = false
 [functions.compliance-deadlines]
 verify_jwt = false
 
-[functions.n8n-callbacks]
-verify_jwt = false
-
 [storage]
 enabled = true
 file_size_limit = "50MiB"

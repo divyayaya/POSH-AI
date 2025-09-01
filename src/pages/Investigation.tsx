@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import AppHeader from "@/components/AppHeader";
+import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, FileText, Users, Calendar, BarChart3, Clock, Brain, CheckCircle, AlertTriangle, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
@@ -45,7 +45,26 @@ const Investigation = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <AppHeader 
+        userRole="icc"
+        customTitle={`Investigation Dashboard - Case ${case_.id}`}
+        customActions={
+          <div className="flex items-center space-x-2">
+            <Badge variant="outline" className={`text-${getStatusColor(case_.status)}`}>
+              {case_.status}
+            </Badge>
+            <Badge variant="outline" className={`text-${getPriorityColor(case_.priority)}`}>
+              {case_.priority}
+            </Badge>
+            <Button variant="ghost" asChild>
+              <Link to="/hr-dashboard">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Dashboard
+              </Link>
+            </Button>
+          </div>
+        }
+      />
 
       {/* Investigation Progress Bar */}
       <div className="bg-white border-b">

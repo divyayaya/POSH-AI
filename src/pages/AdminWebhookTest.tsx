@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import AppHeader from "@/components/AppHeader";
+import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, Send, CheckCircle, AlertTriangle, Clock, Zap, Database, Webhook } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
@@ -154,7 +154,24 @@ const AdminWebhookTest = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
+      <AppHeader 
+        userRole="hr"
+        customTitle="n8n Webhook Testing Interface"
+        customActions={
+          <div className="flex items-center space-x-2">
+            <Badge variant="secondary" className="flex items-center">
+              <Zap className="mr-1 h-3 w-3" />
+              Admin Access
+            </Badge>
+            <Button variant="ghost" asChild>
+              <Link to="/hr-dashboard">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Dashboard
+              </Link>
+            </Button>
+          </div>
+        }
+      />
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

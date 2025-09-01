@@ -1,146 +1,223 @@
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Shield, Home, FileText, BarChart3, LogOut, User } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { 
+  Shield, 
+  Bell, 
+  User, 
+  LogOut, 
+  Settings, 
+  FileText,
+  Users,
+  BarChart3,
+  Menu,
+  X
+} from "lucide-react";
 
-// AppHeader component for POSH-AI system
-const AppHeader = () => {
+interface AppHeaderProps {
+  showNavigation?: boolean;
+  userRole?: 'employee' | 'hr' | 'icc';
+  notifications?: number;
+  customTitle?: string;
+  customActions?: React.ReactNode;
+}
+
+export const AppHeader = ({ 
+  showNavigation = true, 
+  userRole = 'employee',
+  notifications = 0,
+  customTitle,
+  customActions
+}: AppHeaderProps) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, profile, signOut, isHRAdmin, isICCMember } = useAuth();
 
-  const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/":
-        return "POSH-AI Dashboard";
-      case "/file-complaint":
-        return "File Complaint";
-      case "/hr-dashboard":
-        return "HR Dashboard";
-      case "/admin/webhook-test":
-        return "Webhook Testing";
+  const getRoleInfo = () => {
+    switch (userRole) {
+      case 'hr':
+        return { name: 'Sarah Chen', title: 'HR Manager', department: 'Human Resources' };
+      case 'icc':
+        return { name: 'Dr. Priya Sharma', title: 'ICC Member', department: 'Internal Committee' };
       default:
-        if (location.pathname.includes("human-review")) {
-          return "Human Review";
-        }
-        if (location.pathname.includes("investigation")) {
-          return "Investigation";
-        }
-        return "POSH-AI";
+        return { name: 'John Doe', title: 'Software Engineer', department: 'Engineering' };
     }
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/auth");
+  const getNavigationItems = () => {
+    switch (userRole) {
+      case 'hr':
+        return [
+          { name: 'Dashboard', href: '/hr-dashboard', icon: BarChart3 },
+          { name: 'Cases', href: '/cases', icon: FileText },
+          { name: 'Reports', href: '/reports', icon: BarChart3 }
+        ];
+      case 'icc':
+        return [
+          { name: 'Reviews', href: '/human-review/POSH-2024-001', icon: FileText },
+          { name: 'Cases', href: '/cases', icon: Users },
+          { name: 'Calendar', href: '/calendar', icon: BarChart3 }
+        ];
+      default:
+        return [
+          { name: 'File Complaint', href: '/file-complaint', icon: FileText },
+          { name: 'My Cases', href: '/my-cases', icon: Users },
+          { name: 'Resources', href: '/resources', icon: BarChart3 }
+        ];
+    }
   };
 
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  const roleInfo = getRoleInfo();
+  const navigationItems = getNavigationItems();
 
   return (
-    <header className="bg-card border-b border-border px-6 py-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Shield className="h-6 w-6 text-primary" />
-            <h1 className="text-xl font-semibold">{getPageTitle()}</h1>
-          </div>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* Logo and Brand */}
+        <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+              <Shield className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="text-lg font-bold text-foreground">POSH AI</h1>
+              <p className="text-xs text-muted-foreground">Compliance System</p>
+            </div>
+          </Link>
         </div>
 
-        <nav className="hidden md:flex items-center space-x-4">
-          <Button
-            variant={location.pathname === "/" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => navigate("/")}
-          >
-            <Home className="h-4 w-4 mr-2" />
-            Home
-          </Button>
-          
-          <Button
-            variant={location.pathname === "/file-complaint" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => navigate("/file-complaint")}
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            File Complaint
-          </Button>
-
-          {(isHRAdmin || isICCMember) && (
-            <Button
-              variant={location.pathname === "/hr-dashboard" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => navigate("/hr-dashboard")}
-            >
-              <BarChart3 className="h-4 w-4 mr-2" />
-              HR Dashboard
-            </Button>
+        {/* Custom Title or Navigation */}
+        <div className="flex-1 flex items-center justify-center">
+          {customTitle ? (
+            <h1 className="text-xl font-semibold text-foreground">{customTitle}</h1>
+          ) : showNavigation && (
+            <nav className="hidden md:flex items-center space-x-6">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.href || 
+                  (item.href !== '/' && location.pathname.startsWith(item.href));
+                
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors
+                      ${isActive 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                      }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </nav>
           )}
+        </div>
 
-          {isHRAdmin && (
-            <Button
-              variant={location.pathname === "/admin/webhook-test" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => navigate("/admin/webhook-test")}
-            >
-              Admin
-            </Button>
-          )}
-        </nav>
-
+        {/* Actions and User Menu */}
         <div className="flex items-center space-x-4">
-          {/* User Profile Dropdown */}
+          {/* Custom Actions */}
+          {customActions}
+          
+          {/* Notifications */}
+          <div className="relative">
+            <Button variant="ghost" size="icon" className="h-9 w-9">
+              <Bell className="h-4 w-4" />
+              {notifications > 0 && (
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-destructive text-destructive-foreground">
+                  {notifications > 9 ? '9+' : notifications}
+                </Badge>
+              )}
+            </Button>
+          </div>
+
+          {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {profile?.full_name ? getInitials(profile.full_name) : "U"}
-                  </AvatarFallback>
-                </Avatar>
+              <Button variant="ghost" className="h-9 px-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center">
+                    <User className="h-3 w-3 text-primary" />
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <div className="text-sm font-medium text-foreground">{roleInfo.name}</div>
+                    <div className="text-xs text-muted-foreground">{roleInfo.title}</div>
+                  </div>
+                </div>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {profile?.full_name || "User"}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {user?.email}
-                  </p>
-                  <p className="text-xs leading-none text-muted-foreground">
-                    {profile?.role?.replace('_', ' ').toUpperCase()} • {profile?.department}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-2 py-1.5">
+                <div className="text-sm font-medium">{roleInfo.name}</div>
+                <div className="text-xs text-muted-foreground">{roleInfo.department}</div>
+              </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+              <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>Sign out</span>
+                Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden h-9 w-9"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </Button>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && showNavigation && (
+        <div className="md:hidden border-t bg-background/95 backdrop-blur">
+          <nav className="container mx-auto px-4 py-2">
+            <div className="flex flex-col space-y-1">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.href;
+                
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors
+                      ${isActive 
+                        ? 'bg-primary/10 text-primary' 
+                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                      }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 };
-
-export default AppHeader;
