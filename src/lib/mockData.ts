@@ -171,9 +171,9 @@ export const getEvidenceLevel = (score: number): { level: string; color: string;
 
 // n8n Webhook URLs (demo purposes)
 export const N8N_WEBHOOKS = {
-  CASE_CREATED: "https://demo-n8n.lovable.app/webhook/case-created",
-  EVIDENCE_UPLOADED: "https://demo-n8n.lovable.app/webhook/evidence-uploaded",
-  HUMAN_REVIEW_SUBMITTED: "https://demo-n8n.lovable.app/webhook/human-review-submitted",
-  CASE_STATUS_CHANGED: "https://demo-n8n.lovable.app/webhook/case-status-changed",
-  DEADLINE_APPROACHING: "https://demo-n8n.lovable.app/webhook/deadline-approaching"
+  CASE_CREATED: "https://n8n.srv979089.hstgr.cloud/webhook/case-created",
+  EVIDENCE_UPLOADED: "https://n8n.srv979089.hstgr.cloud/webhook/evidence-uploaded",
+  HUMAN_REVIEW_SUBMITTED: "https://n8n.srv979089.hstgr.cloud/webhook/human-review-submitted",
+  //CASE_STATUS_CHANGED: "https://demo-n8n.lovable.app/webhook/case-status-changed",
+  DEADLINE_APPROACHING: "https://n8n.srv979089.hstgr.cloud/webhook/deadline-approaching"
 };
