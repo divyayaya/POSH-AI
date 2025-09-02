@@ -168,7 +168,6 @@ export const getEvidenceLevel = (score: number): { level: string; color: string;
     };
   }
 };
-
 // n8n Webhook URLs (demo purposes)
 export const N8N_WEBHOOKS = {
   CASE_CREATED: "https://divyamaheshms.app.n8n.cloud/webhook/case-created",
