@@ -185,8 +185,42 @@ const FileComplaint = () => {
     }
   };
 
-  const mockEvidenceScore = 45; // Based on form data
-  const evidenceLevel = getEvidenceLevel(mockEvidenceScore);
+  // Dynamic evidence score calculation
+  const calculateDynamicEvidenceScore = () => {
+    let score = 0;
+    
+    // Description points
+    if (formData.description && formData.description.length >= 10) {
+      score += 30;
+    }
+    
+    // Witnesses points
+    if (formData.witnesses && formData.witnesses.trim()) {
+      score += 30;
+    }
+    
+    // Documents points
+    const uploadedDocuments = uploadedFiles.filter(f => f.status === 'uploaded');
+    score += uploadedDocuments.length * 40;
+    
+    return Math.min(score, 100); // Cap at 100
+  };
+
+  // Color function for evidence points spectrum
+  const getEvidencePointsColor = (points: number, maxPoints: number = 100) => {
+    if (points === 0) return 'text-gray-400';
+    
+    const percentage = (points / maxPoints) * 100;
+    
+    if (percentage >= 80) return 'text-green-600';
+    if (percentage >= 60) return 'text-lime-600';
+    if (percentage >= 40) return 'text-yellow-600';
+    if (percentage >= 20) return 'text-orange-600';
+    return 'text-red-600';
+  };
+
+  const dynamicEvidenceScore = calculateDynamicEvidenceScore();
+  const evidenceLevel = getEvidenceLevel(dynamicEvidenceScore);
 
   const handleFileSelect = (files: FileList | File[]) => {
     const fileArray = Array.from(files) as File[];
@@ -722,12 +756,8 @@ const FileComplaint = () => {
                 
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <div className={`text-2xl font-bold ${
-                      mockEvidenceScore >= 80 ? 'text-green-600' :
-                      mockEvidenceScore >= 40 ? 'text-orange-600' :
-                      'text-blue-600'
-                    }`}>
-                      {mockEvidenceScore}/100
+                    <div className={`text-2xl font-bold ${getEvidencePointsColor(dynamicEvidenceScore)}`}>
+                      {dynamicEvidenceScore}/100
                     </div>
                     <div className="text-xs text-gray-500">Evidence Points</div>
                   </div>
@@ -760,9 +790,7 @@ const FileComplaint = () => {
                     <div className="text-2xl mb-2">{item.icon}</div>
                     <div className="font-semibold text-gray-800">{item.count}</div>
                     <div className="text-sm text-gray-600 mb-1">{item.label}</div>
-                    <div className={`text-sm font-medium mt-2 ${
-                      item.points > 0 ? 'text-green-600' : 'text-gray-400'
-                    }`}>
+                    <div className={`text-sm font-medium mt-2 ${getEvidencePointsColor(item.points, 40)}`}>
                       +{item.points} points
                     </div>
                   </div>
@@ -989,8 +1017,8 @@ const FileComplaint = () => {
     console.log("Triggering n8n workflows:", {
       event: "case_created",
       caseId,
-      evidenceScore: mockEvidenceScore,
-      needsHumanReview: mockEvidenceScore < 80,
+      evidenceScore: dynamicEvidenceScore,
+      needsHumanReview: dynamicEvidenceScore < 80,
       formData,
       uploadedFiles: uploadedFiles.length,
       timestamp: new Date().toISOString()
