@@ -338,16 +338,6 @@ const FileComplaint = () => {
               </div>
             )}
 
-            {/* Helpful note */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-start">
-                <Info className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
-                <div className="text-sm text-primary/80">
-                  <p className="font-medium mb-1">Not sure which option fits your situation?</p>
-                  <p>Choose "I'm not sure" and we'll help guide you through some questions to determine the best category. You can always change this later.</p>
-                </div>
-              </div>
-            </div>
           </div>
         );
 
@@ -552,19 +542,6 @@ const FileComplaint = () => {
               </div>
             </div>
 
-            {/* Privacy reminder */}
-            <div className="bg-warning-muted border border-warning/20 rounded-lg p-4">
-              <div className="flex items-start">
-                <Heart className="w-5 h-5 text-warning mr-3 mt-0.5 flex-shrink-0" />
-                <div className="text-sm">
-                  <p className="text-warning font-medium mb-1">Privacy Reminder</p>
-                  <p className="text-warning/80">
-                    Only share information you're comfortable providing. You can always add more details later, 
-                    and our team will work with whatever level of detail you're able to provide.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         );
 
