@@ -245,12 +245,20 @@ const FileComplaint = () => {
 
     // Simulate upload
     validFiles.forEach((file: File, index: number) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         setUploadedFiles(prev => prev.map(f => 
           f.name === file.name && f.status === 'uploading' 
             ? { ...f, status: 'uploaded' as const } 
             : f
         ));
+        
+        // Trigger evidence upload webhook after file is uploaded
+        await webhookService.triggerEvidenceUploaded({
+          caseId: 'TEMP-CASE-ID', // Would be actual case ID in real implementation
+          evidenceId: `ev-${Date.now()}-${index}`,
+          type: 'document',
+          aiAnalysisScore: Math.floor(Math.random() * 100)
+        });
       }, 1000 + (index * 500));
     });
   };

@@ -123,14 +123,14 @@ class WebhookService {
     });
   }
 
-  // Case Status Changed Workflow (using CASE_CREATED webhook for now)
+  // Case Status Changed Workflow
   async triggerCaseStatusChanged(data: {
     caseId: string;
     oldStatus: string;
     newStatus: string;
     assignedTo?: string;
   }): Promise<WebhookResponse> {
-    return this.callWebhook('CASE_CREATED', {
+    return this.callWebhook('CASE_STATUS_CHANGED', {
       event: 'case_status_changed',
       caseId: data.caseId,
       oldStatus: data.oldStatus,

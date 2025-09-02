@@ -173,5 +173,6 @@ export const N8N_WEBHOOKS = {
   CASE_CREATED: "https://divyamaheshms.app.n8n.cloud/webhook/case-created",
   EVIDENCE_UPLOADED: "https://divyamaheshms.app.n8n.cloud/webhook/evidence-uploaded",
   HUMAN_REVIEW_SUBMITTED: "https://divyamaheshms.app.n8n.cloud/webhook/human-review-submitted",
+  CASE_STATUS_CHANGED: "https://divyamaheshms.app.n8n.cloud/webhook/case-status-changed",
   DEADLINE_APPROACHING: "https://divyamaheshms.app.n8n.cloud/webhook/deadline-approaching"
 };
