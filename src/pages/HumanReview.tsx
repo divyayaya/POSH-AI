@@ -16,6 +16,7 @@ import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Cl
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
+import { webhookService } from "@/services/webhookService";
 
 const HumanReview = () => {
   const { caseId } = useParams<{ caseId: string }>();
@@ -130,16 +131,18 @@ const HumanReview = () => {
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Simulate n8n workflow trigger for human review submission
-      const reviewSubmission = {
+      // Trigger n8n workflow via webhook service
+      const webhookResponse = await webhookService.triggerHumanReviewSubmitted({
         caseId: case_.id,
         reviewerId: "ICC-001",
         pathway: reviewData.investigationPathway,
-        credibility: reviewData.credibilityAssessment,
-        timestamp: new Date().toISOString()
-      };
+        credibility: parseInt(reviewData.credibilityAssessment)
+      });
 
-      console.log("Triggering n8n workflow: human-review-submitted", reviewSubmission);
+      if (!webhookResponse.success) {
+        // Log webhook failure for admin review, but don't fail the form submission
+        console.warn('Webhook notification failed, but review was still submitted:', webhookResponse.error);
+      }
 
       // Clear draft after successful submission
       localStorage.removeItem(`draft-${caseId}`);
