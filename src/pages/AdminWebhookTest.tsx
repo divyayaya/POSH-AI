@@ -12,6 +12,7 @@ import { ArrowLeft, Send, CheckCircle, AlertTriangle, Clock, Zap, Database, Webh
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { N8N_WEBHOOKS } from "@/lib/mockData";
+import { webhookService } from '@/services/webhookService';
 
 const AdminWebhookTest = () => {
   const [selectedWebhook, setSelectedWebhook] = useState("");
@@ -104,35 +105,94 @@ const AdminWebhookTest = () => {
 
     setTestResults(prev => [newTest, ...prev.slice(0, 9)]);
 
-    // Simulate webhook call
     try {
-      const webhookUrl = N8N_WEBHOOKS[selectedWebhook as keyof typeof N8N_WEBHOOKS];
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Mock successful response
-      const mockResponse = {
-        status: "success",
-        executionId: `exec-${Date.now()}`,
-        workflowId: "wf-001",
-        processed: true
-      };
+      let payload: any = {};
+      if (customPayload.trim()) {
+        try {
+          payload = JSON.parse(customPayload);
+        } catch (parseError) {
+          throw new Error(`Invalid JSON payload: ${parseError.message}`);
+        }
+      }
 
+      let webhookResponse;
+      
+      // Call appropriate webhook service method based on selection
+      switch (selectedWebhook) {
+        case 'CASE_CREATED':
+          webhookResponse = await webhookService.triggerCaseCreated({
+            caseId: payload.caseId || "POSH-2024-TEST",
+            evidenceScore: payload.evidenceScore || 35,
+            needsHumanReview: payload.needsHumanReview || true,
+            formData: payload.formData || {},
+            uploadedFiles: payload.uploadedFiles || 0
+          });
+          break;
+          
+        case 'HUMAN_REVIEW_SUBMITTED':
+          webhookResponse = await webhookService.triggerHumanReviewSubmitted({
+            caseId: payload.caseId || "POSH-2024-TEST",
+            reviewerId: payload.reviewerId || "ICC-001",
+            pathway: payload.pathway || "formal",
+            credibility: payload.credibilityScore || 4
+          });
+          break;
+          
+        case 'EVIDENCE_UPLOADED':
+          webhookResponse = await webhookService.triggerEvidenceUploaded({
+            caseId: payload.caseId || "POSH-2024-TEST",
+            evidenceId: payload.evidenceId || "ev-test-001",
+            type: payload.type || "document",
+            aiAnalysisScore: payload.aiAnalysisScore || 40
+          });
+          break;
+          
+        case 'DEADLINE_APPROACHING':
+          webhookResponse = await webhookService.triggerDeadlineApproaching({
+            caseId: payload.caseId || "POSH-2024-TEST",
+            deadlineType: payload.deadlineType || "investigation",
+            dueDate: payload.dueDate || "2024-06-13",
+            daysRemaining: payload.daysRemaining || 7,
+            urgency: payload.urgency || "high"
+          });
+          break;
+          
+        default:
+          throw new Error(`Unsupported webhook type: ${selectedWebhook}`);
+      }
+
+      // Update results with actual n8n response
       setTestResults(prev => prev.map(test => 
         test.id === testId 
-          ? { ...test, status: 'success', response: JSON.stringify(mockResponse, null, 2) }
+          ? { 
+              ...test, 
+              status: webhookResponse.success ? 'success' : 'error',
+              response: JSON.stringify(webhookResponse, null, 2)
+            }
           : test
       ));
 
-      toast.success(`Webhook ${selectedWebhook} triggered successfully`);
+      if (webhookResponse.success) {
+        toast.success(`n8n webhook ${selectedWebhook} triggered successfully`);
+      } else {
+        toast.error(`n8n webhook failed: ${webhookResponse.error}`);
+      }
+
     } catch (error) {
       setTestResults(prev => prev.map(test => 
         test.id === testId 
-          ? { ...test, status: 'error', response: `Error: ${error}` }
+          ? { 
+              ...test, 
+              status: 'error',
+              response: JSON.stringify({
+                error: error instanceof Error ? error.message : 'Unknown error',
+                timestamp: new Date().toISOString()
+              }, null, 2)
+            }
           : test
       ));
-      toast.error("Webhook test failed");
+      
+      toast.error(`Webhook test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
