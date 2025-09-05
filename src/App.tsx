@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import FileComplaint from "./pages/FileComplaint";
 import HRDashboard from "./pages/HRDashboard";
+import ICCDashboard from "./pages/ICCDashboard";
 import HumanReview from "./pages/HumanReview";
 import Investigation from "./pages/Investigation";  
 import AdminWebhookTest from "./pages/AdminWebhookTest";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/file-complaint" element={<FileComplaint />} />
           <Route path="/hr-dashboard" element={<HRDashboard />} />
+          <Route path="/icc-dashboard" element={<ICCDashboard />} />
           <Route path="/human-review/:caseId" element={<HumanReview />} />
           <Route path="/investigation/:caseId" element={<Investigation />} />
           <Route path="/admin/webhook-test" element={<AdminWebhookTest />} />
