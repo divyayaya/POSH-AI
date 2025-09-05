@@ -35,6 +35,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockEmployeeData, calculateEvidenceScore, getEvidenceLevel } from "@/lib/mockData";
 import { webhookService } from "@/services/webhookService";
+import { supabase } from "@/integrations/supabase/client";
 import { AppHeader } from "@/components/AppHeader";
 
 // Form data interface
@@ -998,9 +999,65 @@ const FileComplaint = () => {
     const caseId = `POSH-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
     
     try {
-      // Trigger n8n workflow via webhook service
+      // 1. Save case to Supabase
+      const { data: caseData, error: caseError } = await supabase
+        .from('cases')
+        .insert({
+          case_number: caseId,
+          title: `${formData.incidentType} - ${formData.respondentName || 'Anonymous'}`,
+          description: formData.description,
+          complainant_name: formData.isAnonymous ? 'Anonymous' : 'Current User',
+          respondent_name: formData.respondentName || 'Unknown',
+          status: 'pending',
+          priority: dynamicEvidenceScore < 40 ? 'high' : 'medium',
+          evidence_score: dynamicEvidenceScore,
+          metadata: {
+            ...formData,
+            isAnonymous: formData.isAnonymous,
+            incidentDate: formData.incidentDate,
+            location: formData.location
+          }
+        })
+        .select()
+        .single();
+
+      if (caseError) throw caseError;
+
+      // 2. Save uploaded files as evidence
+      for (const file of uploadedFiles.filter(f => f.status === 'uploaded')) {
+        const { error: evidenceError } = await supabase
+          .from('evidence')
+          .insert({
+            case_id: caseData.id,
+            type: 'document',
+            description: `Uploaded file: ${file.name}`,
+            score: 40, // Document evidence score
+            metadata: {
+              fileName: file.name,
+              fileSize: file.size,
+              fileType: file.type
+            }
+          });
+
+        if (evidenceError) console.error('Evidence save error:', evidenceError);
+      }
+
+      // 3. Create compliance deadlines
+      const investigationDeadline = new Date();
+      investigationDeadline.setDate(investigationDeadline.getDate() + 90); // 90-day POSH Act requirement
+
+      await supabase
+        .from('compliance_deadlines')
+        .insert({
+          case_id: caseData.id,
+          deadline_type: 'investigation_completion',
+          deadline_date: investigationDeadline.toISOString(),
+          description: 'POSH Act mandated 90-day investigation completion deadline'
+        });
+
+      // 4. Trigger n8n workflow
       const webhookResponse = await webhookService.triggerCaseCreated({
-        caseId,
+        caseId: caseData.id,
         evidenceScore: dynamicEvidenceScore,
         needsHumanReview: dynamicEvidenceScore < 80,
         formData,
@@ -1022,12 +1079,8 @@ const FileComplaint = () => {
         console.warn('Webhook notification failed, but case was still created:', webhookResponse.error);
       }
     } catch (error) {
-      // Webhook service error - still show success to user
-      toast.success(
-        `Thank you for your courage in speaking up. Your complaint has been filed successfully. Case ID: ${caseId}`,
-        { duration: 5000 }
-      );
-      console.error('Webhook service error:', error);
+      console.error('Case submission error:', error);
+      toast.error('Failed to submit complaint. Please try again.');
     }
   };
 

@@ -10,6 +10,10 @@ import { AppHeader } from "@/components/AppHeader";
 import { ArrowLeft, FileText, Users, Calendar, BarChart3, Clock, Brain, CheckCircle, AlertTriangle, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
+import { webhookService } from "@/services/webhookService";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { deadlineMonitor } from "@/services/deadlineMonitor";
 
 const Investigation = () => {
   const { caseId } = useParams<{ caseId: string }>();
@@ -18,10 +22,52 @@ const Investigation = () => {
   const evidenceLevel = getEvidenceLevel(case_?.evidenceScore || 0);
 
   const [investigationProgress] = useState(65);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   if (!case_) {
     return <div>Case not found</div>;
   }
+
+  // Status update handler with database sync
+  const handleStatusUpdate = async (newStatus: 'investigating' | 'mediation' | 'closed', assignedTo?: string) => {
+    setIsUpdatingStatus(true);
+    
+    try {
+      // 1. Update Supabase database first
+      const { data, error } = await supabase
+        .from('cases')
+        .update({ 
+          status: newStatus,
+          assigned_to: assignedTo,
+          assigned_date: assignedTo ? new Date().toISOString() : null,
+          updated_at: new Date().toISOString()
+        })
+        .eq('case_number', case_.id) // Using case_number to match mock data
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // 2. Trigger n8n workflow
+      await webhookService.triggerCaseStatusChanged({
+        caseId: case_.id,
+        oldStatus: case_.status,
+        newStatus: newStatus,
+        assignedTo: assignedTo || "ICC-001"
+      });
+
+      // 3. Update local state (in real app, would refetch data)
+      (case_ as any).status = newStatus;
+      
+      toast.success(`Case status updated to ${newStatus}`);
+      
+    } catch (error) {
+      console.error('Status update failed:', error);
+      toast.error('Failed to update case status');
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
 
   const timelineEvents = [
     { date: "2024-03-15", event: "Complaint Filed", type: "filing" },
@@ -216,6 +262,48 @@ const Investigation = () => {
                       </span>
                     </div>
                   ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Case Status Management */}
+            <Card className="mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <CheckCircle className="mr-2 h-5 w-5" />
+                  Case Status Management
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Button 
+                    onClick={() => handleStatusUpdate('investigating')}
+                    disabled={case_.status === 'investigating' || isUpdatingStatus}
+                    variant={case_.status === 'investigating' ? 'default' : 'outline'}
+                  >
+                    Start Investigation
+                  </Button>
+                  <Button 
+                    onClick={() => handleStatusUpdate('mediation')}
+                    disabled={case_.status === 'new' || isUpdatingStatus}
+                    variant={case_.status === 'new' ? 'outline' : 'outline'}
+                  >
+                    Route to Mediation
+                  </Button>
+                  <Button 
+                    onClick={() => handleStatusUpdate('closed')}
+                    disabled={case_.status === 'closed' || isUpdatingStatus}
+                    variant={case_.status === 'closed' ? 'default' : 'outline'}
+                  >
+                    Close Case
+                  </Button>
+                  <Button 
+                    onClick={() => handleStatusUpdate('closed')}
+                    disabled={case_.status === 'closed' || isUpdatingStatus}
+                    variant={case_.status === 'resolved' ? 'default' : 'outline'}
+                  >
+                    Mark Complete
+                  </Button>
                 </div>
               </CardContent>
             </Card>

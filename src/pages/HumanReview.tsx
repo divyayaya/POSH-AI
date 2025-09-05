@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
 import { webhookService } from "@/services/webhookService";
+import { supabase } from "@/integrations/supabase/client";
 
 const HumanReview = () => {
   const { caseId } = useParams<{ caseId: string }>();
@@ -128,10 +129,40 @@ const HumanReview = () => {
     }
 
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 1. Save review to database
+      const { data: reviewResponse, error: reviewError } = await supabase
+        .from('case_reviews')
+        .insert({
+          case_id: case_.id,
+          reviewer_id: "ICC-001", // Would come from auth context
+          credibility_assessment: parseInt(reviewData.credibilityAssessment),
+          investigation_pathway: reviewData.investigationPathway,
+          rationale: reviewData.rationale,
+          review_type: 'human_review',
+          metadata: {
+            mediationSuitability: reviewData.mediationSuitability,
+            secondaryReviewer: reviewData.secondaryReviewer
+          }
+        })
+        .select()
+        .single();
 
-      // Trigger n8n workflow via webhook service
+      if (reviewError) throw reviewError;
+
+      // 2. Update case status based on pathway
+      const newStatus = reviewData.investigationPathway === 'formal' ? 'investigating' : 'mediation';
+      
+      const { error: caseUpdateError } = await supabase
+        .from('cases')
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', case_.id);
+
+      if (caseUpdateError) throw caseUpdateError;
+
+      // 3. Trigger n8n workflow
       const webhookResponse = await webhookService.triggerHumanReviewSubmitted({
         caseId: case_.id,
         reviewerId: "ICC-001",
@@ -152,6 +183,7 @@ const HumanReview = () => {
         `Review submitted successfully. Case ${case_.id} has been ${reviewData.investigationPathway === 'formal' ? 'assigned for formal investigation' : 'routed for ' + reviewData.investigationPathway}.`
       );
     } catch (error) {
+      console.error('Review submission error:', error);
       toast.error("Failed to submit review. Please try again.");
     } finally {
       setIsSubmitting(false);

@@ -1,4 +1,5 @@
 import { N8N_WEBHOOKS } from '@/lib/mockData';
+import { supabase } from '@/integrations/supabase/client';
 
 interface WebhookPayload {
   [key: string]: any;
@@ -12,11 +13,38 @@ interface WebhookResponse {
 }
 
 class WebhookService {
+  private async logWebhook(
+    webhookType: string,
+    caseId: string | null,
+    payload: any,
+    response: any,
+    status: 'success' | 'error',
+    errorMessage?: string,
+    executionTime?: number
+  ) {
+    try {
+      await supabase
+        .from('webhook_logs')
+        .insert({
+          webhook_type: webhookType,
+          case_id: caseId,
+          payload,
+          response,
+          status,
+          error_message: errorMessage,
+          execution_time_ms: executionTime
+        });
+    } catch (error) {
+      console.error('Failed to log webhook:', error);
+    }
+  }
+
   private async callWebhook(
     webhookType: keyof typeof N8N_WEBHOOKS, 
     payload: WebhookPayload
   ): Promise<WebhookResponse> {
     const webhookUrl = N8N_WEBHOOKS[webhookType];
+    const startTime = Date.now();
     
     if (!webhookUrl) {
       throw new Error(`Webhook URL not found for type: ${webhookType}`);
@@ -39,6 +67,8 @@ class WebhookService {
         mode: 'cors',
       });
 
+      const executionTime = Date.now() - startTime;
+
       if (!response.ok) {
         throw new Error(`Webhook failed: ${response.status} ${response.statusText}`);
       }
@@ -46,6 +76,17 @@ class WebhookService {
       const responseData = await response.json().catch(() => ({}));
       
       console.log(`✅ n8n webhook ${webhookType} completed:`, responseData);
+
+      // Log successful webhook
+      await this.logWebhook(
+        webhookType,
+        payload.caseId || null,
+        payload,
+        responseData,
+        'success',
+        undefined,
+        executionTime
+      );
       
       return {
         success: true,
@@ -54,11 +95,25 @@ class WebhookService {
       };
 
     } catch (error) {
+      const executionTime = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
       console.error(`❌ n8n webhook ${webhookType} failed:`, error);
+
+      // Log failed webhook
+      await this.logWebhook(
+        webhookType,
+        payload.caseId || null,
+        payload,
+        null,
+        'error',
+        errorMessage,
+        executionTime
+      );
       
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: errorMessage
       };
     }
   }
