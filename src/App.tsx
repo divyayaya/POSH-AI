@@ -10,14 +10,12 @@ import HRDashboard from "./pages/HRDashboard";
 import HumanReview from "./pages/HumanReview";
 import Investigation from "./pages/Investigation";  
 import AdminWebhookTest from "./pages/AdminWebhookTest";
-import { DeadlineMonitorInitializer } from "./components/DeadlineMonitorInitializer";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <DeadlineMonitorInitializer />
       <Toaster />
       <Sonner />
       <BrowserRouter>
