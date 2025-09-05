@@ -1078,6 +1078,11 @@ const FileComplaint = () => {
         // Log the webhook error for admin review
         console.warn('Webhook notification failed, but case was still created:', webhookResponse.error);
       }
+
+      // Navigate to HR dashboard after successful submission
+      setTimeout(() => {
+        window.location.href = '/hr-dashboard';
+      }, 2000);
     } catch (error) {
       console.error('Case submission error:', error);
       toast.error('Failed to submit complaint. Please try again.');
