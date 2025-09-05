@@ -9,13 +9,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { AppHeader } from "@/components/AppHeader";
-import { ArrowLeft, Brain, User, CheckCircle, AlertTriangle, FileText, Users, Clock, Save, Info, Eye, Check, TrendingUp, Target, Lightbulb, Shield } from "lucide-react";
+import { ArrowLeft, Brain, CheckCircle, AlertTriangle, FileText, Clock, Save, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import { mockCases, mockEvidence, getEvidenceLevel } from "@/lib/mockData";
 import { webhookService } from "@/services/webhookService";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -31,10 +28,57 @@ const HumanReview = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDraft, setIsDraft] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [caseData, setCaseData] = useState<any>(null);
+  const [evidence, setEvidence] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const case_ = mockCases.find(c => c.id === caseId);
-  const evidence = mockEvidence.filter(e => e.caseId === caseId);
-  const evidenceLevel = getEvidenceLevel(case_?.evidenceScore || 0);
+  // Fetch case data and evidence from database
+  useEffect(() => {
+    const fetchCaseData = async () => {
+      if (!caseId) return;
+      
+      try {
+        // Fetch case details
+        const { data: caseResponse, error: caseError } = await supabase
+          .from('cases')
+          .select(`
+            *,
+            compliance_deadlines (deadline_date, deadline_type, urgency_level)
+          `)
+          .eq('id', caseId)
+          .single();
+
+        if (caseError) throw caseError;
+
+        // Fetch evidence for this case
+        const { data: evidenceResponse, error: evidenceError } = await supabase
+          .from('evidence')
+          .select('*')
+          .eq('case_id', caseId)
+          .order('created_at', { ascending: false });
+
+        if (evidenceError) throw evidenceError;
+
+        setCaseData(caseResponse);
+        setEvidence(evidenceResponse || []);
+      } catch (error) {
+        console.error('Error fetching case data:', error);
+        toast.error('Failed to load case data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCaseData();
+  }, [caseId]);
+
+  const getEvidenceLevel = (score: number) => {
+    if (score >= 70) return { level: "Strong", description: "Substantial evidence with clear patterns indicating policy violation" };
+    if (score >= 40) return { level: "Moderate", description: "Some evidence present but may require additional investigation" };
+    return { level: "Weak", description: "Limited evidence, consider mediation or coaching approach" };
+  };
+
+  const evidenceLevel = getEvidenceLevel(caseData?.evidence_score || 0);
 
   // Calculate form completion progress
   const calculateProgress = () => {
@@ -97,7 +141,21 @@ const HumanReview = () => {
     }
   }, [caseId]);
 
-  if (!case_) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-96">
+          <CardContent className="text-center py-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
+            <h2 className="text-lg font-semibold mb-2">Loading Case Data...</h2>
+            <p className="text-muted-foreground">Please wait while we fetch the case details.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!caseData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-96">
@@ -133,7 +191,7 @@ const HumanReview = () => {
       const { data: reviewResponse, error: reviewError } = await supabase
         .from('case_reviews')
         .insert({
-          case_id: case_.id,
+          case_id: caseData.id,
           reviewer_id: "ICC-001", // Would come from auth context
           credibility_assessment: parseInt(reviewData.credibilityAssessment),
           investigation_pathway: reviewData.investigationPathway,
@@ -158,13 +216,13 @@ const HumanReview = () => {
           status: newStatus,
           updated_at: new Date().toISOString()
         })
-        .eq('id', case_.id);
+        .eq('id', caseData.id);
 
       if (caseUpdateError) throw caseUpdateError;
 
       // 3. Trigger n8n workflow
       const webhookResponse = await webhookService.triggerHumanReviewSubmitted({
-        caseId: case_.id,
+        caseId: caseData.id,
         reviewerId: "ICC-001",
         pathway: reviewData.investigationPathway,
         credibility: parseInt(reviewData.credibilityAssessment)
@@ -180,7 +238,7 @@ const HumanReview = () => {
       setIsDraft(false);
 
       toast.success(
-        `Review submitted successfully. Case ${case_.id} has been ${reviewData.investigationPathway === 'formal' ? 'assigned for formal investigation' : 'routed for ' + reviewData.investigationPathway}.`
+        `Review submitted successfully. Case ${caseData.case_number} has been ${reviewData.investigationPathway === 'formal' ? 'assigned for formal investigation' : 'routed for ' + reviewData.investigationPathway}.`
       );
     } catch (error) {
       console.error('Review submission error:', error);
@@ -196,8 +254,21 @@ const HumanReview = () => {
     toast.success("Draft saved successfully");
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const getDeadlineDate = () => {
+    const deadline = caseData.compliance_deadlines?.[0]?.deadline_date;
+    return deadline ? formatDate(deadline) : 'TBD';
+  };
+
   return (
-    <div className="min-h-screen bg-bg-primary">
+    <div className="min-h-screen bg-background">
       <AppHeader userRole="icc" />
 
       <main className="container mx-auto px-6 py-8 max-w-7xl">
@@ -217,9 +288,9 @@ const HumanReview = () => {
                   <Clock className="h-3 w-3 mr-1" />
                   Pending Review
                 </Badge>
-                <span className="text-sm text-muted-foreground">Case ID: {case_.id}</span>
+                <span className="text-sm text-muted-foreground">Case ID: {caseData.case_number}</span>
                 {isDraft && (
-                  <Badge variant="secondary" className="bg-success-muted text-success border-success/20">
+                  <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-200">
                     <Save className="h-3 w-3 mr-1" />
                     Draft Saved
                   </Badge>
@@ -252,19 +323,21 @@ const HumanReview = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Incident Type</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.incidentType}</div>
+                    <div className="text-sm font-medium text-foreground mt-1">
+                      {caseData.metadata?.incidentType?.replace('_', ' ').toUpperCase() || 'Not specified'}
+                    </div>
                   </div>
                   <div>
-                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Department</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.department}</div>
+                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Priority</Label>
+                    <div className="text-sm font-medium text-foreground mt-1 capitalize">{caseData.priority}</div>
                   </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Submitted</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.submissionDate}</div>
+                    <div className="text-sm font-medium text-foreground mt-1">{formatDate(caseData.created_at)}</div>
                   </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Deadline</Label>
-                    <div className="text-sm font-medium text-amber-600 mt-1">{case_.deadline}</div>
+                    <div className="text-sm font-medium text-amber-600 mt-1">{getDeadlineDate()}</div>
                   </div>
                 </div>
                 
@@ -273,11 +346,17 @@ const HumanReview = () => {
                 <div className="space-y-3">
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Complainant</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.complainant}</div>
+                    <div className="text-sm font-medium text-foreground mt-1">{caseData.complainant_name}</div>
                   </div>
                   <div>
                     <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Respondent</Label>
-                    <div className="text-sm font-medium text-foreground mt-1">{case_.respondent}</div>
+                    <div className="text-sm font-medium text-foreground mt-1">{caseData.respondent_name}</div>
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Description</Label>
+                    <div className="text-sm text-foreground mt-1 p-3 bg-muted/50 rounded-lg">
+                      {caseData.description}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -299,487 +378,236 @@ const HumanReview = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">{case_.evidenceScore}</div>
+                    <div className="text-2xl font-bold text-primary">{caseData.evidence_score}</div>
                     <div className="text-xs text-muted-foreground">Confidence Score</div>
                   </div>
                 </CardTitle>
               </CardHeader>
               
-              <CardContent className="p-0">
-                {/* Evidence Strength - Primary Focus */}
-                <div className="p-6">
+              <CardContent className="p-6">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-base font-semibold text-foreground">Evidence Strength Analysis</h3>
                     <Badge 
                       variant="outline" 
                       className={`${
-                        case_.evidenceScore >= 70 ? 'bg-success-muted text-success border-success/20' :
-                        case_.evidenceScore >= 40 ? 'bg-warning-muted text-warning border-warning/20' :
-                        'bg-destructive/10 text-destructive border-destructive/20'
+                        caseData.evidence_score >= 70 ? 'bg-green-50 text-green-700 border-green-200' :
+                        caseData.evidence_score >= 40 ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                        'bg-red-50 text-red-700 border-red-200'
                       }`}
                     >
                       {evidenceLevel.level}
                     </Badge>
                   </div>
                   
-                  <div className="space-y-4">
-                    <div className="relative">
-                      <div className="w-full bg-muted rounded-full h-3">
-                        <div 
-                          className={`h-3 rounded-full transition-all duration-700 ${
-                            case_.evidenceScore >= 70 ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
-                            case_.evidenceScore >= 40 ? 'bg-gradient-to-r from-amber-500 to-orange-600' :
-                            'bg-gradient-to-r from-red-500 to-rose-600'
-                          }`}
-                          style={{ width: `${case_.evidenceScore}%` }}
-                        />
-                      </div>
-                      <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                        <span>Weak (0-39)</span>
-                        <span>Moderate (40-69)</span>
-                        <span>Strong (70-100)</span>
-                      </div>
+                  <div className="relative">
+                    <div className="w-full bg-muted rounded-full h-3">
+                      <div 
+                        className={`h-3 rounded-full transition-all duration-700 ${
+                          caseData.evidence_score >= 70 ? 'bg-gradient-to-r from-green-500 to-emerald-600' :
+                          caseData.evidence_score >= 40 ? 'bg-gradient-to-r from-amber-500 to-orange-600' :
+                          'bg-gradient-to-r from-red-500 to-rose-600'
+                        }`}
+                        style={{ width: `${caseData.evidence_score}%` }}
+                      />
                     </div>
-                    
-                    <div className="bg-muted/50 rounded-lg p-4">
-                      <div className="flex items-start gap-3">
-                        <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                        <div>
-                          <div className="font-medium text-foreground mb-1">{evidenceLevel.level} Evidence Quality</div>
-                          <div className="text-sm text-muted-foreground leading-relaxed">{evidenceLevel.description}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Recommended Action - Clear Decision Support */}
-                <div className="p-6">
-                  <h3 className="text-base font-semibold text-foreground mb-4">Recommended Resolution Path</h3>
-                  
-                  <div className="bg-gradient-to-r from-muted/50 to-muted/30 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-4 h-4 rounded-full ${
-                          case_.evidenceScore >= 70 ? 'bg-red-500' :
-                          case_.evidenceScore >= 40 ? 'bg-amber-500' :
-                          'bg-green-500'
-                        }`} />
-                        <div>
-                          <div className="font-semibold text-foreground text-lg">
-                            {case_.evidenceScore < 40 ? 'Mediation' : case_.evidenceScore > 70 ? 'Formal Investigation' : 'Alternative Resolution'}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {case_.evidenceScore < 40 ? 'Collaborative approach recommended' : 
-                             case_.evidenceScore > 70 ? 'Comprehensive investigation required' : 
-                             'Structured resolution with documentation'}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 font-semibold">
-                          85% Match
-                        </Badge>
-                        <div className="text-xs text-muted-foreground mt-1">AI Confidence</div>
-                      </div>
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                      <span>Weak (0-39)</span>
+                      <span>Moderate (40-69)</span>
+                      <span>Strong (70-100)</span>
                     </div>
                   </div>
                   
-                  <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-                    <CheckCircle className="h-4 w-4 text-success" />
-                    <span>Evidence patterns align with recommended pathway</span>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Key Metrics & Summary */}
-                <div className="p-6">
-                  <h3 className="text-base font-semibold text-foreground mb-4">Case Analytics</h3>
-                  
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-foreground">{evidence.length}</div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide">Evidence Items</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-foreground">
-                        {case_.evidenceScore < 40 ? 'Low' : case_.evidenceScore > 70 ? 'High' : 'Med'}
-                      </div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide">Risk Level</div>
-                    </div>
-                    <div className="text-center p-4 bg-muted/30 rounded-lg">
-                      <div className="text-2xl font-bold text-foreground">3-5</div>
-                      <div className="text-xs text-muted-foreground uppercase tracking-wide">Days Est.</div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-muted/20 rounded-lg p-4">
+                  <div className="bg-muted/50 rounded-lg p-4">
                     <div className="flex items-start gap-3">
-                      <Lightbulb className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
                       <div>
-                        <div className="font-medium text-foreground mb-2">AI Summary</div>
-                        <div className="text-sm text-muted-foreground leading-relaxed">
-                          Analysis of {case_.incidentType.toLowerCase()} allegations in {case_.department} indicates{' '}
-                          {case_.evidenceScore < 40 ? 'potential for collaborative resolution through mediation. Evidence suggests misunderstandings may be addressed through facilitated dialogue' : 
-                          case_.evidenceScore > 70 ? 'serious concerns requiring formal investigation. Evidence quality supports comprehensive review with potential disciplinary outcomes' : 
-                          'moderate complexity suitable for structured alternative resolution. Documentation and clear process recommended'}.
-                        </div>
+                        <div className="font-medium text-foreground mb-1">{evidenceLevel.level} Evidence Quality</div>
+                        <div className="text-sm text-muted-foreground leading-relaxed">{evidenceLevel.description}</div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Evidence Summary */}
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center text-foreground">
-                  <FileText className="mr-2 h-5 w-5" />
-                  Evidence Summary
-                </CardTitle>
-                <CardDescription className="text-sm">
-                  Documentation and witness statements collected for this case
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {evidence.map((ev) => (
-                  <div key={ev.id} className="border border-border rounded-lg p-3 bg-card hover:bg-accent/5 transition-colors">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className={`${
-                        ev.type === 'document' ? 'bg-warning-muted text-warning border-warning/20' :
-                        ev.type === 'witness' ? 'bg-success-muted text-success border-success/20' : 
-                        'bg-destructive/10 text-destructive border-destructive/20'
-                      }`}>{ev.type}</Badge>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-6 px-2 text-xs text-primary hover:text-primary/80 hover:bg-primary/5"
-                          onClick={() => {
-                            toast.info(`Opening ${ev.type}: ${ev.description.slice(0, 30)}...`);
-                          }}
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Button>
-                        <Badge variant="secondary" className="bg-muted text-muted-foreground">{ev.aiAnalysisScore} pts</Badge>
-                      </div>
-                    </div>
-                    <div className="text-sm text-foreground">{ev.description}</div>
-                    {ev.metadata && (
-                      <div className="text-xs text-muted-foreground mt-1">
-                        Credibility: {ev.credibilityRating}/5.0
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Main Area - Review Form */}
-          <div className="xl:col-span-3">
-            <Card className="sticky top-8">
-              <CardHeader className="pb-6">
-                <CardTitle className="flex items-center text-foreground">
-                  <User className="mr-2 h-5 w-5 text-accent-foreground" />
-                  Human Review Decision
-                </CardTitle>
-                <CardDescription>
-                  Complete all required fields to submit your review decision
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                {/* Step 1: Credibility Assessment */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.credibilityAssessment ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
-                    }`}>
-                      {reviewData.credibilityAssessment ? <Check className="h-4 w-4" /> : '1'}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Label className="text-base font-semibold text-foreground">Credibility Assessment</Label>
-                        <span className="text-destructive">*</span>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Consider evidence quality, witness reliability, and consistency of statements</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Rate the overall credibility of the complaint based on available evidence
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="ml-11">
-                    <RadioGroup 
-                      value={reviewData.credibilityAssessment} 
-                      onValueChange={(value) => {
-                        setReviewData({...reviewData, credibilityAssessment: value});
-                        validateField('credibilityAssessment', value);
-                      }}
-                      className={`grid grid-cols-1 gap-2 ${validationErrors.credibilityAssessment ? "border border-destructive rounded-lg p-3" : ""}`}
-                    >
-                      {[
-                        { value: '1', label: 'Very Low Credibility', desc: 'Evidence lacks reliability or consistency' },
-                        { value: '2', label: 'Low Credibility', desc: 'Some concerns about evidence quality' },
-                        { value: '3', label: 'Moderate Credibility', desc: 'Mixed evidence requiring careful consideration' },
-                        { value: '4', label: 'High Credibility', desc: 'Strong, consistent evidence' },
-                        { value: '5', label: 'Very High Credibility', desc: 'Compelling, well-documented evidence' }
-                      ].map((option) => (
-                        <div key={option.value} className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-accent/5 transition-colors">
-                          <RadioGroupItem value={option.value} id={`rating-${option.value}`} className="mt-1" />
-                          <div className="flex-1">
-                            <Label htmlFor={`rating-${option.value}`} className="text-sm font-medium cursor-pointer block">
-                              {option.label}
-                            </Label>
-                            <p className="text-xs text-muted-foreground mt-1">{option.desc}</p>
+                  {/* Evidence Summary */}
+                  <div className="mt-4">
+                    <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Evidence Files</Label>
+                    <div className="mt-2 space-y-2">
+                      {evidence.length > 0 ? (
+                        evidence.map((item, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 bg-muted/30 rounded">
+                            <span className="text-sm">{item.description}</span>
+                            <Badge variant="secondary">Score: {item.score}</Badge>
                           </div>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                    {validationErrors.credibilityAssessment && (
-                      <p className="text-sm text-destructive flex items-center gap-1 mt-2">
-                        <AlertTriangle className="h-3 w-3" />
-                        {validationErrors.credibilityAssessment}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Step 2: Investigation Pathway */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.investigationPathway ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
-                    }`}>
-                      {reviewData.investigationPathway ? <Check className="h-4 w-4" /> : '2'}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Label className="text-base font-semibold text-foreground">Investigation Pathway</Label>
-                        <span className="text-destructive">*</span>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Consider case severity, organizational impact, and legal requirements</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Choose the most appropriate next steps for this case
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="ml-11">
-                    <Select 
-                      value={reviewData.investigationPathway}
-                      onValueChange={(value) => {
-                        setReviewData({...reviewData, investigationPathway: value});
-                        validateField('investigationPathway', value);
-                      }}
-                    >
-                      <SelectTrigger className={`h-12 ${validationErrors.investigationPathway ? "border-destructive" : ""}`}>
-                        <SelectValue placeholder="Select investigation pathway" />
-                      </SelectTrigger>
-                      <SelectContent className="text-left">
-                        <SelectItem value="formal" className="py-3">
-                          <div className="flex items-center gap-3 text-left">
-                            <span className="text-lg">🔍</span>
-                            <div className="text-left">
-                              <div className="font-medium text-left">Formal Investigation</div>
-                              <div className="text-xs text-muted-foreground text-left">Comprehensive inquiry with formal procedures</div>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="mediation" className="py-3">
-                          <div className="flex items-center gap-3 text-left">
-                            <span className="text-lg">🤝</span>
-                            <div className="text-left">
-                              <div className="font-medium text-left">Mediation Process</div>
-                              <div className="text-xs text-muted-foreground text-left">Facilitated resolution between parties</div>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="alternative" className="py-3">
-                          <div className="flex items-center gap-3 text-left">
-                            <span className="text-lg">⚖️</span>
-                            <div className="text-left">
-                              <div className="font-medium text-left">Alternative Resolution</div>
-                              <div className="text-xs text-muted-foreground text-left">Tailored approach based on case specifics</div>
-                            </div>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="dismiss" className="py-3">
-                          <div className="flex items-center gap-3 text-left">
-                            <span className="text-lg">❌</span>
-                            <div className="text-left">
-                              <div className="font-medium text-left">Dismiss Case</div>
-                              <div className="text-xs text-muted-foreground text-left">Insufficient evidence to proceed</div>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {validationErrors.investigationPathway && (
-                      <p className="text-sm text-destructive flex items-center gap-1 mt-2">
-                        <AlertTriangle className="h-3 w-3" />
-                        {validationErrors.investigationPathway}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Step 3: Rationale */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.rationale.length >= 100 ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
-                    }`}>
-                      {reviewData.rationale.length >= 100 ? <Check className="h-4 w-4" /> : '3'}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <Label className="text-base font-semibold text-foreground">Decision Rationale</Label>
-                        <span className="text-destructive">*</span>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="h-4 w-4 text-muted-foreground" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Include evidence assessment, organizational considerations, and legal compliance factors</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Provide detailed justification for your decision (minimum 100 characters)
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="ml-11">
-                    <Textarea
-                      placeholder="Explain your reasoning for the chosen pathway, considering evidence quality, case complexity, organizational context, and compliance requirements..."
-                      value={reviewData.rationale}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setReviewData({...reviewData, rationale: value});
-                        validateField('rationale', value);
-                      }}
-                      className={`min-h-[100px] resize-none ${validationErrors.rationale ? "border-destructive" : ""}`}
-                    />
-                    <div className="flex items-center justify-between mt-2">
-                      <div className={`text-xs ${reviewData.rationale.length >= 100 ? 'text-success' : 'text-muted-foreground'}`}>
-                        {reviewData.rationale.length}/500 characters
-                        {reviewData.rationale.length >= 100 && <CheckCircle className="inline h-3 w-3 ml-1" />}
-                      </div>
-                      {validationErrors.rationale && (
-                        <p className="text-sm text-destructive flex items-center gap-1">
-                          <AlertTriangle className="h-3 w-3" />
-                          {validationErrors.rationale.split('(')[0]}
-                        </p>
+                        ))
+                      ) : (
+                        <div className="text-sm text-muted-foreground">No evidence files uploaded</div>
                       )}
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Side - Review Form */}
+          <div className="xl:col-span-3">
+            <Card>
+              <CardHeader>
+                <CardTitle>Human Review Assessment</CardTitle>
+                <CardDescription>
+                  Please evaluate this case and determine the appropriate investigation pathway
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Credibility Assessment */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">
+                    Credibility Assessment *
+                    {validationErrors.credibilityAssessment && (
+                      <span className="text-destructive text-xs ml-2">{validationErrors.credibilityAssessment}</span>
+                    )}
+                  </Label>
+                  <RadioGroup
+                    value={reviewData.credibilityAssessment}
+                    onValueChange={(value) => {
+                      setReviewData({ ...reviewData, credibilityAssessment: value });
+                      validateField('credibilityAssessment', value);
+                    }}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="90" id="cred-90" />
+                      <Label htmlFor="cred-90" className="text-sm">High (90%) - Strong evidence, clear pattern</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="70" id="cred-70" />
+                      <Label htmlFor="cred-70" className="text-sm">Moderate (70%) - Some evidence, requires investigation</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="40" id="cred-40" />
+                      <Label htmlFor="cred-40" className="text-sm">Low (40%) - Limited evidence, consider alternatives</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="20" id="cred-20" />
+                      <Label htmlFor="cred-20" className="text-sm">Very Low (20%) - Insufficient evidence</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
 
                 <Separator />
 
-                {/* Optional: Secondary Reviewer */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
-                      reviewData.secondaryReviewer ? 'bg-success-muted text-success' : 'bg-warning-muted text-warning'
-                    }`}>
-                      {reviewData.secondaryReviewer ? <Check className="h-4 w-4" /> : '4'}
-                    </div>
-                    <div>
-                      <Label className="text-base font-semibold text-foreground">Secondary Reviewer</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Optional: Assign another ICC member for dual review
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="ml-11">
-                    <Select onValueChange={(value) => setReviewData({...reviewData, secondaryReviewer: value})}>
-                      <SelectTrigger className="h-12">
-                        <SelectValue placeholder="Select ICC member (optional)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="icc-002">Dr. Priya Sharma (ICC Member 2)</SelectItem>
-                        <SelectItem value="icc-003">Mr. Rajesh Kumar (ICC Member 3)</SelectItem>
-                        <SelectItem value="icc-004">Ms. Anita Verma (External Member)</SelectItem>
-                      </SelectContent>
-                    </Select>
+                {/* Investigation Pathway */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">
+                    Investigation Pathway *
+                    {validationErrors.investigationPathway && (
+                      <span className="text-destructive text-xs ml-2">{validationErrors.investigationPathway}</span>
+                    )}
+                  </Label>
+                  <Select
+                    value={reviewData.investigationPathway}
+                    onValueChange={(value) => {
+                      setReviewData({ ...reviewData, investigationPathway: value });
+                      validateField('investigationPathway', value);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select investigation pathway" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="formal">Formal Investigation</SelectItem>
+                      <SelectItem value="mediation">Mediation</SelectItem>
+                      <SelectItem value="coaching">Coaching/Training</SelectItem>
+                      <SelectItem value="alternative">Alternative Resolution</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Separator />
+
+                {/* Rationale */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">
+                    Rationale and Recommendations *
+                    {validationErrors.rationale && (
+                      <span className="text-destructive text-xs ml-2">{validationErrors.rationale}</span>
+                    )}
+                  </Label>
+                  <Textarea
+                    placeholder="Provide detailed rationale for your assessment and pathway recommendation..."
+                    value={reviewData.rationale}
+                    onChange={(e) => {
+                      setReviewData({ ...reviewData, rationale: e.target.value });
+                      validateField('rationale', e.target.value);
+                    }}
+                    className="min-h-[120px]"
+                  />
+                  <div className="text-xs text-muted-foreground">
+                    {reviewData.rationale.length}/100 characters minimum
                   </div>
                 </div>
 
                 <Separator />
 
+                {/* Optional Fields */}
+                <div className="space-y-4">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Mediation Suitability (Optional)</Label>
+                    <Select
+                      value={reviewData.mediationSuitability}
+                      onValueChange={(value) => setReviewData({ ...reviewData, mediationSuitability: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Assess mediation suitability" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="high">High - Good candidate for mediation</SelectItem>
+                        <SelectItem value="moderate">Moderate - May benefit from mediation</SelectItem>
+                        <SelectItem value="low">Low - Formal process recommended</SelectItem>
+                        <SelectItem value="not-suitable">Not Suitable - Serious violations</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Secondary Reviewer (Optional)</Label>
+                    <Select
+                      value={reviewData.secondaryReviewer}
+                      onValueChange={(value) => setReviewData({ ...reviewData, secondaryReviewer: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Assign secondary reviewer if needed" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="icc-member-2">ICC Member #2</SelectItem>
+                        <SelectItem value="external-expert">External Expert</SelectItem>
+                        <SelectItem value="senior-hr">Senior HR Representative</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 {/* Action Buttons */}
-                <div className="flex flex-col gap-3 pt-4">
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button 
-                        size="lg"
-                        className="w-full h-12"
-                        disabled={!reviewData.credibilityAssessment || !reviewData.investigationPathway || reviewData.rationale.length < 100 || isSubmitting}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Submitting Review...
-                          </>
-                        ) : (
-                          'Submit Review Decision'
-                        )}
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Confirm Review Submission</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          You are about to submit your review for Case {case_.id}. This will route the case to <strong>{reviewData.investigationPathway}</strong> and cannot be undone.
-                          <br /><br />
-                          Please ensure all information is accurate before proceeding.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Review Again</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleSubmitReview}>
-                          Confirm & Submit
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                  
-                  <Button 
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    onClick={handleSubmitReview}
+                    disabled={isSubmitting}
+                    className="flex-1"
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit Review"}
+                  </Button>
+                  <Button
+                    variant="outline"
                     onClick={handleSaveDraft}
-                    variant="outline" 
-                    size="lg"
-                    className="w-full h-12"
                     disabled={isSubmitting}
                   >
                     <Save className="h-4 w-4 mr-2" />
-                    Save as Draft
+                    Save Draft
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link to="/hr-dashboard">
+                      <ArrowLeft className="h-4 w-4 mr-2" />
+                      Back
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
