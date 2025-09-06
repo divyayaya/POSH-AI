@@ -13,7 +13,120 @@ const HRDashboard = () => {
   const [notifications] = useState(3);
   const [pendingCases, setPendingCases] = useState([]);
   const [allCases, setAllCases] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [loadingActivity, setLoadingActivity] = useState(true);
+
+  // Fetch recent activity from multiple tables
+  const fetchRecentActivity = async () => {
+    try {
+      setLoadingActivity(true);
+      const activities = [];
+
+      // 1. Recent cases
+      const { data: recentCases } = await supabase
+        .from('cases')
+        .select('id, case_number, title, status, priority, created_at, updated_at')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      recentCases?.forEach(case_ => {
+        activities.push({
+          id: `case-${case_.id}`,
+          type: 'case_created',
+          title: 'New case filed',
+          description: `${case_.case_number} - ${case_.title}`,
+          priority: case_.priority,
+          timestamp: case_.created_at,
+          icon: 'FileText',
+          color: 'blue'
+        });
+      });
+
+      // 2. Recent case reviews
+      const { data: recentReviews } = await supabase
+        .from('case_reviews')
+        .select(`
+          id, investigation_pathway, credibility_assessment, created_at,
+          cases!inner(case_number, title)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      recentReviews?.forEach(review => {
+        activities.push({
+          id: `review-${review.id}`,
+          type: 'review_completed',
+          title: 'Case review completed',
+          description: `${review.cases.case_number} reviewed - ${review.investigation_pathway} pathway`,
+          timestamp: review.created_at,
+          icon: 'CheckCircle',
+          color: 'green'
+        });
+      });
+
+      // 3. Recent evidence uploads
+      const { data: recentEvidence } = await supabase
+        .from('evidence')
+        .select(`
+          id, type, description, score, created_at,
+          cases!inner(case_number)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      recentEvidence?.forEach(evidence => {
+        activities.push({
+          id: `evidence-${evidence.id}`,
+          type: 'evidence_uploaded',
+          title: 'Evidence uploaded',
+          description: `${evidence.cases.case_number} - ${evidence.description}`,
+          timestamp: evidence.created_at,
+          icon: 'Upload',
+          color: 'purple'
+        });
+      });
+
+      // 4. Approaching deadlines
+      const { data: upcomingDeadlines } = await supabase
+        .from('compliance_deadlines')
+        .select(`
+          id, deadline_date, deadline_type, urgency_level, created_at,
+          cases!inner(case_number, title)
+        `)
+        .gte('deadline_date', new Date().toISOString())
+        .order('deadline_date', { ascending: true })
+        .limit(3);
+
+      upcomingDeadlines?.forEach(deadline => {
+        const daysUntil = Math.ceil((new Date(deadline.deadline_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+        if (daysUntil <= 30) {
+          activities.push({
+            id: `deadline-${deadline.id}`,
+            type: 'deadline_approaching',
+            title: `Deadline approaching (${daysUntil} days)`,
+            description: `${deadline.cases.case_number} - ${deadline.deadline_type}`,
+            timestamp: deadline.created_at,
+            urgency: deadline.urgency_level,
+            icon: 'Clock',
+            color: daysUntil <= 7 ? 'red' : 'yellow'
+          });
+        }
+      });
+
+      // Sort all activities by timestamp and take most recent 10
+      const sortedActivities = activities
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, 10);
+
+      setRecentActivity(sortedActivities);
+    } catch (error) {
+      console.error('Error fetching recent activity:', error);
+      toast.error('Failed to load recent activity');
+    } finally {
+      setLoadingActivity(false);
+    }
+  };
 
   // Fetch cases from database
   useEffect(() => {
@@ -41,18 +154,21 @@ const HRDashboard = () => {
     };
 
     fetchCases();
+    fetchRecentActivity();
 
-    // Set up real-time subscription for new cases
+    // Set up real-time subscription for new cases and activity
     const subscription = supabase
-      .channel('hr_dashboard_cases')
+      .channel('hr_dashboard_activity')
       .on('postgres_changes', 
         { event: 'INSERT', schema: 'public', table: 'cases' },
         (payload) => {
           setAllCases(prev => [payload.new, ...prev]);
           if (payload.new.status === 'pending') {
             setPendingCases(prev => [payload.new, ...prev]);
-            toast.info(`New case filed: ${payload.new.case_number}`);
+            toast.info(`🚨 New case filed: ${payload.new.case_number}`);
           }
+          // Refresh activity feed
+          fetchRecentActivity();
         }
       )
       .on('postgres_changes',
@@ -66,6 +182,21 @@ const HRDashboard = () => {
               ? prev.map(case_ => case_.id === payload.new.id ? payload.new : case_)
               : prev.filter(case_ => case_.id !== payload.new.id)
           );
+          fetchRecentActivity();
+        }
+      )
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'case_reviews' },
+        () => {
+          fetchRecentActivity();
+          toast.info('📋 New case review completed');
+        }
+      )
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'evidence' },
+        () => {
+          fetchRecentActivity();
+          toast.info('📎 New evidence uploaded');
         }
       )
       .subscribe();
@@ -74,6 +205,39 @@ const HRDashboard = () => {
       subscription.unsubscribe();
     };
   }, []);
+
+  const getActivityIcon = (iconName: string) => {
+    const iconProps = { className: "h-4 w-4" };
+    switch (iconName) {
+      case 'FileText': return <FileText {...iconProps} />;
+      case 'CheckCircle': return <CheckCircle {...iconProps} />;
+      case 'Upload': return <Bell {...iconProps} />; // Using Bell for upload
+      case 'Clock': return <Clock {...iconProps} />;
+      default: return <Bell {...iconProps} />;
+    }
+  };
+
+  const getActivityColor = (color: string) => {
+    switch (color) {
+      case 'blue': return 'bg-blue-500';
+      case 'green': return 'bg-green-500';
+      case 'purple': return 'bg-purple-500';
+      case 'yellow': return 'bg-yellow-500';
+      case 'red': return 'bg-red-500';
+      default: return 'bg-primary';
+    }
+  };
+
+  const formatTimeAgo = (timestamp: string) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInSeconds = Math.floor((now.getTime() - time.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -361,58 +525,69 @@ const HRDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background">
-                  <div className="flex-shrink-0 w-2 h-2 mt-2 bg-primary rounded-full"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">New case filed</p>
-                    <p className="text-xs text-muted-foreground">Case POSH-2024-045 reported by Anonymous • Engineering Dept</p>
-                    <p className="text-xs text-muted-foreground mt-1">2 minutes ago</p>
-                  </div>
+              {loadingActivity ? (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background animate-pulse">
+                      <div className="flex-shrink-0 w-2 h-2 mt-2 bg-muted rounded-full"></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="h-4 bg-muted rounded mb-2"></div>
+                        <div className="h-3 bg-muted rounded w-3/4 mb-1"></div>
+                        <div className="h-3 bg-muted rounded w-1/4"></div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                
-                <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background">
-                  <div className="flex-shrink-0 w-2 h-2 mt-2 bg-warning rounded-full"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">Case status updated</p>
-                    <p className="text-xs text-muted-foreground">Case POSH-2024-043 moved to investigation • Marketing Dept</p>
-                    <p className="text-xs text-muted-foreground mt-1">15 minutes ago</p>
-                  </div>
+              ) : recentActivity.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Zap className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
+                  <p className="text-lg font-medium mb-2">No Recent Activity</p>
+                  <p className="text-sm">Activity will appear here as cases are filed and processed</p>
                 </div>
-                
-                <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background">
-                  <div className="flex-shrink-0 w-2 h-2 mt-2 bg-success rounded-full"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">Training completed</p>
-                    <p className="text-xs text-muted-foreground">ICC member Sarah Chen completed annual refresher • HR Dept</p>
-                    <p className="text-xs text-muted-foreground mt-1">1 hour ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background">
-                  <div className="flex-shrink-0 w-2 h-2 mt-2 bg-warning rounded-full"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">Deadline reminder</p>
-                    <p className="text-xs text-muted-foreground">Case POSH-2024-041 approaching 90-day deadline • Sales Dept</p>
-                    <p className="text-xs text-muted-foreground mt-1">2 hours ago</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background">
-                  <div className="flex-shrink-0 w-2 h-2 mt-2 bg-success rounded-full"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-foreground">Case resolved</p>
-                    <p className="text-xs text-muted-foreground">Case POSH-2024-040 successfully closed • Operations Dept</p>
-                    <p className="text-xs text-muted-foreground mt-1">3 hours ago</p>
-                  </div>
-                </div>
+              ) : (
+                <div className="space-y-4">
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors">
+                      <div className={`flex-shrink-0 w-2 h-2 mt-2 rounded-full ${getActivityColor(activity.color)}`}></div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          {getActivityIcon(activity.icon)}
+                          <p className="text-sm font-medium text-foreground">{activity.title}</p>
+                          {activity.priority && (
+                            <Badge 
+                              variant={activity.priority === 'high' ? 'destructive' : 'secondary'}
+                              className="text-xs"
+                            >
+                              {activity.priority}
+                            </Badge>
+                          )}
+                          {activity.urgency && (
+                            <Badge 
+                              variant={activity.urgency === 'high' ? 'destructive' : 'secondary'}
+                              className="text-xs"
+                            >
+                              {activity.urgency}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">{activity.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{formatTimeAgo(activity.timestamp)}</p>
+                      </div>
+                    </div>
+                  ))}
 
-                <div className="text-center pt-4">
-                  <Button variant="ghost" size="sm" className="text-xs">
-                    View All Activity
-                  </Button>
+                  <div className="text-center pt-4">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs"
+                      onClick={() => fetchRecentActivity()}
+                    >
+                      Refresh Activity
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>
