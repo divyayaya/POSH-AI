@@ -1010,7 +1010,8 @@ const FileComplaint = () => {
   };
 
   const handleNext = () => {
-    if (!validateCurrentStep(currentStep)) {
+    // Skip validation for step 1, validate other steps
+    if (currentStep > 1 && !validateCurrentStep(currentStep)) {
       toast.error(`Please complete all required fields in Step ${currentStep} before continuing`);
       return;
     }
@@ -1158,7 +1159,7 @@ const FileComplaint = () => {
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-background">
-        <AppHeader />
+        <AppHeader userRole="employee" showNavigation={true} />
         
         <div className="max-w-2xl mx-auto px-6 py-16">
           <div className="text-center">
