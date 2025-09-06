@@ -1255,7 +1255,7 @@ const FileComplaint = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      
+      <AppHeader userRole="employee" showNavigation={true} />
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Enhanced Header */}
         <div className="text-center mb-8">
