@@ -63,7 +63,7 @@ const Index = () => {
       subtitle: "Review cases & investigations",
       description: "Human oversight for complex cases requiring expert judgment",
       icon: Shield,
-      route: "/human-review/POSH-2024-001", 
+      route: "/icc-dashboard", 
       color: "bg-soft-lavender",
       hoverColor: "hover:bg-soft-lavender/90",
       features: [
