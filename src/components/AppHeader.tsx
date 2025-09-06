@@ -19,7 +19,9 @@ import {
   Users,
   BarChart3,
   Menu,
-  X
+  X,
+  Calendar,
+  CheckSquare
 } from "lucide-react";
 
 interface AppHeaderProps {
@@ -61,9 +63,9 @@ export const AppHeader = ({
         ];
       case 'icc':
         return [
-          { name: 'Reviews', href: '/human-review/POSH-2024-001', icon: FileText },
-          { name: 'Cases', href: '/cases', icon: Users },
-          { name: 'Calendar', href: '/calendar', icon: BarChart3 }
+          { name: 'Reviews', href: '/reviews', icon: CheckSquare },
+          { name: 'Cases', href: '/icc-dashboard', icon: FileText },
+          { name: 'Calendar', href: '/calendar', icon: Calendar }
         ];
       default:
         return [
