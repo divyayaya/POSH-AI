@@ -476,20 +476,20 @@ const HumanReview = () => {
                     }}
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="90" id="cred-90" />
-                      <Label htmlFor="cred-90" className="text-sm">High (90%) - Strong evidence, clear pattern</Label>
+                      <RadioGroupItem value="5" id="cred-5" />
+                      <Label htmlFor="cred-5" className="text-sm">High (90%) - Strong evidence, clear pattern</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="70" id="cred-70" />
-                      <Label htmlFor="cred-70" className="text-sm">Moderate (70%) - Some evidence, requires investigation</Label>
+                      <RadioGroupItem value="4" id="cred-4" />
+                      <Label htmlFor="cred-4" className="text-sm">Moderate (70%) - Some evidence, requires investigation</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="40" id="cred-40" />
-                      <Label htmlFor="cred-40" className="text-sm">Low (40%) - Limited evidence, consider alternatives</Label>
+                      <RadioGroupItem value="3" id="cred-3" />
+                      <Label htmlFor="cred-3" className="text-sm">Low (40%) - Limited evidence, consider alternatives</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="20" id="cred-20" />
-                      <Label htmlFor="cred-20" className="text-sm">Very Low (20%) - Insufficient evidence</Label>
+                      <RadioGroupItem value="1" id="cred-1" />
+                      <Label htmlFor="cred-1" className="text-sm">Very Low (20%) - Insufficient evidence</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -518,7 +518,7 @@ const HumanReview = () => {
                       <SelectItem value="formal">Formal Investigation</SelectItem>
                       <SelectItem value="mediation">Mediation</SelectItem>
                       <SelectItem value="coaching">Coaching/Training</SelectItem>
-                      <SelectItem value="alternative">Alternative Resolution</SelectItem>
+                      <SelectItem value="dismissed">Dismissed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
