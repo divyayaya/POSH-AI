@@ -52,6 +52,9 @@ interface FormData {
   additionalContext: string;
   contactMethod: string;
   isAnonymous: boolean;
+  fullName: string;
+  department: string;
+  manager: string;
 }
 
 // Uploaded file interface
@@ -84,7 +87,10 @@ const FileComplaint = () => {
     location: "",
     additionalContext: "",
     contactMethod: "work-email",
-    isAnonymous: false
+    isAnonymous: false,
+    fullName: "John Doe",
+    department: "Engineering",
+    manager: "Jane Smith"
   });
 
   const [validation, setValidation] = useState<Record<string, string>>({});
@@ -377,7 +383,7 @@ const FileComplaint = () => {
                   </Label>
                   <Input
                     id="fullName"
-                    value="John Doe"
+                    value={formData.fullName}
                     readOnly
                     className="border-2 border-blue-200 bg-blue-50"
                   />
@@ -390,7 +396,7 @@ const FileComplaint = () => {
                   </Label>
                   <Input
                     id="department"
-                    value="Engineering"
+                    value={formData.department}
                     readOnly
                     className="border-2 border-blue-200 bg-blue-50"
                   />
@@ -403,7 +409,7 @@ const FileComplaint = () => {
                   </Label>
                   <Input
                     id="manager"
-                    value="Jane Smith"
+                    value={formData.manager}
                     readOnly
                     className="border-2 border-blue-200 bg-blue-50"
                   />
@@ -1061,7 +1067,7 @@ const FileComplaint = () => {
           case_number: caseId,
           title: `${formData.incidentType} - ${formData.respondentName || 'Anonymous'}`,
           description: formData.description,
-          complainant_name: formData.isAnonymous ? 'Anonymous' : 'John Doe',
+          complainant_name: formData.isAnonymous ? 'Anonymous' : formData.fullName,
           respondent_name: formData.respondentName || 'Unknown',
           status: 'pending',
           priority: dynamicEvidenceScore < 40 ? 'high' : 'medium',
@@ -1070,7 +1076,10 @@ const FileComplaint = () => {
             ...formData,
             isAnonymous: formData.isAnonymous,
             incidentDate: formData.incidentDate,
-            location: formData.location
+            location: formData.location,
+            fullName: formData.fullName,
+            department: formData.department,
+            manager: formData.manager
           }
         })
         .select()
