@@ -1,0 +1,58 @@
+-- Insert profiles for different user roles
+INSERT INTO public.profiles (id, email, full_name, role, department, employee_id) VALUES
+('11111111-1111-1111-1111-111111111111', 'hr.admin@company.com', 'Sarah Williams', 'hr_admin', 'Human Resources', 'HR001'),
+('22222222-2222-2222-2222-222222222222', 'icc.chair@company.com', 'Dr. Priya Sharma', 'icc_primary', 'Legal & Compliance', 'ICC001'),
+('33333333-3333-3333-3333-333333333333', 'icc.member@company.com', 'Michael Johnson', 'icc_secondary', 'Operations', 'ICC002'),
+('44444444-4444-4444-4444-444444444444', 'investigator@company.com', 'Lisa Chen', 'investigator', 'Internal Audit', 'INV001'),
+('55555555-5555-5555-5555-555555555555', 'employee1@company.com', 'Ananya Patel', 'employee', 'Marketing', 'MKT001'),
+('66666666-6666-6666-6666-666666666666', 'employee2@company.com', 'John Smith', 'employee', 'Sales', 'SAL001'),
+('77777777-7777-7777-7777-777777777777', 'manager1@company.com', 'David Kumar', 'employee', 'Engineering', 'ENG001'),
+('88888888-8888-8888-8888-888888888888', 'employee3@company.com', 'Emma Davis', 'employee', 'Finance', 'FIN001');
+
+-- Insert cases with varying statuses and priorities
+INSERT INTO public.cases (id, case_number, title, description, complainant_name, respondent_name, status, priority, evidence_score, created_at, assigned_to, metadata) VALUES
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'POSH-2024-001', 'Inappropriate Comments in Team Meetings', 'Repeated inappropriate comments and jokes during team meetings making the work environment hostile', 'Ananya Patel', 'John Smith', 'pending', 'high', 75, '2024-03-15 10:30:00+00', NULL, '{"incidentDetails": {"type": "verbal_harassment", "location": "Conference Room A", "date": "2024-03-10"}, "reportingDetails": {"isAnonymous": false, "contactMethod": "email"}}'),
+('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'POSH-2024-002', 'Unwanted Physical Contact', 'Inappropriate touching and unwanted physical contact in the workplace', 'Anonymous', 'David Kumar', 'investigating', 'critical', 85, '2024-03-10 14:20:00+00', '44444444-4444-4444-4444-444444444444', '{"incidentDetails": {"type": "physical_harassment", "location": "Office Floor 3", "date": "2024-03-08"}, "reportingDetails": {"isAnonymous": true, "contactMethod": "anonymous_hotline"}}'),
+('cccccccc-cccc-cccc-cccc-cccccccccccc', 'POSH-2024-003', 'Discriminatory Behavior and Bias', 'Discriminatory comments based on gender during performance reviews', 'Emma Davis', 'Manager X', 'under_review', 'medium', 60, '2024-02-28 09:15:00+00', '22222222-2222-2222-2222-222222222222', '{"incidentDetails": {"type": "discrimination", "location": "HR Office", "date": "2024-02-25"}, "reportingDetails": {"isAnonymous": false, "contactMethod": "in_person"}}'),
+('dddddddd-dddd-dddd-dddd-dddddddddddd', 'POSH-2024-004', 'Retaliation After Complaint', 'Negative performance evaluation and work assignment changes after filing previous complaint', 'Sarah Johnson', 'Team Lead Y', 'resolved', 'high', 90, '2024-02-15 11:45:00+00', '44444444-4444-4444-4444-444444444444', '{"incidentDetails": {"type": "retaliation", "location": "Marketing Department", "date": "2024-02-10"}, "reportingDetails": {"isAnonymous": false, "contactMethod": "email"}}'),
+('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'POSH-2024-005', 'Inappropriate Digital Communication', 'Unwanted personal messages and inappropriate content shared via company communication channels', 'Anonymous', 'Sales Rep Z', 'pending', 'medium', 45, '2024-03-12 16:00:00+00', NULL, '{"incidentDetails": {"type": "digital_harassment", "location": "Remote/Digital", "date": "2024-03-05"}, "reportingDetails": {"isAnonymous": true, "contactMethod": "anonymous_form"}}');
+
+-- Insert evidence for the cases
+INSERT INTO public.evidence (id, case_id, type, description, score, ai_analysis, metadata) VALUES
+('e1111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'document', 'Email thread containing inappropriate comments', 40, '{"contentAnalysis": "High probability of inappropriate content", "keyFindings": ["inappropriate language", "hostile tone"], "confidenceLevel": 0.87}', '{"fileDetails": {"name": "email_thread.pdf", "size": 245000, "type": "application/pdf"}}'),
+('e2222222-2222-2222-2222-222222222222', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'witness', 'Testimony from meeting attendee', 35, '{"reliability": "high", "consistency": 0.92, "detail_level": "comprehensive"}', '{"witnessDetails": {"role": "colleague", "department": "Marketing"}}'),
+('e3333333-3333-3333-3333-333333333333', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'document', 'Security camera footage from incident location', 50, '{"contentAnalysis": "Clear evidence of inappropriate contact", "keyFindings": ["physical contact", "victim distress"], "confidenceLevel": 0.95}', '{"fileDetails": {"name": "security_footage.mp4", "size": 15000000, "type": "video/mp4"}}'),
+('e4444444-4444-4444-4444-444444444444', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'witness', 'Witness account from colleague', 35, '{"reliability": "high", "consistency": 0.89, "detail_level": "detailed"}', '{"witnessDetails": {"role": "colleague", "department": "Engineering"}}'),
+('e5555555-5555-5555-5555-555555555555', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'document', 'Performance review documents showing bias', 25, '{"contentAnalysis": "Evidence of potential bias in language", "keyFindings": ["gender-specific language", "inconsistent criteria"], "confidenceLevel": 0.73}', '{"fileDetails": {"name": "performance_reviews.pdf", "size": 180000, "type": "application/pdf"}}'),
+('e6666666-6666-6666-6666-666666666666', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'document', 'Work assignment changes documentation', 45, '{"contentAnalysis": "Clear pattern of retaliation", "keyFindings": ["timing correlation", "negative changes"], "confidenceLevel": 0.91}', '{"fileDetails": {"name": "assignment_changes.pdf", "size": 95000, "type": "application/pdf"}}'),
+('e7777777-7777-7777-7777-777777777777', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'digital_evidence', 'Screenshots of inappropriate messages', 45, '{"contentAnalysis": "Inappropriate content in digital communications", "keyFindings": ["inappropriate messages", "unwanted advances"], "confidenceLevel": 0.84}', '{"fileDetails": {"name": "message_screenshots.png", "size": 125000, "type": "image/png"}}');
+
+-- Insert compliance deadlines
+INSERT INTO public.compliance_deadlines (id, case_id, deadline_type, deadline_date, description, status, urgency_level) VALUES
+('d1111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'acknowledgment', '2024-03-17 10:30:00+00', 'Acknowledge receipt of complaint (48 hours)', 'completed', 'high'),
+('d2222222-2222-2222-2222-222222222222', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'investigation_start', '2024-03-22 10:30:00+00', 'Begin formal investigation process', 'pending', 'medium'),
+('d3333333-3333-3333-3333-333333333333', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'investigation_completion', '2024-06-13 10:30:00+00', 'Complete investigation and provide findings (POSH Act requirement)', 'pending', 'critical'),
+('d4444444-4444-4444-4444-444444444444', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'acknowledgment', '2024-03-12 14:20:00+00', 'Acknowledge receipt of complaint (48 hours)', 'completed', 'high'),
+('d5555555-5555-5555-5555-555555555555', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'investigation_start', '2024-03-17 14:20:00+00', 'Begin formal investigation process', 'completed', 'medium'),
+('d6666666-6666-6666-6666-666666666666', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'investigation_completion', '2024-06-08 14:20:00+00', 'Complete investigation and provide findings (POSH Act requirement)', 'pending', 'critical'),
+('d7777777-7777-7777-7777-777777777777', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'acknowledgment', '2024-03-01 09:15:00+00', 'Acknowledge receipt of complaint (48 hours)', 'completed', 'high'),
+('d8888888-8888-8888-8888-888888888888', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'investigation_completion', '2024-05-28 09:15:00+00', 'Complete investigation and provide findings (POSH Act requirement)', 'pending', 'critical');
+
+-- Insert case reviews
+INSERT INTO public.case_reviews (id, case_id, reviewer_id, review_type, credibility_assessment, investigation_pathway, rationale, metadata) VALUES
+('r1111111-1111-1111-1111-111111111111', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '22222222-2222-2222-2222-222222222222', 'human_review', 4, 'formal', 'Strong evidence supports formal investigation. Video evidence is compelling and witness testimony is consistent.', '{"reviewDate": "2024-03-11", "urgencyAssessment": "high", "recommendedActions": ["formal_investigation", "interim_measures"]}'),
+('r2222222-2222-2222-2222-222222222222', 'cccccccc-cccc-cccc-cccc-cccccccccccc', '22222222-2222-2222-2222-222222222222', 'human_review', 3, 'mediation', 'Moderate evidence suggests bias may be present. Mediation could be effective given both parties willingness to resolve.', '{"reviewDate": "2024-03-01", "urgencyAssessment": "medium", "recommendedActions": ["mediation", "bias_training"]}'),
+('r3333333-3333-3333-3333-333333333333', 'dddddddd-dddd-dddd-dddd-dddddddddddd', '44444444-4444-4444-4444-444444444444', 'investigation_complete', 5, 'formal', 'Investigation complete. Clear evidence of retaliation established. Recommended disciplinary action and policy changes.', '{"reviewDate": "2024-03-20", "urgencyAssessment": "high", "recommendedActions": ["disciplinary_action", "policy_review", "training"]}');
+
+-- Insert case assignments
+INSERT INTO public.case_assignments (id, case_id, assignee_id, assignee_role, assigned_by, notes) VALUES
+('a1111111-1111-1111-1111-111111111111', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '44444444-4444-4444-4444-444444444444', 'investigator', '22222222-2222-2222-2222-222222222222', 'High priority case - video evidence available. Requires experienced investigator.'),
+('a2222222-2222-2222-2222-222222222222', 'cccccccc-cccc-cccc-cccc-cccccccccccc', '22222222-2222-2222-2222-222222222222', 'icc_primary', '11111111-1111-1111-1111-111111111111', 'ICC Chair to handle personally due to complexity of discrimination claims.'),
+('a3333333-3333-3333-3333-333333333333', 'dddddddd-dddd-dddd-dddd-dddddddddddd', '44444444-4444-4444-4444-444444444444', 'investigator', '22222222-2222-2222-2222-222222222222', 'Retaliation case - investigate timeline correlation with previous complaint.');
+
+-- Insert webhook logs to show system activity
+INSERT INTO public.webhook_logs (id, webhook_type, case_id, payload, response, status, execution_time_ms) VALUES
+('w1111111-1111-1111-1111-111111111111', 'CASE_CREATED', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '{"event": "case_created", "caseNumber": "POSH-2024-001", "aiTasks": {"generateCaseSummary": true}}', '{"status": "success", "analysisQueued": true}', 'success', 1250),
+('w2222222-2222-2222-2222-222222222222', 'EVIDENCE_UPLOADED', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', '{"event": "evidence_uploaded", "evidenceType": "document"}', '{"status": "success", "aiAnalysisCompleted": true}', 'success', 2100),
+('w3333333-3333-3333-3333-333333333333', 'CASE_CREATED', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '{"event": "case_created", "caseNumber": "POSH-2024-002", "priority": "critical"}', '{"status": "success", "urgentFlagged": true}', 'success', 980),
+('w4444444-4444-4444-4444-444444444444', 'HUMAN_REVIEW_SUBMITTED', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', '{"event": "human_review", "pathway": "formal"}', '{"status": "success", "investigatorAssigned": true}', 'success', 750);
