@@ -12,6 +12,8 @@ import ICCDashboard from "./pages/ICCDashboard";
 import ICCCases from "./pages/ICCCases";
 import Calendar from "./pages/Calendar";
 import HumanReview from "./pages/HumanReview";
+import HRCases from "./pages/HRCases";
+import HRReports from "./pages/HRReports";
 import AdminWebhookTest from "./pages/AdminWebhookTest";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/icc-dashboard" element={<ICCDashboard />} />
           <Route path="/icc-cases" element={<ICCCases />} />
           <Route path="/icc-calendar" element={<Calendar />} />
+          <Route path="/hr-cases" element={<HRCases />} />
+          <Route path="/hr-reports" element={<HRReports />} />
           <Route path="/human-review/:caseId" element={<HumanReview />} />
           <Route path="/admin/webhook-test" element={<AdminWebhookTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

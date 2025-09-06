@@ -58,8 +58,8 @@ export const AppHeader = ({
       case 'hr':
         return [
           { name: 'Dashboard', href: '/hr-dashboard', icon: BarChart3 },
-          { name: 'Cases', href: '/cases', icon: FileText },
-          { name: 'Reports', href: '/reports', icon: BarChart3 }
+          { name: 'Cases', href: '/hr-cases', icon: FileText },
+          { name: 'Reports', href: '/hr-reports', icon: BarChart3 }
         ];
       case 'icc':
         return [
