@@ -112,22 +112,6 @@ const HRCases = () => {
     setFilteredCases(filtered);
   }, [cases, searchTerm, statusFilter, priorityFilter]);
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="h-4 w-4 text-orange-500" />;
-      case 'under_review':
-        return <Eye className="h-4 w-4 text-blue-500" />;
-      case 'investigating':
-        return <Search className="h-4 w-4 text-purple-500" />;
-      case 'resolved':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'closed':
-        return <CheckCircle className="h-4 w-4 text-gray-500" />;
-      default:
-        return <FileText className="h-4 w-4 text-gray-500" />;
-    }
-  };
 
   const getStatusVariant = (status) => {
     switch (status) {
@@ -159,14 +143,6 @@ const HRCases = () => {
     }
   };
 
-  const getOverdueDeadlines = (deadlines) => {
-    if (!deadlines || deadlines.length === 0) return 0;
-    const now = new Date();
-    return deadlines.filter(deadline => 
-      deadline.status === 'pending' && 
-      parseISO(deadline.deadline_date) < now
-    ).length;
-  };
 
   if (loading) {
     return (
@@ -268,17 +244,12 @@ const HRCases = () => {
                     <TableHead>Status</TableHead>
                     <TableHead>Priority</TableHead>
                     <TableHead>Parties</TableHead>
-                    <TableHead>Evidence</TableHead>
-                    <TableHead>Deadlines</TableHead>
                     <TableHead>Created</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredCases.map((case_) => {
-                    const overdueCount = getOverdueDeadlines(case_.compliance_deadlines);
-                    const evidenceCount = case_.evidence?.length || 0;
-                    const hasReview = case_.case_reviews?.length > 0;
 
                     return (
                       <TableRow key={case_.id}>
@@ -286,24 +257,14 @@ const HRCases = () => {
                           {case_.case_number}
                         </TableCell>
                         <TableCell>
-                          <div>
-                            <div className="font-medium truncate max-w-[200px]">
-                              {case_.title}
-                            </div>
-                            {hasReview && (
-                              <div className="text-xs text-muted-foreground">
-                                Pathway: {case_.case_reviews[0].investigation_pathway}
-                              </div>
-                            )}
+                          <div className="font-medium truncate max-w-[200px]">
+                            {case_.title}
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(case_.status)}
-                            <Badge variant={getStatusVariant(case_.status)}>
-                              {case_.status.replace('_', ' ')}
-                            </Badge>
-                          </div>
+                          <Badge variant={getStatusVariant(case_.status)}>
+                            {case_.status.replace('_', ' ')}
+                          </Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant={getPriorityVariant(case_.priority)}>
@@ -312,42 +273,12 @@ const HRCases = () => {
                         </TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <div className="flex items-center">
-                              <User className="h-3 w-3 mr-1" />
-                              <span className="truncate max-w-[100px]">
-                                {case_.complainant_name}
-                              </span>
+                            <div className="font-medium">
+                              {case_.complainant_name}
                             </div>
                             <div className="text-muted-foreground text-xs mt-1">
                               vs {case_.respondent_name}
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-1">
-                            <FileText className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{evidenceCount}</span>
-                            {case_.evidence_score > 0 && (
-                              <Badge variant="outline" className="text-xs">
-                                {case_.evidence_score}%
-                              </Badge>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center space-x-1">
-                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">
-                              {case_.compliance_deadlines?.length || 0}
-                            </span>
-                            {overdueCount > 0 && (
-                              <div className="flex items-center space-x-1">
-                                <AlertTriangle className="h-3 w-3 text-red-500" />
-                                <span className="text-xs text-red-500">
-                                  {overdueCount}
-                                </span>
-                              </div>
-                            )}
                           </div>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
@@ -356,7 +287,6 @@ const HRCases = () => {
                         <TableCell>
                           <Button size="sm" variant="outline" asChild>
                             <Link to={`/investigation/${case_.id}`}>
-                              <Eye className="h-4 w-4 mr-1" />
                               View
                             </Link>
                           </Button>
