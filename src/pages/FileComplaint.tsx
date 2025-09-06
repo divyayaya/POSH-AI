@@ -92,7 +92,7 @@ const FileComplaint = () => {
 
   // Define which fields belong to each step for validation
   const stepFields = {
-    1: ['incidentType', 'respondentName', 'incidentDate', 'description'],
+    1: [], // No validation for step 1
     2: ['location'], // witnesses is optional
     3: ['contactMethod']
   };
@@ -349,13 +349,6 @@ const FileComplaint = () => {
               })}
             </div>
 
-            {/* Validation error */}
-            {validation.incidentType && (
-              <div className="text-destructive text-sm flex items-center mt-2">
-                <AlertTriangle className="w-4 h-4 mr-2" />
-                {validation.incidentType}
-              </div>
-            )}
 
           </div>
         );
@@ -1068,7 +1061,7 @@ const FileComplaint = () => {
           case_number: caseId,
           title: `${formData.incidentType} - ${formData.respondentName || 'Anonymous'}`,
           description: formData.description,
-          complainant_name: formData.isAnonymous ? 'Anonymous' : 'Current User',
+          complainant_name: formData.isAnonymous ? 'Anonymous' : 'John Doe',
           respondent_name: formData.respondentName || 'Unknown',
           status: 'pending',
           priority: dynamicEvidenceScore < 40 ? 'high' : 'medium',
@@ -1248,14 +1241,7 @@ const FileComplaint = () => {
             {currentStep < 4 ? (
               <Button
                 onClick={handleNext}
-                disabled={currentStep === 1 && !formData.incidentType}
-                className={`px-8 py-3 font-medium transition-all duration-200 ${
-                  currentStep === 1 && formData.incidentType
-                    ? 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg transform hover:-translate-y-0.5'
-                    : currentStep !== 1
-                    ? 'bg-gray-800 hover:bg-gray-900 text-white'
-                    : 'bg-gray-300 cursor-not-allowed text-gray-500'
-                }`}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 font-medium hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
               >
                 Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
