@@ -74,6 +74,8 @@ const FileComplaint = () => {
   const [showSupportOptions, setShowSupportOptions] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedCaseId, setSubmittedCaseId] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -1129,33 +1131,129 @@ const FileComplaint = () => {
       });
 
       if (webhookResponse.success) {
+        setIsSubmitted(true);
+        setSubmittedCaseId(caseId);
         toast.success(
-          `Thank you for your courage in speaking up. Your complaint has been filed successfully. Case ID: ${caseId}`,
+          "Thank you for your courage in speaking up. Your complaint has been filed successfully.",
           { duration: 5000 }
         );
       } else {
         // Even if webhook fails, still show success to user - the form submission worked
+        setIsSubmitted(true);
+        setSubmittedCaseId(caseId);
         toast.success(
-          `Thank you for your courage in speaking up. Your complaint has been filed successfully. Case ID: ${caseId}`,
+          "Thank you for your courage in speaking up. Your complaint has been filed successfully.",
           { duration: 5000 }
         );
         // Log the webhook error for admin review
         console.warn('Webhook notification failed, but case was still created:', webhookResponse.error);
       }
-
-      // Navigate to HR dashboard after successful submission
-      setTimeout(() => {
-        window.location.href = '/hr-dashboard';
-      }, 2000);
     } catch (error) {
       console.error('Case submission error:', error);
       toast.error('Failed to submit complaint. Please try again.');
     }
   };
 
+  // Show thank you message after successful submission
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-background">
+        <AppHeader />
+        
+        <div className="max-w-2xl mx-auto px-6 py-16">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            
+            <h1 className="text-3xl font-bold text-foreground mb-4">
+              Thank You for Speaking Up
+            </h1>
+            
+            <p className="text-lg text-muted-foreground mb-8">
+              Your complaint has been filed successfully. We appreciate your courage in reporting this concern.
+            </p>
+            
+            <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 mb-8">
+              <div className="flex items-center justify-center space-x-2 mb-3">
+                <FileText className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-primary">Case ID</span>
+              </div>
+              <p className="text-2xl font-bold text-primary">{submittedCaseId}</p>
+              <p className="text-sm text-primary/70 mt-2">
+                Please save this case ID for your records. You can use it to track your complaint status.
+              </p>
+            </div>
+            
+            <div className="space-y-4 text-left">
+              <h2 className="text-xl font-semibold text-foreground mb-4">What happens next?</h2>
+              
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-blue-600 font-semibold text-xs">1</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Initial Review</p>
+                    <p className="text-sm text-muted-foreground">Our HR team will review your complaint within 2 business days</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-blue-600 font-semibold text-xs">2</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Investigation Assignment</p>
+                    <p className="text-sm text-muted-foreground">Your case will be assigned to an appropriate investigator</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <span className="text-blue-600 font-semibold text-xs">3</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Regular Updates</p>
+                    <p className="text-sm text-muted-foreground">You'll receive status updates throughout the investigation process</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+              <Button asChild variant="default">
+                <Link to="/my-cases">
+                  <Users className="mr-2 h-4 w-4" />
+                  View My Cases
+                </Link>
+              </Button>
+              
+              <Button asChild variant="outline">
+                <Link to="/">
+                  <Shield className="mr-2 h-4 w-4" />
+                  Return to Dashboard
+                </Link>
+              </Button>
+            </div>
+            
+            <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center space-x-2 mb-2">
+                <Bell className="w-4 h-4 text-yellow-600" />
+                <p className="text-sm font-medium text-yellow-800">Need Immediate Support?</p>
+              </div>
+              <p className="text-xs text-yellow-700">
+                If you need immediate assistance or support, our crisis helpline (1-800-HELP) and live chat are available 24/7.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader />
       
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Enhanced Header */}

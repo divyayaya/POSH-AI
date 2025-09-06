@@ -15,6 +15,7 @@ import HumanReview from "./pages/HumanReview";
 import HRCases from "./pages/HRCases";
 import HRReports from "./pages/HRReports";
 import AdminWebhookTest from "./pages/AdminWebhookTest";
+import MyCases from "./pages/MyCases";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/my-cases" element={<MyCases />} />
           <Route path="/file-complaint" element={<FileComplaint />} />
           <Route path="/hr-dashboard" element={<HRDashboard />} />
           <Route path="/investigation/:caseId" element={<Investigation />} />

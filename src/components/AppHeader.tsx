@@ -70,8 +70,7 @@ export const AppHeader = ({
       default:
         return [
           { name: 'File Complaint', href: '/file-complaint', icon: FileText },
-          { name: 'My Cases', href: '/my-cases', icon: Users },
-          { name: 'Resources', href: '/resources', icon: BarChart3 }
+          { name: 'My Cases', href: '/my-cases', icon: Users }
         ];
     }
   };
