@@ -10,6 +10,7 @@ import HRDashboard from "./pages/HRDashboard";
 import Investigation from "./pages/Investigation";
 import ICCDashboard from "./pages/ICCDashboard";
 import ICCCases from "./pages/ICCCases";
+import Calendar from "./pages/Calendar";
 import HumanReview from "./pages/HumanReview";
 import AdminWebhookTest from "./pages/AdminWebhookTest";
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/investigation/:caseId" element={<Investigation />} />
           <Route path="/icc-dashboard" element={<ICCDashboard />} />
           <Route path="/icc-cases" element={<ICCCases />} />
+          <Route path="/calendar" element={<Calendar />} />
           <Route path="/human-review/:caseId" element={<HumanReview />} />
           <Route path="/admin/webhook-test" element={<AdminWebhookTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

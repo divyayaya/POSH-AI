@@ -96,21 +96,6 @@ const ICCCases = () => {
     setFilteredCases(filtered);
   }, [cases, searchTerm, statusFilter, priorityFilter]);
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="h-4 w-4 text-orange-500" />;
-      case 'investigating':
-        return <AlertTriangle className="h-4 w-4 text-blue-500" />;
-      case 'under_review':
-        return <FileText className="h-4 w-4 text-purple-500" />;
-      case 'resolved':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      default:
-        return <FileText className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
   const getStatusVariant = (status) => {
     switch (status) {
       case 'pending':
@@ -325,12 +310,9 @@ const ICCCases = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(case_.status)}
-                              <Badge variant={getStatusVariant(case_.status)}>
-                                {case_.status.replace('_', ' ')}
-                              </Badge>
-                            </div>
+                            <Badge variant={getStatusVariant(case_.status)}>
+                              {case_.status.replace('_', ' ')}
+                            </Badge>
                           </TableCell>
                           <TableCell>
                             <Badge variant={getPriorityVariant(case_.priority)}>
