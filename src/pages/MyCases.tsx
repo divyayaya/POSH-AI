@@ -272,7 +272,6 @@ const MyCases = () => {
                       <TableHead>Evidence</TableHead>
                       <TableHead>Filed Date</TableHead>
                       <TableHead>Last Updated</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -306,12 +305,6 @@ const MyCases = () => {
                             <Clock className="mr-1 h-3 w-3" />
                             {format(new Date(caseItem.updated_at), 'MMM dd, yyyy')}
                           </div>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4 mr-2" />
-                            View Details
-                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
