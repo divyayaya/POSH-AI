@@ -185,21 +185,7 @@ const Calendar = () => {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center">
-                <Clock className="h-8 w-8 text-orange-600" />
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-muted-foreground">Pending Deadlines</p>
-                  <p className="text-2xl font-bold">
-                    {deadlines.filter(d => d.status === 'pending').length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -257,23 +243,25 @@ const Calendar = () => {
                 Click on a date to view deadlines for that day
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <CalendarComponent
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                className="rounded-md border"
-                modifiers={{
-                  hasDeadline: datesWithDeadlines,
-                }}
-                modifiersStyles={{
-                  hasDeadline: {
-                    backgroundColor: 'hsl(var(--primary))',
-                    color: 'hsl(var(--primary-foreground))',
-                    fontWeight: 'bold',
-                  },
-                }}
-              />
+            <CardContent className="p-6">
+              <div className="w-full flex justify-center">
+                <CalendarComponent
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  className="rounded-md border w-full scale-110"
+                  modifiers={{
+                    hasDeadline: datesWithDeadlines,
+                  }}
+                  modifiersStyles={{
+                    hasDeadline: {
+                      backgroundColor: 'hsl(var(--primary))',
+                      color: 'hsl(var(--primary-foreground))',
+                      fontWeight: 'bold',
+                    },
+                  }}
+                />
+              </div>
               
               {/* Selected Date Details */}
               {selectedDateDeadlines.length > 0 && (
