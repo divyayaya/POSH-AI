@@ -11,7 +11,6 @@ import Investigation from "./pages/Investigation";
 import ICCDashboard from "./pages/ICCDashboard";
 import ICCCases from "./pages/ICCCases";
 import Calendar from "./pages/Calendar";
-import HRCalendar from "./pages/HRCalendar";
 import HumanReview from "./pages/HumanReview";
 import HRCases from "./pages/HRCases";
 import HRReports from "./pages/HRReports";
@@ -36,7 +35,6 @@ const App = () => (
           <Route path="/hr-cases" element={<HRCases />} />
           <Route path="/hr-reports" element={<HRReports />} />
           <Route path="/human-review/:caseId" element={<HumanReview />} />
-          <Route path="/hr-calendar" element={<HRCalendar />} />
           <Route path="/admin/webhook-test" element={<AdminWebhookTest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
