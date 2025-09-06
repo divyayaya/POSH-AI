@@ -189,20 +189,24 @@ const HumanReview = () => {
 
     try {
       // 1. Save review to database
+      const reviewData_to_submit = {
+        case_id: caseData.id,
+        reviewer_id: "ICC-001", // Would come from auth context
+        credibility_assessment: parseInt(reviewData.credibilityAssessment),
+        investigation_pathway: reviewData.investigationPathway,
+        rationale: reviewData.rationale,
+        review_type: 'human_review',
+        metadata: {
+          mediationSuitability: reviewData.mediationSuitability,
+          secondaryReviewer: reviewData.secondaryReviewer
+        }
+      };
+      
+      console.log('Submitting review data:', reviewData_to_submit);
+      
       const { data: reviewResponse, error: reviewError } = await supabase
         .from('case_reviews')
-        .insert({
-          case_id: caseData.id,
-          reviewer_id: "ICC-001", // Would come from auth context
-          credibility_assessment: parseInt(reviewData.credibilityAssessment),
-          investigation_pathway: reviewData.investigationPathway,
-          rationale: reviewData.rationale,
-          review_type: 'human_review',
-          metadata: {
-            mediationSuitability: reviewData.mediationSuitability,
-            secondaryReviewer: reviewData.secondaryReviewer
-          }
-        })
+        .insert(reviewData_to_submit)
         .select()
         .single();
 
@@ -477,19 +481,23 @@ const HumanReview = () => {
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="5" id="cred-5" />
-                      <Label htmlFor="cred-5" className="text-sm">High (90%) - Strong evidence, clear pattern</Label>
+                      <Label htmlFor="cred-5" className="text-sm">Very High (5) - Strong evidence, clear pattern</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="4" id="cred-4" />
-                      <Label htmlFor="cred-4" className="text-sm">Moderate (70%) - Some evidence, requires investigation</Label>
+                      <Label htmlFor="cred-4" className="text-sm">High (4) - Some evidence, requires investigation</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="3" id="cred-3" />
-                      <Label htmlFor="cred-3" className="text-sm">Low (40%) - Limited evidence, consider alternatives</Label>
+                      <Label htmlFor="cred-3" className="text-sm">Medium (3) - Limited evidence, consider alternatives</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="2" id="cred-2" />
+                      <Label htmlFor="cred-2" className="text-sm">Low (2) - Very limited evidence</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="1" id="cred-1" />
-                      <Label htmlFor="cred-1" className="text-sm">Very Low (20%) - Insufficient evidence</Label>
+                      <Label htmlFor="cred-1" className="text-sm">Very Low (1) - Insufficient evidence</Label>
                     </div>
                   </RadioGroup>
                 </div>
