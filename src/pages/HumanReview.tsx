@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { webhookService } from "@/services/webhookService";
 import { supabase } from "@/integrations/supabase/client";
+import { validateForm, reviewFormRules } from "@/lib/validation";
 
 const HumanReview = () => {
   const { caseId } = useParams<{ caseId: string }>();
@@ -176,16 +177,27 @@ const HumanReview = () => {
   const handleSubmitReview = async () => {
     setIsSubmitting(true);
     
-    // Validate all fields
-    validateField('credibilityAssessment', reviewData.credibilityAssessment);
-    validateField('investigationPathway', reviewData.investigationPathway);
-    validateField('rationale', reviewData.rationale);
-
-    if (!reviewData.credibilityAssessment || !reviewData.investigationPathway || reviewData.rationale.length < 100) {
-      toast.error("Please complete all required fields correctly");
+    // Use comprehensive validation utility
+    const errors = validateForm(reviewData, reviewFormRules);
+    
+    // Update validation errors state
+    setValidationErrors(errors);
+    
+    // If there are errors, stop submission and show specific error messages
+    if (Object.keys(errors).length > 0) {
+      const errorFields = Object.keys(errors);
+      let errorMessage = "Please fix the following issues:\n";
+      errorFields.forEach(field => {
+        errorMessage += `• ${errors[field]}\n`;
+      });
+      
+      toast.error(errorMessage);
       setIsSubmitting(false);
       return;
     }
+    
+    // Clear validation errors if all validations pass
+    setValidationErrors({});
 
     try {
       // 1. Save review to database

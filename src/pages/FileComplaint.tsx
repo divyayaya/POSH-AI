@@ -37,6 +37,8 @@ import { mockEmployeeData, calculateEvidenceScore, getEvidenceLevel } from "@/li
 import { webhookService } from "@/services/webhookService";
 import { supabase } from "@/integrations/supabase/client";
 import { AppHeader } from "@/components/AppHeader";
+import { validateForm, complaintFormRules } from "@/lib/validation";
+import { ValidationSummary, StepValidation } from "@/components/ValidationSummary";
 
 // Form data interface
 interface FormData {
@@ -87,6 +89,13 @@ const FileComplaint = () => {
 
   const [validation, setValidation] = useState<Record<string, string>>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
+
+  // Define which fields belong to each step for validation
+  const stepFields = {
+    1: ['incidentType', 'respondentName', 'incidentDate', 'description'],
+    2: ['location'], // witnesses is optional
+    3: ['contactMethod']
+  };
 
   // Auto-save functionality
   useEffect(() => {
@@ -975,14 +984,36 @@ const FileComplaint = () => {
     }
   };
 
+  // Validate current step before allowing navigation
+  const validateCurrentStep = (step: number): boolean => {
+    const fields = stepFields[step] || [];
+    const stepErrors: Record<string, string> = {};
+    
+    fields.forEach(field => {
+      const rule = complaintFormRules[field];
+      if (rule) {
+        const value = formData[field as keyof FormData];
+        if (rule.required && (!value || (typeof value === 'string' && !value.trim()))) {
+          stepErrors[field] = 'This field is required';
+          setTouchedFields(prev => ({ ...prev, [field]: true }));
+        }
+      }
+    });
+    
+    if (Object.keys(stepErrors).length > 0) {
+      setValidation(prev => ({ ...prev, ...stepErrors }));
+      return false;
+    }
+    
+    return true;
+  };
+
   const handleNext = () => {
-    // Validate current step before proceeding
-    if (currentStep === 1 && !formData.incidentType) {
-      setValidation({ incidentType: "Please select the type of concern" });
-      setTouchedFields({ incidentType: true });
+    if (!validateCurrentStep(currentStep)) {
+      toast.error(`Please complete all required fields in Step ${currentStep} before continuing`);
       return;
     }
-
+    
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
       toast.success(`Step ${currentStep} completed`);
@@ -996,6 +1027,37 @@ const FileComplaint = () => {
   };
 
   const handleSubmit = async () => {
+    // Use comprehensive form validation
+    const errors = validateForm(formData, complaintFormRules);
+    
+    // Additional custom validations
+    if (formData.description && formData.description.trim().length < 50) {
+      errors.description = 'Description must be at least 50 characters for a complete report';
+    }
+    
+    // Check if there are validation errors
+    if (Object.keys(errors).length > 0) {
+      setValidation(errors);
+      setTouchedFields(Object.keys(errors).reduce((acc, key) => ({ ...acc, [key]: true }), {}));
+      
+      // Find the first step with errors and navigate to it
+      if (errors.incidentType || errors.respondentName || errors.incidentDate || errors.description) {
+        setCurrentStep(1);
+        toast.error('Please complete all required fields in Step 1: Incident Details');
+      } else if (errors.location || errors.witnesses) {
+        setCurrentStep(2);
+        toast.error('Please complete all required fields in Step 2: Context & Evidence');
+      } else if (errors.contactMethod) {
+        setCurrentStep(3);
+        toast.error('Please complete all required fields in Step 3: Contact Preferences');
+      }
+      
+      return;
+    }
+    
+    // Clear any existing validation errors
+    setValidation({});
+    
     const caseId = `POSH-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
     
     try {
