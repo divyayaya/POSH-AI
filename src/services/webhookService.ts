@@ -13,6 +13,7 @@ interface WebhookResponse {
 }
 
 class WebhookService {
+  // Enhanced logging with analysis tracking
   private async logWebhook(
     webhookType: string,
     caseId: string | null,
@@ -28,7 +29,13 @@ class WebhookService {
         .insert({
           webhook_type: webhookType,
           case_id: caseId,
-          payload,
+          payload: {
+            ...payload,
+            // Track what AI analysis was requested
+            analysisRequested: payload.aiTasks || {},
+            evidenceCount: payload.evidenceAnalysis?.totalCount || 0,
+            hasWitnesses: payload.witnesses?.hasWitnesses || false
+          },
           response,
           status,
           error_message: errorMessage,
@@ -118,30 +125,111 @@ class WebhookService {
     }
   }
 
-  // Case Created Workflow
+  // Enhanced Case Created Workflow with comprehensive data
   async triggerCaseCreated(data: {
     caseId: string;
-    evidenceScore: number;
-    needsHumanReview: boolean;
-    formData: any;
-    uploadedFiles: number;
+    caseNumber?: string;
+    incidentDetails?: any;
+    evidenceForAnalysis?: any[];
+    witnessInformation?: any;
+    reportingContext?: any;
+    complianceDeadlines?: any[];
+    analysisRequirements?: any;
+    // Legacy support for existing calls
+    evidenceScore?: number;
+    needsHumanReview?: boolean;
+    formData?: any;
+    uploadedFiles?: number;
   }): Promise<WebhookResponse> {
-    return this.callWebhook('CASE_CREATED', {
-      event: 'case_created',
-      caseId: data.caseId,
-      status: 'new',
-      priority: data.evidenceScore < 40 ? 'high' : 'medium',
-      evidenceScore: data.evidenceScore,
-      needsHumanReview: data.needsHumanReview,
-      complainant: {
-        id: data.formData.isAnonymous ? 'anonymous' : 'EMP-001',
-        department: 'Unknown', // Would come from HRIS integration
-        anonymous: data.formData.isAnonymous
+    
+    // Handle both new enhanced format and legacy format
+    if (data.incidentDetails && data.caseNumber) {
+      // New enhanced format
+      const enrichedPayload = {
+        event: 'case_created',
+        caseId: data.caseId,
+        caseNumber: data.caseNumber,
+      
+      // Detailed incident information for AI analysis
+      incident: {
+        type: data.incidentDetails.type,
+        description: data.incidentDetails.description,
+        location: data.incidentDetails.location,
+        dateTime: {
+          date: data.incidentDetails.date,
+          time: data.incidentDetails.time,
+          timestamp: new Date().toISOString()
+        },
+        parties: {
+          respondent: data.incidentDetails.respondentName,
+          isAnonymousComplainant: data.reportingContext.isAnonymous
+        },
+        additionalContext: data.incidentDetails.additionalContext
       },
-      incidentType: data.formData.incidentType,
-      uploadedFiles: data.uploadedFiles,
-      formData: data.formData
-    });
+
+      // Evidence requiring AI analysis
+      evidenceAnalysis: {
+        items: data.evidenceForAnalysis,
+        totalCount: data.evidenceForAnalysis.length,
+        requiresProcessing: data.analysisRequirements.needsEvidenceAnalysis,
+        analysisTypes: data.evidenceForAnalysis.map(e => e.metadata?.analysisType).filter(Boolean)
+      },
+
+      // Witness information for evaluation
+      witnesses: {
+        description: data.witnessInformation.description,
+        estimatedCount: data.witnessInformation.estimatedCount,
+        hasWitnesses: data.witnessInformation.hasWitnesses,
+        requiresContactAttempt: data.witnessInformation.hasWitnesses && !data.reportingContext.isAnonymous
+      },
+
+      // AI processing requirements
+      aiTasks: {
+        generateCaseSummary: true,
+        analyzeEvidenceStrength: true,
+        assessWitnessReliability: data.witnessInformation.hasWitnesses,
+        calculateEvidenceScore: true,
+        determineUrgencyLevel: true,
+        flagForHumanReview: false // Will be determined by AI analysis
+      },
+
+      // Compliance and deadline management
+      compliance: {
+        deadlines: data.complianceDeadlines,
+        requiresCalendarEvents: true,
+        poshActCompliance: true,
+        urgentDeadlines: data.complianceDeadlines.filter(d => d.urgency === 'high' || d.urgency === 'critical')
+      },
+
+      // Callback instructions for n8n
+      callbacks: {
+        updateCaseWithAnalysis: `/supabase/update-case/${data.caseId}`,
+        updateEvidenceScores: `/supabase/update-evidence`,
+        flagForHumanReview: `/supabase/flag-review/${data.caseId}`,
+        createCalendarEvents: `/calendar/create-events`
+      }
+    };
+
+      return this.callWebhook('CASE_CREATED', enrichedPayload);
+    } else {
+      // Legacy format for backwards compatibility
+      return this.callWebhook('CASE_CREATED', {
+        event: 'case_created',
+        caseId: data.caseId,
+        status: 'new',
+        priority: (data.evidenceScore || 0) < 40 ? 'high' : 'medium',
+        evidenceScore: data.evidenceScore || 0,
+        needsHumanReview: data.needsHumanReview || false,
+        complainant: {
+          id: data.formData?.isAnonymous ? 'anonymous' : 'EMP-001',
+          department: 'Unknown',
+          anonymous: data.formData?.isAnonymous || false
+        },
+        incidentType: data.formData?.incidentType || 'unknown',
+        uploadedFiles: data.uploadedFiles || 0,
+        formData: data.formData || {}
+      });
+    }
   }
 
   // Human Review Submitted Workflow  
@@ -192,6 +280,48 @@ class WebhookService {
       newStatus: data.newStatus,
       assignedTo: data.assignedTo,
       requiresNotification: true
+    });
+  }
+
+  // Evidence Analysis Completion Webhook
+  async triggerEvidenceAnalysisComplete(data: {
+    caseId: string;
+    evidenceId: string;
+    analysisResults: {
+      contentAnalysis: any;
+      strengthScore: number;
+      keyFindings: string[];
+      recommendedActions: string[];
+    };
+  }): Promise<WebhookResponse> {
+    return this.callWebhook('EVIDENCE_UPLOADED', {
+      event: 'evidence_analysis_complete',
+      caseId: data.caseId,
+      evidenceId: data.evidenceId,
+      analysis: data.analysisResults,
+      requiresUpdate: true,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  // Case Summary Generation Webhook
+  async triggerCaseSummaryGenerated(data: {
+    caseId: string;
+    summary: {
+      executiveSummary: string;
+      keyPoints: string[];
+      evidenceStrength: 'low' | 'medium' | 'high';
+      recommendedPath: 'formal' | 'mediation' | 'coaching' | 'dismissed';
+      urgencyLevel: 'low' | 'medium' | 'high' | 'critical';
+    };
+  }): Promise<WebhookResponse> {
+    return this.callWebhook('CASE_CREATED', {
+      event: 'case_summary_generated',
+      caseId: data.caseId,
+      aiSummary: data.summary,
+      requiresDatabaseUpdate: true,
+      flagForHumanReview: data.summary.evidenceStrength === 'low',
+      timestamp: new Date().toISOString()
     });
   }
 

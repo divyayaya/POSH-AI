@@ -128,7 +128,7 @@ const HRDashboard = () => {
     }
   };
 
-  // Fetch cases from database
+  // Fetch cases from database with AI analysis data
   useEffect(() => {
     const fetchCases = async () => {
       try {
@@ -136,8 +136,9 @@ const HRDashboard = () => {
           .from('cases')
           .select(`
             *,
-            evidence (id, type, score),
-            compliance_deadlines (deadline_date, deadline_type, urgency_level)
+            evidence (id, type, score, ai_analysis),
+            compliance_deadlines (deadline_date, deadline_type, urgency_level),
+            case_reviews (investigation_pathway, credibility_assessment)
           `)
           .order('created_at', { ascending: false });
 
@@ -427,7 +428,15 @@ const HRDashboard = () => {
                 <div className="space-y-3">
                   {pendingCases.slice(0, 5).map((case_) => (
                     <div key={case_.id} className="group relative overflow-hidden rounded-lg border border-border bg-background hover:shadow-sm transition-all duration-200">
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500" />
+                      <div className={`absolute left-0 top-0 bottom-0 w-1 ${
+                        case_.ai_analysis?.urgencyLevel === 'critical' ? 'bg-red-500' :
+                        case_.ai_analysis?.urgencyLevel === 'high' ? 'bg-orange-500' :
+                        case_.ai_analysis?.urgencyLevel === 'medium' ? 'bg-yellow-500' :
+                        case_.priority === 'critical' ? 'bg-red-500' :
+                        case_.priority === 'high' ? 'bg-orange-500' :
+                        case_.priority === 'medium' ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`} />
                       <div className="flex items-center justify-between p-4 pl-6">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2 mb-1">
@@ -437,26 +446,44 @@ const HRDashboard = () => {
                             <Badge 
                               variant="outline" 
                               className={`text-xs ${
-                                case_.priority === 'high' ? 'border-red-200 text-red-700' :
+                                case_.priority === 'high' || case_.priority === 'critical' ? 'border-red-200 text-red-700' :
                                 case_.priority === 'medium' ? 'border-yellow-200 text-yellow-700' :
                                 'border-green-200 text-green-700'
                               }`}
                             >
                               {case_.priority} priority
                             </Badge>
+                            {case_.ai_analysis?.evidenceStrength && (
+                              <Badge variant="outline" className="text-xs border-blue-200 text-blue-700">
+                                {case_.ai_analysis.evidenceStrength} evidence
+                              </Badge>
+                            )}
+                            {case_.metadata?.flaggedForReview && (
+                              <Badge variant="destructive" className="text-xs">
+                                AI Flagged
+                              </Badge>
+                            )}
                           </div>
                           <p className="text-sm text-muted-foreground truncate">
                             {case_.title}
                           </p>
+                          {case_.ai_analysis?.summary && (
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                              AI Summary: {case_.ai_analysis.summary.substring(0, 80)}...
+                            </p>
+                          )}
                           <div className="flex items-center space-x-4 mt-2 text-xs text-muted-foreground">
                             <span>Filed: {new Date(case_.created_at).toLocaleDateString()}</span>
                             <span>Evidence Score: {case_.evidence_score}/100</span>
+                            {case_.ai_analysis?.aiConfidence && (
+                              <span>AI Confidence: {Math.round(case_.ai_analysis.aiConfidence * 100)}%</span>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Button size="sm" variant="outline" asChild>
                             <Link to={`/human-review/${case_.id}`}>
-                              Review
+                              {case_.ai_analysis?.evidenceStrength === 'low' || case_.metadata?.flaggedForReview ? 'Urgent Review' : 'Review'}
                             </Link>
                           </Button>
                         </div>
