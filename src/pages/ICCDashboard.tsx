@@ -74,7 +74,7 @@ const ICCDashboard = () => {
     <div className="min-h-screen bg-background">
       <AppHeader 
         userRole="icc"
-        customTitle="ICC Member Dashboard"
+        showNavigation={true}
       />
 
       <main className="container mx-auto px-4 py-8">
