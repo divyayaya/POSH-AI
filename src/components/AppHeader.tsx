@@ -65,7 +65,7 @@ export const AppHeader = ({
         return [
           { name: 'Dashboard', href: '/icc-dashboard', icon: BarChart3 },
           { name: 'Cases', href: '/icc-cases', icon: FileText },
-          { name: 'Calendar', href: '/calendar', icon: Calendar }
+          { name: 'Calendar', href: '/icc-calendar', icon: Calendar }
         ];
       default:
         return [
